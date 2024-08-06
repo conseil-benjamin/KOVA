@@ -33,17 +33,27 @@ function QuizzGame() {
     };
 
     useEffect(() => {
-        socket.on('message', (message) => {
-            setRoom((prevRoom) => ({
-                ...prevRoom,
-                messages: [...prevRoom.messages, message]
-            }));
+        console.log('Tentative de connexion au serveur WebSocket');
+        socket.on('connect', () => {
+            console.log('Connecté au serveur WebSocket');
+        });
+        socket.on('disconnect', () => {
+            console.log('Déconnecté du serveur WebSocket');
         });
 
-        socket.on('roomData', (room) => {
-            setRoom(room);
-        });
-    }, []);
+        socket.on('message',
+            (message) => {
+                console.log('Nouveau message reçu:', message);
+                setRoom((prevRoom) => ({
+                    ...prevRoom,
+                    messages: [...prevRoom.messages, message]
+                }));
+            });
+
+        // ... autres écouteurs d'événements
+
+        return () => socket.disconnect();
+    }, [socket]);
 
     const leaveRoom = () => {
         console.log('leave room')
