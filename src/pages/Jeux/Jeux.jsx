@@ -19,12 +19,22 @@ function Jeux() {
             const roomCode = data.roomCode;
             navigate(`/jeu/quizz/${roomCode}`); // a changer le quizz en dur
         });
+        socket.on('message', (message) => {
+            console.log('Message received from server:');
+            console.log('Message:', message);
+        });
     }, [socket]);
 
     const createQuizzRoom = (game) => {
         Swal.fire({
             title: 'Créer une partie',
-            html: '<input id="swal-input1" class="swal2-input" placeholder="Nom de la partie">' + '<div><label>Partie privée</label><input type="checkbox" id="swal-input2" class="swal2-checkbox" placeholder="Partie privée"></div>',
+            html: `
+    <input id="swal-input1" class="swal2-input" placeholder="Nom de la partie">
+    <div>
+        <label>Partie privée</label>
+        <input type="checkbox" id="swal-input2" class="swal2-checkbox" placeholder="Partie privée">
+    </div>
+`,
             focusConfirm: false,
             showCloseButton: true,
             preConfirm: () => {

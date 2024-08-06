@@ -21,6 +21,7 @@ function QuizzRooms(){
 
     useEffect(() => {
         socket.on('roomData', (data) => {
+            console.log('Message received from server:');
             const roomCode = data.roomCode;
             navigate(`/jeu/quizz/${roomCode}`);
         });
@@ -49,7 +50,9 @@ function QuizzRooms(){
                 if (result.isConfirmed) {
                     setUsername(result.value);
                     localStorage.setItem('username', result.value);
-                    navigate(`/jeu/quizz/${roomCode}`);
+                    const usernameSwal = result.value;
+                    console.log(usernameSwal);
+                    socket.emit('joinRoom', { roomCode, roomName, usernameSwal, gameType: 'quizz' });
                 }
             });
         } else {
