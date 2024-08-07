@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
 import Timer from "./Timer.jsx";
+import Rules from "./Rules.jsx";
 const socket = io('http://localhost:5000');
 
 function QuizzGame() {
@@ -13,9 +14,13 @@ function QuizzGame() {
     const [username, setUsername] = useState(localStorage.getItem('username') || '');
     const [loading, setLoading] = useState(false);
     const [question, setQuestion] = useState({});
-    const [response, setResponse] = useState('');
-    const baseTime = 20; // Base time to answer in seconds
-    const [remainingTime, setRemainingTime] = useState(baseTime);
+    const [limitScore, setLimitScore] = useState(100);
+    const [limitTime, setLimitTime] = useState(20);
+    const [remainingTime, setRemainingTime] = useState(null);
+    const [seeOtherAnswers, setSeeOtherAnswers] = useState(false);
+    const [acceptShortcuts, setAcceptShortcuts] = useState(false);
+    const [rulesVisible, setRulesVisible] = useState(false);
+    const [answerVisible, setAnswerVisible] = useState(false);
 
     const navigate = useNavigate();
 
@@ -38,6 +43,10 @@ function QuizzGame() {
                 console.log(data);
                 setRoom(data[0]);
                 setRoomName(data.roomName);
+                setQuestion(data.currentQuestion);
+                setLimitTime(data[0].rules.limitTime);
+                setLimitScore(data[0].rules.limitScore);
+                setRemainingTime(data[0].rules.limitTime);
             }
         }
         fetchRooms();
@@ -68,6 +77,11 @@ function QuizzGame() {
             });
         });
 
+        socket.on('message', (message) => {
+            console.log('Message received from server:');
+            console.log('Message:', message);
+        })
+
         socket.on('gameStarting', (data) => {
             socket.emit('getQuestion', { roomCode });
         });
@@ -84,11 +98,21 @@ function QuizzGame() {
     }, [socket]);
 
     useEffect(() => {
+        const asyncFunction = async () => {
+            await displayAnswer();
+        }
+        // TODO : J'ai l'impression que l'emit est fait trop tôt et donc quand le setTimeout est fini, la question étant déjà envoyée le timer n'est pas à 20 mais à 14 du coup
         if (remainingTime === 0) {
-            socket.emit('getQuestion', { roomCode });
+            asyncFunction().then(r => socket.emit('getQuestion', { roomCode }));
         }
     }, [remainingTime]);
 
+    const displayAnswer = (answer) => {
+        setAnswerVisible(true);
+        setTimeout(() => {
+            setAnswerVisible(false);
+        }, 5000);
+    }
 
     const leaveRoom = () => {
         console.log('leave room')
@@ -150,52 +174,74 @@ function QuizzGame() {
         )
     };
 
-    const Quizz = ({room}) => (
+    const Quizz = ({room}) => {
+        const [response, setResponse] = useState('');
+        return(
         <>
             {room.users && room.users.length > 1 ? (
                 question && Object.keys(question).length > 0 ? (
-                        <div className={'flex w-2/3 h-screen items-center flex-col'}>
-                            <div className={'w-2/3'}>
+                    <div className={'flex w-2/3 h-screen items-center justify-center flex-col mt-5'}>
+                        <div className={'w-2/3 h-1/2'}>
+                            {answerVisible ? (<div>
+                                    <h1 className={'text-center font-bold text-3xl'}>{question.correctAnswer}</h1>
+                                <h2 className={'text-center'}>{question.explicationReponse}</h2>
+                            </div>) : (
+                                <>
                                 <h2 className={'text-center bg-amber-900'}>{question.question}</h2>
-                                <Timer timeQuestionBegin={question.time} baseTime={baseTime} setRemainingTime={setRemainingTime} remainingTime={remainingTime}/>
+                                <Timer timeQuestionBegin={question.time} baseTime={limitTime}
+                                                                         setRemainingTime={setRemainingTime} remainingTime={remainingTime}/>
                                 {question.questionImage ? (
-                                    <img
-                                        src={question.elementQuestion} className={'flex max-h-36'}/>
-                                ) : <h4>{question.elementQuestion}</h4>}
-                            </div>
-                            <div className={'flex items-end justify-center w-full'}>
-                                <input onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        checkAnswer();
-                                        setResponse('');
-                                    }
-                                }} onChange={(e) => setResponse(e.target.value)} type={'text'} className={'bg-gray-600 p-2 rounded-md w-2/3 text-center '}/>
-                            </div>
+                        <div className={'w-full h-full flex items-center justify-center'}>
+                            <img
+                                src={question.elementQuestion}
+                                className={'object-contain max-w-full max-h-full'}/>
                         </div>
-                    ) :
-                    room.users.map((user, index) => (
-                        user.username === username && user.owner ? (
-                            <div key={index} className={'flex justify-center w-full items-center'}>
-                                <button onClick={() => socket.emit('gameStart', {roomCode})}
+                        ) : <h4>{question.elementQuestion}</h4>}
+                                </>
+                            )}
+                        </div>
+                        <div className={'flex items-end justify-center w-full h-full'}>
+                            <input onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    checkAnswer();
+                                    setResponse('');
+                                }
+                            }} value={response} onChange={(e) => setResponse(e.target.value)} type={'text'}
+                                   className={'bg-gray-600 p-2 rounded-md w-2/3 text-center '}/>
+                        </div>
+                    </div>
+                ) :
+                    (
+                        room.users.some(user => user.username === username && user.owner) ? (
+                            <div className={'flex w-2/3 h-screen items-center justify-center flex-col'}>
+                                <button onClick={() => socket.emit('gameStart', {roomCode, limitTime, limitScore, seeOtherAnswers, acceptShortcuts})}
                                         className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
                                     Lancer la partie
                                 </button>
                             </div>
-                    ) : null
-                ))
-            ) : (
-                <div className={'flex w-2/3 h-screen items-center justify-center flex-col'}>
-                    <h1 className={'text-3xl'}>En attente d'un joueur en plus</h1>
-                </div>
-            )}
-</>
-)
+                        ) : (
+                            <div className={'flex w-2/3 h-screen items-center justify-center flex-col'}>
+                                <h1>En attente du lancement de la partie ...</h1>
+                            </div>
+                        )
+                    )
+            ) : <div className={'flex w-2/3 h-screen items-center justify-center flex-col'}>
+                <h2 className={'text-center'}>En attente d'autres joueurs...</h2>
+            </div>
+            }
+        </>
+        )
+    }
 
     return (
         <div className={'flex items-end justify-end bg-gray-900 h-screen text-white'}>
             <div className={'flex flex-row w-screen'}>
-                {room && Object.keys(room).length > 0 ? (
+            {room && Object.keys(room).length > 0 ? (
                     <div className={'flex flex-row justify-end items-end w-screen'}>
+                        <Rules acceptShortcuts={acceptShortcuts} limitScore={limitScore} limitTime={limitTime}
+                               setAcceptShortcuts={setAcceptShortcuts} setLimitScore={setLimitScore}
+                               setLimitTime={setLimitTime} seeOtherAnswers={seeOtherAnswers}
+                               setSeeOtherAnswers={setSeeOtherAnswers} rulesVisible={rulesVisible}/>
                         <Quizz room={room}/>
                         <div className="p-2 bg-amber-900 min-h-screen flex justify-between flex-col">
                             <ul className="space-y-4">
@@ -205,7 +251,10 @@ function QuizzGame() {
                                     </li>
                                 ))}
                             </ul>
-                            <button className={'w-full bg-red-500 p-2 rounded-md'} onClick={leaveRoom}>Quitter la partie</button>
+                            <button className={'w-full bg-red-500 p-2 rounded-md'} onClick={leaveRoom}>Quitter la
+                                partie
+                            </button>
+                            <button className={'w-full bg-blue-500 p-2 rounded-md'} onClick={() => setRulesVisible(!rulesVisible)}>Règles</button>
                         </div>
                         <Messagerie room={room} sendMessage={sendMessage}/>
                     </div>
