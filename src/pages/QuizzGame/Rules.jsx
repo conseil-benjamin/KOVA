@@ -3,6 +3,7 @@ function Rules({ limitScore, setLimitScore, limitTime, setLimitTime, seeOtherAns
         <div className={rulesVisible ? "block p-6 bg-white rounded-lg shadow-md h-screen w-1/3" : "hidden"}>
             <h1 className="text-3xl font-bold mb-6 text-gray-800">Règles</h1>
 
+            {/* Disable les inputs quand on est pas chef et afficher un cursor "interdit" */}
             <div className="mb-6">
                 <label className="block text-lg font-medium text-gray-700 mb-2">Limite de score: {limitScore}</label>
                 <input

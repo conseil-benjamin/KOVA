@@ -31,8 +31,8 @@ function Jeux() {
             html: `
     <input id="swal-input1" class="swal2-input" placeholder="Nom de la partie">
     <div>
-        <label>Partie privée</label>
         <input type="checkbox" id="swal-input2" class="swal2-checkbox" placeholder="Partie privée">
+        <label>Partie privée</label>
     </div>
 `,
             focusConfirm: false,
@@ -53,6 +53,9 @@ function Jeux() {
                 } else {
                     Swal.fire({
                         icon: 'error',
+                        inputAttributes: {
+                            autoComplete: 'off' // Désactive l'autocomplétion
+                        },
                         title: 'Oops...',
                         text: 'Veuillez entrer un nom de partie',
                     })
@@ -88,7 +91,7 @@ function Jeux() {
     }
 
     return (
-        <div className={'bg-gray-900 h-screen'}>
+        <div className={'h-screen'} style={{backgroundColor: "#344E41"}}>
             <button onClick={() => navigate('/')}
                 className={'rounded-md pl-6 pr-6 pt-2 pb-2 text-black mt-5 cursor-pointer hover:bg-red-500 hover:text-white text-white'}>
                 <FontAwesomeIcon icon={faChevronCircleLeft} className={'mr-2'}/>

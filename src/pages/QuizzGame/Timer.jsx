@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const Timer = ({ timeQuestionBegin, baseTime, setRemainingTime, remainingTime }) => {
+    const intervalRef = useRef(null); // Ref pour stocker l'interval
+    const startTimeRef = useRef(new Date(timeQuestionBegin).getTime()); // Ref pour stocker le temps de début
 
     useEffect(() => {
-        const startTime = new Date(timeQuestionBegin).getTime();
-
-        const interval = setInterval(() => {
+        const updateTimer = () => {
             const now = new Date().getTime();
-            const elapsedTime = Math.floor((now - startTime) / 1000);
+            const elapsedTime = Math.floor((now - startTimeRef.current) / 1000);
             const timeLeft = baseTime - elapsedTime;
 
             setRemainingTime(timeLeft > 0 ? timeLeft : 0);
-        }, 1000);
+        };
 
-        return () => clearInterval(interval);
-    }, [timeQuestionBegin]);
+        // Démarrer l'interval
+        intervalRef.current = setInterval(updateTimer, 1000);
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current); // Nettoyage de l'interval quand le composant est démonté
+            }
+        };
+    }, [baseTime, setRemainingTime]);
 
     return (
         <div>

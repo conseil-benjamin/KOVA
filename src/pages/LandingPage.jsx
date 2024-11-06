@@ -12,7 +12,7 @@ function LandingPage() {
     }
 
     return (
-        <div className="bg-gray-900 min-h-screen"> {/* Ensure the background covers the full screen */}
+        <div className="min-h-screen" style={{backgroundColor: "#344E41"}}> {/* Ensure the background covers the full screen */}
             <div className="mb-5">
                 <Header />
             </div>

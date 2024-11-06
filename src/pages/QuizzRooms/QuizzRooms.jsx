@@ -3,6 +3,8 @@ import io from 'socket.io-client';
 const socket = io('http://localhost:5000');
 import Swal from 'sweetalert2'
 import {useNavigate} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 function QuizzRooms(){
     const [rooms, setRooms] = useState([]);
@@ -65,26 +67,43 @@ function QuizzRooms(){
         }
 
     return (
-        <div className={'bg-gray-900 h-screen text-white'}>
-            <h1>QuizzRooms</h1>
-            <ul>
-                {rooms && rooms.map((room, index) => (
+        <div style={{backgroundColor: "#344E41", color: "white", textAlign: "center"}}>
+            <h2 className={'text-2xl'}>Parties publiques</h2>
+            <div className={'flex flex-row justify-center items-center h-screen w-full text-white'}>
+                {rooms.length > 0 ? rooms.map((room, index) => (
                     !room.private && (
                         <div key={index} style={{
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            flexDirection: "row",
-                            backgroundColor: "red",
+                            flexDirection: "column",
+                            backgroundColor: "green",
                             cursor: "pointer",
-                            margin: "0 0 2em 0"
+                            margin: "0 0 2em 1em",
+                            padding: "1em",
+                            borderRadius: "10px",
+                            maxWidth: "15%",
                         }} onClick={() => joinRoom(room.roomCode, room.roomName)}>
                             <p>{room.roomName}</p>
-                            <p>{room.users.length}</p>
+                            <div className={'flex flex-row justify-center items-center'}>
+                                <FontAwesomeIcon icon={faUser}/>
+                                <p className={'pl-2'}>{room.users.length}</p>
+                            </div>
+                            {room.gameType === 'quizz' ? (
+                                <img src={'https://www.shutterstock.com/shutterstock/photos/2052894734/display_1500/stock-vector-quiz-and-question-marks-trivia-night-quiz-symbol-neon-sign-night-online-game-with-questions-2052894734.jpg'} alt="Quiz Image" />
+                            ) : (
+                                <div>
+                                    <img src={'https://eagles-team-experiences.com/wp-content/uploads/2022/04/Blind-Test-Musical.jpg'} alt="Blindtest Image" />
+                                    Blindtest
+                                </div>
+                            )}
                         </div>
                     )
-                ))}
-            </ul>
+                )) : <div className={'flex justify-center items-center h-screen flex-col'}>
+                    <h1 className={'text-center text-xl'}>Aucune partie publique pour le moment ! N'hésitez pas à en créer une.</h1>
+                    <button className={'bg-amber-900 p-2 rounded m-5'} onClick={() => navigate(`/jouer`)}>Accueil</button>
+                </div>}
+        </div>
         </div>
     )
 }
