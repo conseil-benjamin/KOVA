@@ -3,11 +3,11 @@
 import { useState, useEffect, use } from "react";
 import { io } from 'socket.io-client';
 import { toast } from "sonner";
-import Chatbox from "@/components/chatbox";
-import BannerInGame from "@/components/banner-in-game";
-import Leaderboard from "@/components/leaderboard";
-import ResponseBar from "@/components/responseBar";
-import DisplayQuestions from "@/components/displayQuestions";
+import Chatbox from "@/components/inGame/chatbox";
+import BannerInGame from "@/components/inGame/banner-in-game";
+import Leaderboard from "@/components/inGame/leaderboard";
+import ResponseBar from "@/components/inGame/responseBar";
+import DisplayQuestions from "@/components/inGame/displayQuestions";
 
 export default function Game({ params }: { params: Promise<{ roomId: string }> }) {
     const { roomId } = use(params);
