@@ -1,3 +1,4 @@
+import { Room } from '@/types/Room';
 import { Search, Globe, Music, Film, Gamepad2, LayoutGrid, List, Lock, Users, ChevronRight } from 'lucide-react';
 
 interface RoomBrowserProps {
@@ -5,11 +6,13 @@ interface RoomBrowserProps {
     setActiveTab: (tab: string) => void;
     viewMode: string;
     setViewMode: (mode: string) => void;
+    rooms: any;
 }
 
-export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setViewMode }: RoomBrowserProps) {
+export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setViewMode, rooms }: RoomBrowserProps) {
 
     // --- DONNÉES FICTIVES ---
+    /*
     const rooms = [
         { id: 1, name: "Culture Internet 2024", players: 18, max: 20, status: 'playing', round: '8/15', category: 'Internet', image: 'bg-gradient-to-br from-purple-500 to-indigo-600', isPrivate: false, tags: ['Mèmes', 'Buzz'] },
         { id: 2, name: "Blind Test Années 80", players: 4, max: 12, status: 'lobby', round: '-', category: 'Musique', image: 'bg-gradient-to-br from-pink-500 to-rose-600', isPrivate: false, tags: ['Disco', 'Rock'] },
@@ -18,6 +21,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
         { id: 5, name: "Logos & Marques", players: 8, max: 15, status: 'lobby', round: '-', category: 'Culture', image: 'bg-gradient-to-br from-blue-400 to-cyan-500', isPrivate: false, tags: ['Facile'] },
         { id: 6, name: "Cinéma Français", players: 2, max: 8, status: 'lobby', round: '-', category: 'Cinéma', image: 'bg-gradient-to-br from-emerald-500 to-teal-600', isPrivate: false, tags: ['Culte'] },
     ];
+    */
 
     const categories = [
         { id: 'ALL', label: 'Tout', icon: Globe },
@@ -59,16 +63,16 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
             {/* Liste des Rooms */}
             <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-                {rooms.map((room) => (
-                    <div key={room.id} className="group bg-[#1a1a24] hover:bg-[#20202e] border border-white/5 hover:border-purple-500/30 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer relative shadow-lg">
+                {rooms.map((room : Room) => (
+                    <div key={room._id} className="group bg-[#1a1a24] hover:bg-[#20202e] border border-white/5 hover:border-purple-500/30 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer relative shadow-lg">
 
                         {/* Image Header */}
-                        <div className={`h-24 ${room.image} relative`}>
+                        <div className={`h-24 relative`}>
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
                             <div className="absolute top-2 right-2 flex gap-2">
                                 {room.isPrivate && <div className="bg-black/60 backdrop-blur px-2 py-1 rounded text-[10px] text-white flex items-center gap-1"><Lock className="w-3 h-3" /> Privé</div>}
                                 <div className="bg-black/60 backdrop-blur px-2 py-1 rounded text-[10px] text-white flex items-center gap-1">
-                                    <Users className="w-3 h-3" /> {room.players}/{room.max}
+                                    <Users className="w-3 h-3" /> {room.maxPlayers}
                                 </div>
                             </div>
                         </div>
@@ -78,19 +82,19 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                             <div className="flex justify-between items-start mb-2">
                                 <div>
                                     <h3 className="font-bold text-white group-hover:text-purple-400 transition">{room.name}</h3>
-                                    <p className="text-xs text-slate-500">{room.category}</p>
+                                    <p className="text-xs text-slate-500">{room.pack}</p>
                                 </div>
-                                {room.status === 'playing' ? (
+                                {/* room.status === 'playing' ? (
                                     <span className="text-[10px] font-mono text-green-400 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">EN JEU ({room.round})</span>
                                 ) : (
                                     <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">LOBBY</span>
-                                )}
+                                ) */}
                             </div>
 
                             <div className="flex gap-2 mt-4">
-                                {room.tags.map(tag => (
+                                {/*room.tags.map(tag => (
                                     <span key={tag} className="text-[10px] text-slate-400 bg-white/5 px-2 py-1 rounded">#{tag}</span>
-                                ))}
+                                ))}*/}
                             </div>
 
                             <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center">
@@ -100,7 +104,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                                             {String.fromCharCode(65 + i)}
                                         </div>
                                     ))}
-                                    {room.players > 3 && <div className="w-6 h-6 rounded-full bg-slate-800 border border-[#1a1a24] text-[8px] flex items-center justify-center text-slate-400">+{room.players - 3}</div>}
+                                    {/* {room.players > 3 && <div className="w-6 h-6 rounded-full bg-slate-800 border border-[#1a1a24] text-[8px] flex items-center justify-center text-slate-400">+{room.players - 3}</div>} */}
                                 </div>
                                 <button className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
                                     Rejoindre <ChevronRight className="w-3 h-3" />

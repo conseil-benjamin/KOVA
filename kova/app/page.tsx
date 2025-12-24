@@ -12,6 +12,7 @@ import { redirect } from 'next/navigation';
 import { User } from '@/types/User';
 import { Loader2Icon } from 'lucide-react';
 import LoadingPage from '@/components/loadingPage';
+import { Room } from '@/types/Room';
 
 const HomeMockup = () => {
   // --- ÉTAT ---
@@ -20,6 +21,7 @@ const HomeMockup = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   useEffect(() => {
     const cookies = new Cookies();
@@ -52,7 +54,6 @@ const HomeMockup = () => {
         }
       };
 
-      // const fetchPublicRooms
       // const fetchDonneesSite 
 
       fetchUser();
@@ -60,6 +61,29 @@ const HomeMockup = () => {
     else {
       setIsLoggedIn(false);
     }
+    const fetchPublicRooms = async () => {
+      try {
+        const res = await fetch(`http://localhost:3333/rooms`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        setLoading(false);
+
+        if (res.ok) {
+          const roomsData = await res.json();
+          console.log(roomsData);
+          setRooms(roomsData);
+        } else {
+          console.error('Erreur fetch rooms');
+          toast.error('Impossible de charger les rooms');
+        }
+      } catch (error) {
+        console.error("Erreur connexion API:", error);
+      }
+    }
+    fetchPublicRooms();
     setLoading(false);
   }, []);
 
@@ -82,6 +106,7 @@ const HomeMockup = () => {
               setActiveTab={setActiveTab}
               viewMode={viewMode}
               setViewMode={setViewMode}
+              rooms={rooms}
             />
 
             <SidebarRight />

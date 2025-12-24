@@ -42,7 +42,7 @@ const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
                     <span className="text-blue-400 font-bold font-mono">{timePerRound} sec</span>
                 </div>
                 <input
-                    type="range" min="5" max="60" step="1"
+                    type="range" min="5" max="30" step="1"
                     value={timePerRound} onChange={(e) => setTimePerRound(Number(e.target.value))}
                     className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
                 />

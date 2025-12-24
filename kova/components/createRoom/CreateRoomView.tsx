@@ -10,6 +10,7 @@ import ContentOptionsSection from './ContentOptionsSection';
 import VictoryConditionsSection from './VictoryConditionsSection';
 import JokersSection from './JokersSection';
 import PrivacySection from './PrivacySection';
+import { toast } from 'sonner';
 
 const CreateRoomView = () => {
     // --- ÉTAT DU FORMULAIRE ---
@@ -20,7 +21,7 @@ const CreateRoomView = () => {
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);
     const [scoreToWin, setScoreToWin] = useState(10000);
-    const [timePerRound, setTimePerRound] = useState(20);
+    const [timePerRound, setTimePerRound] = useState(15);
 
     // Options de contenu
     const [enableBlindTest, setEnableBlindTest] = useState(true); // Son activé ?
@@ -40,6 +41,39 @@ const CreateRoomView = () => {
     };
 
     const currentPack = packs.find(p => p.id === selectedPack);
+
+    const launchRoom = async () => {
+        const roomData = {
+            name: roomName,
+            pack: selectedPack, // nom du pack
+            isPrivate, // boolean
+            maxPlayers, // int
+            scoreToWin, // int
+            timePerRound, // int
+            enableBlindTest, // boolean
+            enableNSFW,  // boolean
+            itemsEnabled, // boolean
+            activeItems // object
+        };
+
+        console.log(roomData);
+
+        const result = await fetch('http://localhost:3333/launch-room', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(roomData),
+        }).then((res) => {
+            if (res.ok) {
+                console.log('Room created');
+                toast.success('Room created');
+            } else {
+                console.log('Room not created');
+                toast.error('Room not created');
+            }
+        });
+    }
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col">
@@ -89,7 +123,7 @@ const CreateRoomView = () => {
             </main>
 
             {/* --- STICKY FOOTER (Action) --- */}
-            <CreateRoomFooter selectedPackName={currentPack?.name} />
+            <CreateRoomFooter selectedPackName={currentPack?.name} launchRoom={launchRoom} />
 
         </div>
     );

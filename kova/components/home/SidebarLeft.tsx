@@ -53,7 +53,7 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
                             <h3 className="text-lg font-bold text-white">Mode Invité</h3>
                             <p className="text-xs text-slate-400 mt-1">Crée un compte pour sauvegarder tes stats et personnaliser ton avatar.</p>
                         </div>
-                        <button onClick={() => setIsLoggedIn(true)} className="w-full py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-sm font-bold transition">
+                        <button onClick={() => redirect('/auth')} className="w-full py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-sm font-bold transition">
                             Se connecter
                         </button>
                     </div>
