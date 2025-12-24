@@ -31,7 +31,7 @@ const AuthMockup = () => {
 
         if (isLogin) {
             const base64encodedData = Buffer.from(`${formData.email}:${formData.password}`).toString('base64');
-            const res = await fetch('http://localhost:3000/login', {
+            const res = await fetch('http://localhost:3333/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

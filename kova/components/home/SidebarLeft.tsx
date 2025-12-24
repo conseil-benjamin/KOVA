@@ -1,6 +1,7 @@
 import { User } from '@/types/User';
 import { Users, Plus, Play, Flame } from 'lucide-react';
 import { Progress } from "@/components/ui/progress"
+import { redirect } from 'next/navigation';
 
 interface SidebarLeftProps {
     isLoggedIn: boolean;
@@ -61,7 +62,7 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
 
             {/* Boutons d'Action Rapide */}
             <div className="space-y-3">
-                <button className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-[0.98] rounded-xl flex items-center justify-center gap-3 font-bold text-lg shadow-lg shadow-purple-900/20 transition-all group">
+                <button onClick={() => redirect('/createRoom')} className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-[0.98] rounded-xl flex items-center justify-center gap-3 font-bold text-lg shadow-lg shadow-purple-900/20 transition-all group">
                     <div className="bg-white/20 p-1.5 rounded-full group-hover:rotate-90 transition duration-300"><Plus className="w-5 h-5" /></div>
                     Créer une Room
                 </button>

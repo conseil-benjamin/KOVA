@@ -1,0 +1,98 @@
+"use client";
+
+import React, { useState } from 'react';
+import { packs } from './constants';
+import CreateRoomHeader from './CreateRoomHeader';
+import CreateRoomFooter from './CreateRoomFooter';
+import RoomNameSection from './RoomNameSection';
+import PacksSection from './PacksSection';
+import ContentOptionsSection from './ContentOptionsSection';
+import VictoryConditionsSection from './VictoryConditionsSection';
+import JokersSection from './JokersSection';
+import PrivacySection from './PrivacySection';
+
+const CreateRoomView = () => {
+    // --- ÉTAT DU FORMULAIRE ---
+    const [roomName, setRoomName] = useState("La Room de Hero");
+    const [selectedPack, setSelectedPack] = useState("mix"); // 'mix' ou id spécifique
+    const [isPrivate, setIsPrivate] = useState(false);
+
+    // Règles
+    const [maxPlayers, setMaxPlayers] = useState(12);
+    const [scoreToWin, setScoreToWin] = useState(10000);
+    const [timePerRound, setTimePerRound] = useState(20);
+
+    // Options de contenu
+    const [enableBlindTest, setEnableBlindTest] = useState(true); // Son activé ?
+    const [enableNSFW, setEnableNSFW] = useState(false); // Contenu adulte ?
+
+    // Jokers / Items
+    const [itemsEnabled, setItemsEnabled] = useState(true);
+    const [activeItems, setActiveItems] = useState({
+        hint: true,   // Indice
+        freeze: true, // Geler le temps
+        ink: true,    // Tache d'encre
+        swap: false   // Échanger les scores (Chaotique)
+    });
+
+    const toggleItem = (key: keyof typeof activeItems) => {
+        setActiveItems(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const currentPack = packs.find(p => p.id === selectedPack);
+
+    return (
+        <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col">
+
+            {/* --- HEADER --- */}
+            <CreateRoomHeader />
+
+            <main className="flex-1 max-w-6xl mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                {/* --- COLONNE GAUCHE (Contenu & Packs) --- */}
+                <div className="lg:col-span-7 space-y-8">
+
+                    {/* 1. Nom de la Room */}
+                    <RoomNameSection roomName={roomName} setRoomName={setRoomName} />
+
+                    {/* 2. Sélection du Pack */}
+                    <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} />
+
+                    {/* 3. Options de Contenu */}
+                    <ContentOptionsSection
+                        enableBlindTest={enableBlindTest} setEnableBlindTest={setEnableBlindTest}
+                        enableNSFW={enableNSFW} setEnableNSFW={setEnableNSFW}
+                    />
+
+                </div>
+
+                {/* --- COLONNE DROITE (Règles & Jokers) --- */}
+                <div className="lg:col-span-5 space-y-8">
+
+                    {/* 4. Règles du Jeu (Sliders) */}
+                    <VictoryConditionsSection
+                        scoreToWin={scoreToWin} setScoreToWin={setScoreToWin}
+                        timePerRound={timePerRound} setTimePerRound={setTimePerRound}
+                        maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
+                    />
+
+                    {/* 5. Configuration des Jokers */}
+                    <JokersSection
+                        itemsEnabled={itemsEnabled} setItemsEnabled={setItemsEnabled}
+                        activeItems={activeItems} toggleItem={toggleItem}
+                    />
+
+                    {/* 6. Confidentialité */}
+                    <PrivacySection isPrivate={isPrivate} setIsPrivate={setIsPrivate} />
+
+                </div>
+            </main>
+
+            {/* --- STICKY FOOTER (Action) --- */}
+            <CreateRoomFooter selectedPackName={currentPack?.name} />
+
+        </div>
+    );
+};
+
+export default CreateRoomView;
