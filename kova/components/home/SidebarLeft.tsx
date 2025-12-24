@@ -1,11 +1,19 @@
+import { User } from '@/types/User';
 import { Users, Plus, Play, Flame } from 'lucide-react';
+import { Progress } from "@/components/ui/progress"
 
 interface SidebarLeftProps {
     isLoggedIn: boolean;
     setIsLoggedIn: (value: boolean) => void;
+    user: User | null;
 }
 
-export default function SidebarLeft({ isLoggedIn, setIsLoggedIn }: SidebarLeftProps) {
+export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: SidebarLeftProps) {
+    const xpToNextLevel = user?.stats?.xpToNextLevel;
+    const xp = user?.stats?.xp;
+    const level = user?.stats?.level;
+    const xpPercentage = (xp / xpToNextLevel) * 100;
+
     return (
         <div className="lg:col-span-3 space-y-6">
             {/* Carte Profil / Guest */}
@@ -15,23 +23,23 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn }: SidebarLeftPr
                 {isLoggedIn ? (
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 shadow-lg ring-4 ring-[#0a0a0f] flex items-center justify-center text-2xl font-bold">H</div>
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 shadow-lg ring-4 ring-[#0a0a0f] flex items-center justify-center text-2xl font-bold">{user?.username.charAt(0).toUpperCase()}</div>
                             <div className="text-right">
-                                <div className="text-2xl font-black text-white">Niveau 12</div>
-                                <div className="text-xs text-purple-400 font-mono">2,450 XP / 3,000</div>
+                                <div className="text-2xl font-black text-white">Niveau {level}</div>
+                                <div className="text-xs text-purple-400 font-mono">{xp} XP / {xpToNextLevel} XP</div>
                             </div>
                         </div>
                         <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden mb-4">
-                            <div className="bg-gradient-to-r from-purple-500 to-indigo-500 w-[80%] h-full"></div>
+                            <Progress value={xpPercentage} />
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-center">
                             <div className="bg-black/40 rounded-lg p-2">
                                 <div className="text-xs text-slate-500 uppercase">Victoires</div>
-                                <div className="font-bold text-white">42</div>
+                                <div className="font-bold text-white">{user?.stats?.gamesWon}</div>
                             </div>
                             <div className="bg-black/40 rounded-lg p-2">
                                 <div className="text-xs text-slate-500 uppercase">Parties</div>
-                                <div className="font-bold text-white">156</div>
+                                <div className="font-bold text-white">{user?.stats?.gamesPlayed}</div>
                             </div>
                         </div>
                     </div>
