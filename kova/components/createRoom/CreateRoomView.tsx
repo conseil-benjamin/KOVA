@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 const CreateRoomView = () => {
     // --- ÉTAT DU FORMULAIRE ---
     const [roomName, setRoomName] = useState("La Room de Hero");
+    const [language, setLanguage] = useState<'fr' | 'en'>('fr');
     const [selectedPack, setSelectedPack] = useState("mix"); // 'mix' ou id spécifique
     const [isPrivate, setIsPrivate] = useState(false);
 
@@ -44,6 +45,7 @@ const CreateRoomView = () => {
 
     const launchRoom = async () => {
         const roomData = {
+            language,
             name: roomName,
             pack: selectedPack, // nom du pack
             isPrivate, // boolean
@@ -56,8 +58,6 @@ const CreateRoomView = () => {
             activeItems // object
         };
 
-        console.log(roomData);
-
         const result = await fetch('http://localhost:3333/launch-room', {
             method: 'POST',
             headers: {
@@ -66,10 +66,8 @@ const CreateRoomView = () => {
             body: JSON.stringify(roomData),
         }).then((res) => {
             if (res.ok) {
-                console.log('Room created');
                 toast.success('Room created');
             } else {
-                console.log('Room not created');
                 toast.error('Room not created');
             }
         });
@@ -87,7 +85,12 @@ const CreateRoomView = () => {
                 <div className="lg:col-span-7 space-y-8">
 
                     {/* 1. Nom de la Room */}
-                    <RoomNameSection roomName={roomName} setRoomName={setRoomName} />
+                    <RoomNameSection
+                        roomName={roomName}
+                        setRoomName={setRoomName}
+                        language={language}
+                        setLanguage={setLanguage}
+                    />
 
                     {/* 2. Sélection du Pack */}
                     <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} />

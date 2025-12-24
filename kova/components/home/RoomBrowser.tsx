@@ -1,5 +1,7 @@
 import { Room } from '@/types/Room';
 import { Search, Globe, Music, Film, Gamepad2, LayoutGrid, List, Lock, Users, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { redirect } from 'next/navigation';
 
 interface RoomBrowserProps {
     activeTab: string;
@@ -30,6 +32,45 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
         { id: 'GAMES', label: 'Jeux Vidéo', icon: Gamepad2 },
     ];
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredRooms, setFilteredRooms] = useState(rooms);
+
+    useEffect(() => {
+        if (rooms) {
+            setFilteredRooms(rooms);
+        }
+    }, [rooms]);
+
+    useEffect(() => {
+        if (searchQuery === '') {
+            setFilteredRooms(rooms);
+            return;
+        }
+        const filtered = rooms.filter((room: Room) => {
+            return room.name.toLowerCase().includes(searchQuery.toLowerCase())
+
+            /*    room.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                room.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+                */
+        });
+        setFilteredRooms(filtered);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        if (activeTab === 'ALL') {
+            setFilteredRooms(rooms);
+            return;
+        }
+        const filtered = rooms.filter((room: Room) => {
+            return room.category.toLowerCase() === activeTab.toLowerCase();
+        });
+        setFilteredRooms(filtered);
+    }, [activeTab]);
+
+    const joinRoom = (room: Room) => {
+        redirect(`/game/${room.idUrl}`);
+    }
+
     return (
         <div className="lg:col-span-6 flex flex-col gap-6">
 
@@ -41,6 +82,8 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                         type="text"
                         placeholder="Chercher une room, un tag..."
                         className="w-full bg-[#0a0a0f] border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-purple-500 transition"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
                 <div className="flex gap-1 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
@@ -63,7 +106,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
             {/* Liste des Rooms */}
             <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-                {rooms.map((room : Room) => (
+                {filteredRooms.map((room: Room) => (
                     <div key={room._id} className="group bg-[#1a1a24] hover:bg-[#20202e] border border-white/5 hover:border-purple-500/30 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer relative shadow-lg">
 
                         {/* Image Header */}
@@ -106,7 +149,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                                     ))}
                                     {/* {room.players > 3 && <div className="w-6 h-6 rounded-full bg-slate-800 border border-[#1a1a24] text-[8px] flex items-center justify-center text-slate-400">+{room.players - 3}</div>} */}
                                 </div>
-                                <button className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                                <button onClick={() => joinRoom(room)} className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
                                     Rejoindre <ChevronRight className="w-3 h-3" />
                                 </button>
                             </div>

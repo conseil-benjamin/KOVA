@@ -44,6 +44,7 @@ const HomeMockup = () => {
             setUser(userData);
             cookies.set('user', JSON.stringify(userData));
             cookies.set('userName', userData.username);
+            cookies.set('userAvatar', userData.avatar);
             toast.success(`Heros ${userData.username} chargé !`);
           } else {
             console.error('Erreur fetch user');
@@ -61,6 +62,7 @@ const HomeMockup = () => {
     else {
       setIsLoggedIn(false);
     }
+
     const fetchPublicRooms = async () => {
       try {
         const res = await fetch(`http://localhost:3333/rooms`, {
@@ -73,10 +75,8 @@ const HomeMockup = () => {
 
         if (res.ok) {
           const roomsData = await res.json();
-          console.log(roomsData);
           setRooms(roomsData);
         } else {
-          console.error('Erreur fetch rooms');
           toast.error('Impossible de charger les rooms');
         }
       } catch (error) {
