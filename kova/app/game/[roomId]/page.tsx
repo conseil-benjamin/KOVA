@@ -3,11 +3,12 @@
 import { useState, useEffect, use } from "react";
 import { io } from 'socket.io-client';
 import { toast } from "sonner";
-import Chatbox from "@/components/chatbox";
-import BannerInGame from "@/components/banner-in-game";
-import Leaderboard from "@/components/leaderboard";
-import ResponseBar from "@/components/responseBar";
-import DisplayQuestions from "@/components/displayQuestions";
+import Chatbox from "@/components/inGame/chatbox";
+import BannerInGame from "@/components/inGame/banner-in-game";
+import Leaderboard from "@/components/inGame/leaderboard";
+import ResponseBar from "@/components/inGame/responseBar";
+import DisplayQuestions from "@/components/inGame/displayQuestions";
+import Cookies from "universal-cookie";
 
 export default function Game({ params }: { params: Promise<{ roomId: string }> }) {
     const { roomId } = use(params);
@@ -16,12 +17,13 @@ export default function Game({ params }: { params: Promise<{ roomId: string }> }
     const MessageObject = { message, timestamp: new Date(), user: 'user' };
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState<typeof MessageObject[]>([]);
-    const [user, setUser] = useState('user');
     const [socketId, setSocketId] = useState('');
+    const cookies = new Cookies();
+    const userName = cookies.get('userName');
 
     const sendMessage = () => {
         if (isConnected) {
-            socket.emit('message', { roomId, message, user });
+            socket.emit('message', { roomId, message, user: userName });
         } else {
             toast.error('Not connected to server');
         }
@@ -50,7 +52,6 @@ export default function Game({ params }: { params: Promise<{ roomId: string }> }
             socket.emit('join_room', roomId);
         });
 
-
         socket.connect();
 
         // Clean up the WebSocket connection on component unmount
@@ -67,7 +68,7 @@ export default function Game({ params }: { params: Promise<{ roomId: string }> }
             <div className="flex flex-row h-full">
                 <Leaderboard />
                 <DisplayQuestions />
-                <Chatbox messages={messages} sendMessage={sendMessage} message={message} setMessage={setMessage} currentUser={socketId} />
+                <Chatbox messages={messages} sendMessage={sendMessage} message={message} setMessage={setMessage} currentUser={userName} />
             </div>
             <ResponseBar />
         </div>
