@@ -27,16 +27,22 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [userName, setUserName] = useState(cookies.get('userName') || '');
     const [guestNameInput, setGuestNameInput] = useState('');
 
+    const [roomData, setRoomData] = useState<Room>();
+
     // --- UI STATE ---
     const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
 
     // --- GAME STATE MOCK ---
-    const [timeLeft, setTimeLeft] = useState(20);
-    const [blurAmount, setBlurAmount] = useState(20);
+    const [timeLeft, setTimeLeft] = useState(0);
     const [hasGuessed, setHasGuessed] = useState(false);
     const [players, setPlayers] = useState([]);
-    const [roomData, setRoomData] = useState<Room>();
     const [creator, setCreator] = useState('');
+
+    // --- GAME STATE ---
+    const [question, setQuestion] = useState('');
+    const [answers, setAnswers] = useState<string[]>([]);
+    const [imageUrl, setImageUrl] = useState('');
+    const [startTimer, setStartTimer] = useState(false);
 
     const handleGuestLogin = () => {
         if (guestNameInput.trim()) {
@@ -51,6 +57,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             const data = await res.json();
             setRoomData(data);
             setCreator(data.creator);
+            setTimeLeft(data.timePerRound);
         } catch (error) {
             console.error('Error fetching room data:', error);
         }
@@ -59,7 +66,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const handleStartGame = () => {
         if (creator === userName) {
             // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
-            socket?.emit('start_game', roomId, roomData?.pack);
+            socket?.emit('want_new_question', roomId, roomData?.pack);
         }
     };
 
@@ -73,14 +80,22 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.success('Connected to server');
         });
 
-        newSocket.on('chat:new', (data: { message: string, timestamp: Date, user: string }) => {
+        newSocket.on('chat:new', (data: { message: string, timestamp: Date, user: string, type: string }) => {
             setMessages(prev => [...prev, {
                 id: Date.now() + Math.random(),
                 message: data.message,
                 timestamp: data.timestamp,
                 user: data.user,
-                type: 'chat'
+                type: data.type
             }]);
+        });
+
+        newSocket.on('new_question', (data: { question: string, imageUrl: string }) => {
+            console.log(data);
+            toast.success('New question');
+            setQuestion(data.question['fr']);
+            setImageUrl(data.imageUrl);
+            setTimeLeft(roomData?.timePerRound);
         });
 
         newSocket.connect();
@@ -104,21 +119,21 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         }
     }, [socket, isConnected, userName, roomId]);
 
-    // --- LOGIQUE TIMER (MOCK) ---
+    // --- LOGIQUE TIMER ---
     useEffect(() => {
-        if (hasGuessed) return;
+        if (!startTimer) return;
         const timer = setInterval(() => {
             setTimeLeft((prev) => {
                 if (prev <= 0) {
                     clearInterval(timer);
                     return 0;
                 }
-                setBlurAmount((prev * 0.8));
-                return prev - 0.1;
+                return prev - 1;
             });
-        }, 100);
+        }, 1000);
+        setStartTimer(false);
         return () => clearInterval(timer);
-    }, [hasGuessed]);
+    }, [startTimer]);
 
     // --- HANDLERS ---
     const handleGameGuess = (text: string) => {
@@ -129,7 +144,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         if (guess === ANSWER) {
             setHasGuessed(true);
             setMessages(prev => [...prev, { id: Date.now(), type: 'success', user: userName, text: 'a trouvé la réponse !' }]);
-            setBlurAmount(0);
             setIsMobileChatOpen(false);
             // Optionally emit 'guess' event to server
             if (socket && isConnected) {
@@ -179,7 +193,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                     onChange={(e) => setGuestNameInput(e.target.value)}
                                     placeholder="Votre pseudo..."
                                     className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                // onKeyDown={(e) => e.key === 'Enter' && handleGuestLogin()}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleGuestLogin()}
                                 />
                             </div>
 
@@ -208,9 +222,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             <Leaderboard players={players} />
 
                             <GameArea
-                                blurAmount={blurAmount}
                                 hasGuessed={hasGuessed}
                                 timeLeft={timeLeft}
+                                question={question}
+                                imageUrl={imageUrl}
                             />
 
                             <Chat

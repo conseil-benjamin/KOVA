@@ -61,7 +61,8 @@ const CreateRoomView = () => {
             enableBlindTest, // boolean
             enableNSFW,  // boolean
             itemsEnabled, // boolean
-            activeItems // object
+            activeItems, // object
+            timer: timePerRound,
         };
 
         const result = await fetch('http://localhost:3333/launch-room', {

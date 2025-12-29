@@ -13,4 +13,5 @@ export interface Room {
     itemsEnabled: boolean;
     activeItems: string[];
     createdAt: string;
+    timer: number;
 }
