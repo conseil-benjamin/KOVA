@@ -11,13 +11,18 @@ import VictoryConditionsSection from './VictoryConditionsSection';
 import JokersSection from './JokersSection';
 import PrivacySection from './PrivacySection';
 import { toast } from 'sonner';
+import { redirect } from 'next/navigation';
+import Cookies from "universal-cookie";
 
 const CreateRoomView = () => {
+    const cookies = new Cookies();
+
     // --- ÉTAT DU FORMULAIRE ---
     const [roomName, setRoomName] = useState("La Room de Hero");
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
-    const [selectedPack, setSelectedPack] = useState("mix"); // 'mix' ou id spécifique
+    const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1"); // 'mix' ou id spécifique
     const [isPrivate, setIsPrivate] = useState(false);
+    const [userName, setUserName] = useState(cookies.get('userName') || ''); // todo: vérifier si le user est connecté
 
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);
@@ -49,6 +54,7 @@ const CreateRoomView = () => {
             name: roomName,
             pack: selectedPack, // nom du pack
             isPrivate, // boolean
+            creator: userName,
             maxPlayers, // int
             scoreToWin, // int
             timePerRound, // int
@@ -64,9 +70,12 @@ const CreateRoomView = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(roomData),
-        }).then((res) => {
+        }).then(async (res) => {
             if (res.ok) {
                 toast.success('Room created');
+                const roomId = await res.text();
+                console.log("Room ID:", roomId);
+                redirect(`/game/${roomId}`);
             } else {
                 toast.error('Room not created');
             }

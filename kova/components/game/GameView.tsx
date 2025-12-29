@@ -12,6 +12,7 @@ import GameInput from './GameInput';
 import Leaderboard from './Leaderboard';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
+import { Room } from '@/types/Room';
 
 interface GameViewProps {
     roomId: string;
@@ -34,12 +35,31 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [blurAmount, setBlurAmount] = useState(20);
     const [hasGuessed, setHasGuessed] = useState(false);
     const [players, setPlayers] = useState([]);
-
+    const [roomData, setRoomData] = useState<Room>();
+    const [creator, setCreator] = useState('');
 
     const handleGuestLogin = () => {
         if (guestNameInput.trim()) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
             setUserName(guestNameInput.trim());
+        }
+    };
+
+    const getRoomData = async () => {
+        try {
+            const res = await fetch(`http://localhost:3333/get-room/${roomId}`);
+            const data = await res.json();
+            setRoomData(data);
+            setCreator(data.creator);
+        } catch (error) {
+            console.error('Error fetching room data:', error);
+        }
+    };
+
+    const handleStartGame = () => {
+        if (creator === userName) {
+            // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
+            socket?.emit('start_game', roomId, roomData?.pack);
         }
     };
 
@@ -53,7 +73,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.success('Connected to server');
         });
 
-
         newSocket.on('chat:new', (data: { message: string, timestamp: Date, user: string }) => {
             setMessages(prev => [...prev, {
                 id: Date.now() + Math.random(),
@@ -65,6 +84,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.connect();
+
+        getRoomData();
 
         return () => {
             newSocket.disconnect();
@@ -181,7 +202,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} />
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={roomData?.creator} handleStartGame={handleStartGame} />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} />

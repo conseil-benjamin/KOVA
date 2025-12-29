@@ -4,12 +4,14 @@ import { Hexagon, Clock, Menu } from 'lucide-react';
 interface GameHeaderProps {
     timeLeft: number;
     currentUser?: string;
+    creator?: string;
+    handleStartGame?: () => void;
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame }) => {
     return (
         <header className="flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-30 shadow-lg h-14 md:h-16 pt-2 md:pt-0">
-            
+
             {/* LOGO KOVA */}
             <div className="flex items-center gap-2 md:gap-3 group cursor-pointer">
                 <div className="relative">
@@ -29,20 +31,21 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser }) => {
             {/* Info Manche & Timer */}
             <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 top-1/2 -translate-y-1/2 mt-1">
                 <div className="hidden md:flex flex-col items-center">
-                    <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Manche</span>
-                    <span className="font-bold text-sm text-purple-200">3 / 10</span>
+                    {creator === currentUser && (
+                        <button onClick={handleStartGame}>Lancer partie</button>
+                    )}
                 </div>
-            
-                <div className={`flex items - center gap - 2 px - 3 py - 1 rounded - full border backdrop - blur - sm transition - all duration - 300 ${ timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700' } `}>
-                    <Clock className={`w - 3 h - 3 md: w - 4 md: h - 4 ${ timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400' } `} />
-                    <span className={`font - mono font - bold tabular - nums ${ timeLeft < 5 ? 'text-red-400' : 'text-cyan-400' } text - lg md: text - xl`}>
-                    {Math.ceil(timeLeft)}
+
+                <div className={`flex items - center gap - 2 px - 3 py - 1 rounded - full border backdrop - blur - sm transition - all duration - 300 ${timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700'} `}>
+                    <Clock className={`w - 3 h - 3 md: w - 4 md: h - 4 ${timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400'} `} />
+                    <span className={`font - mono font - bold tabular - nums ${timeLeft < 5 ? 'text-red-400' : 'text-cyan-400'} text - lg md: text - xl`}>
+                        {Math.ceil(timeLeft)}
                     </span>
                 </div>
             </div>
 
             <div className="flex items-center gap-3">
-                 <button className="md:hidden p-2 hover:bg-white/10 rounded-full transition">
+                <button className="md:hidden p-2 hover:bg-white/10 rounded-full transition">
                     <Menu className="w-5 h-5 text-white" />
                 </button>
 

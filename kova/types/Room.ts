@@ -4,6 +4,7 @@ export interface Room {
     name: string;
     pack: string;
     isPrivate: boolean;
+    creator: string;
     maxPlayers: number;
     scoreToWin: number;
     timePerRound: number;
