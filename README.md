@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Choses à faire :
 
-## Getting Started
+## Réfléchir à des idées de jokers à implémenter durant la partie. 
 
-First, run the development server:
+In game : 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Réussir à récupérer une nouvelle question à chaque fois que le timer expire
+- gérer le timer, le timer est stocké dans redis et on le met à jour toutes les 5 secondes
+- Quand quelqu'un répond, on vérifie si c'est la bonne réponse
+- Si c'est la bonne réponse, on met à jour le score de l'utilisateur
+- Si c'est la mauvaise réponse, on ne fait rien et la question en cours continue
+- Si tout le monde à répondu bon, on passe à la question suivante même si le timer n'a pas expiré
+- Créer une méthode coté serveur lorsque l'on demande une nouvelle question on doit vérifier si un joueur a gagné et si oui on termine la partie.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Après la partie : 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Créer une méthode qui va permettre de récupérer les scores de la partie
+- Afficher les scores de la partie avec un classement des trois premiers
+- Créer une méthode relancer la partie qui va simplement réinitialiser les scores et les questions. Et faire en sorte que le créateur puisse modifier les paramètres de la partie. 
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+Page profil utilisateur : 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Créer une méthode qui va permettre de récupérer les parties jouées par l'utilisateur
+- Afficher des graphiques avec des statistiques sur les parties jouées par l'utilisateur
+- Nombres de parties jouées
+- Nombres de parties gagnées
