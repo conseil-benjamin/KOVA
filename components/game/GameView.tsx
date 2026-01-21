@@ -40,7 +40,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     // --- GAME STATE ---
     const [question, setQuestion] = useState('');
-    const [answers, setAnswers] = useState<string[]>([]);
     const [imageUrl, setImageUrl] = useState('');
     const [startTimer, setStartTimer] = useState(false);
 
@@ -57,7 +56,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             const data = await res.json();
             setRoomData(data);
             setCreator(data.creator);
-            setTimeLeft(data.timePerRound);
+
+            const endTime = new Date(data.timerEnd).getTime();
+            const secondsRemaining = Math.floor((endTime - Date.now()) / 1000);
+
+            setTimeLeft(Math.max(0, secondsRemaining));
         } catch (error) {
             console.error('Error fetching room data:', error);
         }
@@ -66,7 +69,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const handleStartGame = () => {
         if (creator === userName) {
             // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
-            socket?.emit('want_new_question', roomId, roomData?.pack);
+            socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
         }
     };
 
@@ -75,7 +78,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         const newSocket = io('http://localhost:3333', { autoConnect: false });
         setSocket(newSocket);
 
-        newSocket.on('ping', () => {
+        newSocket.on('connection', () => {
             setIsConnected(true);
             toast.success('Connected to server');
         });
@@ -90,12 +93,18 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }]);
         });
 
-        newSocket.on('new_question', (data: { question: string, imageUrl: string }) => {
+        newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date }) => {
             console.log(data);
             toast.success('New question');
             setQuestion(data.question['fr']);
             setImageUrl(data.imageUrl);
-            setTimeLeft(roomData?.timePerRound);
+
+            const endTime = new Date(data.timerEnd).getTime();
+            const secondsRemaining = Math.floor((endTime - Date.now()));
+            console.log(secondsRemaining)
+
+            setTimeLeft(Math.max(0, secondsRemaining));
+            setStartTimer(true);
         });
 
         newSocket.connect();
@@ -104,7 +113,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         return () => {
             newSocket.disconnect();
-            newSocket.off('ping');
+            newSocket.off('room_joined');
             newSocket.off('connect');
             newSocket.off('chat:new');
         };
@@ -121,19 +130,21 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     // --- LOGIQUE TIMER ---
     useEffect(() => {
-        if (!startTimer) return;
+        if (timeLeft <= 0) return;
+
         const timer = setInterval(() => {
             setTimeLeft((prev) => {
-                if (prev <= 0) {
+                if (prev <= 1) {
                     clearInterval(timer);
+                    socket?.emit('want_new_question', roomId, roomData?.pack, roomData?.timePerRound);
                     return 0;
                 }
                 return prev - 1;
             });
         }, 1000);
-        setStartTimer(false);
+
         return () => clearInterval(timer);
-    }, [startTimer]);
+    }, [timeLeft, roomId, roomData, socket]);
 
     // --- HANDLERS ---
     const handleGameGuess = (text: string) => {
@@ -161,15 +172,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         if (socket && isConnected) {
             socket.emit('message', { roomId, message: text, user: userName });
         } else {
-            toast.info("Message sent (Local/Mock)");
-            // Optimistic add for demo if not connected
-            setMessages(prev => [...prev, {
-                id: Date.now(),
-                message: text,
-                timestamp: new Date(),
-                user: userName,
-                type: 'chat'
-            }]);
+            toast.error('Non connecté au serveur.')
         }
     };
 

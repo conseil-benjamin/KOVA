@@ -32,7 +32,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
             <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 top-1/2 -translate-y-1/2 mt-1">
                 <div className="hidden md:flex flex-col items-center">
                     {creator === currentUser && (
-                        <button onClick={handleStartGame}>Lancer partie</button>
+                        <button className="px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition cursor-pointer" onClick={handleStartGame}>Lancer partie</button>
                     )}
                 </div>
 
