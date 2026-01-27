@@ -6,9 +6,10 @@ interface GameHeaderProps {
     currentUser?: string;
     creator?: string;
     handleStartGame?: () => void;
+    isGameRunning?: boolean;
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, isGameRunning }) => {
     return (
         <header className="flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-30 shadow-lg h-14 md:h-16 pt-2 md:pt-0">
 
@@ -31,17 +32,20 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
             {/* Info Manche & Timer */}
             <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 top-1/2 -translate-y-1/2 mt-1">
                 <div className="hidden md:flex flex-col items-center">
-                    {creator === currentUser && (
+                    {creator === currentUser && !isGameRunning && (
                         <button className="px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition cursor-pointer" onClick={handleStartGame}>Lancer partie</button>
                     )}
                 </div>
+                {
+                    isGameRunning &&
+                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-300 ${timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700'} `}>
+                        <Clock className={`w-3 h-3 md:w-4 md:h-4 ${timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400'} `} />
+                        <span className={`font-mono font-nums ${timeLeft < 5 ? 'text-red-400' : 'text-cyan-400'} text-lg md:text-xl`}>
+                            {timeLeft}
+                        </span>
+                    </div>
+                }
 
-                <div className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-300 ${timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700'} `}>
-                    <Clock className={`w-3 h-3 md:w-4 md:h-4 ${timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400'} `} />
-                    <span className={`font-mono font-nums ${timeLeft < 5 ? 'text-red-400' : 'text-cyan-400'} text-lg md:text-xl`}>
-                        {timeLeft}
-                    </span>
-                </div>
             </div>
 
             <div className="flex items-center gap-3">

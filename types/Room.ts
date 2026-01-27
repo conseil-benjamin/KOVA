@@ -6,6 +6,7 @@ export interface Room {
     isPrivate: boolean;
     creator: string;
     maxPlayers: number;
+    players: string[];
     scoreToWin: number;
     timePerRound: number;
     enableBlindTest: boolean;

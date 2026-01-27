@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MessageSquare, Trophy, Send } from 'lucide-react';
+import { Player } from './Leaderboard';
 
 interface ChatMessage {
     id: number | string;
@@ -12,11 +13,12 @@ interface ChatMessage {
 
 interface ChatProps {
     messages: ChatMessage[];
+    players?: Player[];
     userName?: string;
     onSendMessage: (msg: string) => void;
 }
 
-const Chat: React.FC<ChatProps> = ({ messages, userName, onSendMessage }) => {
+const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage }) => {
     const listRef = useRef<HTMLDivElement>(null);
     const [msg, setMsg] = useState("");
 
@@ -39,7 +41,7 @@ const Chat: React.FC<ChatProps> = ({ messages, userName, onSendMessage }) => {
                 <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                     <MessageSquare className="w-3 h-3" /> Chat du Room
                 </h2>
-                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full border border-green-500/20">En ligne: 14</span>
+                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full border border-green-500/20">En ligne: {players?.length}</span>
             </div>
 
             <div ref={listRef} className="flex-1 overflow-y-auto p-4 space-y-3 mask-gradient-top">

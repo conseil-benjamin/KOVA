@@ -1,7 +1,7 @@
 import React from 'react';
 import { Users, Trophy, Flame } from 'lucide-react';
 
-interface Player {
+export interface Player {
     id: number;
     name: string;
     score: number;
@@ -39,7 +39,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players }) => {
 
                         <div className="relative">
                             <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${player.avatar} flex items-center justify-center text-[10px] md:text-xs font-bold shadow-lg ring-2 ${player.status === 'guessed' ? 'ring-green-400' : 'ring-transparent'}`}>
-                                {player.name[0]}
+                                {player.name.substring(0, 1)}
                             </div>
                             {player.streak > 2 && <div className="hidden md:block absolute -bottom-1 -right-1 bg-orange-500 rounded-full p-0.5 border border-black"><Flame className="w-2 h-2 text-white" /></div>}
                             {player.status === 'guessed' && (

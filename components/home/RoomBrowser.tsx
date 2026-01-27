@@ -13,18 +13,6 @@ interface RoomBrowserProps {
 
 export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setViewMode, rooms }: RoomBrowserProps) {
 
-    // --- DONNÉES FICTIVES ---
-    /*
-    const rooms = [
-        { id: 1, name: "Culture Internet 2024", players: 18, max: 20, status: 'playing', round: '8/15', category: 'Internet', image: 'bg-gradient-to-br from-purple-500 to-indigo-600', isPrivate: false, tags: ['Mèmes', 'Buzz'] },
-        { id: 2, name: "Blind Test Années 80", players: 4, max: 12, status: 'lobby', round: '-', category: 'Musique', image: 'bg-gradient-to-br from-pink-500 to-rose-600', isPrivate: false, tags: ['Disco', 'Rock'] },
-        { id: 3, name: "Soirée Chill entre potes", players: 6, max: 10, status: 'playing', round: '3/10', category: 'Général', image: 'bg-gradient-to-br from-slate-600 to-slate-700', isPrivate: true, tags: ['Privé'] },
-        { id: 4, name: "100% Anime Shonen", players: 12, max: 20, status: 'playing', round: '12/20', category: 'Anime', image: 'bg-gradient-to-br from-orange-400 to-red-500', isPrivate: false, tags: ['Naruto', 'One Piece'] },
-        { id: 5, name: "Logos & Marques", players: 8, max: 15, status: 'lobby', round: '-', category: 'Culture', image: 'bg-gradient-to-br from-blue-400 to-cyan-500', isPrivate: false, tags: ['Facile'] },
-        { id: 6, name: "Cinéma Français", players: 2, max: 8, status: 'lobby', round: '-', category: 'Cinéma', image: 'bg-gradient-to-br from-emerald-500 to-teal-600', isPrivate: false, tags: ['Culte'] },
-    ];
-    */
-
     const categories = [
         { id: 'ALL', label: 'Tout', icon: Globe },
         { id: 'MUSIC', label: 'Musique', icon: Music },

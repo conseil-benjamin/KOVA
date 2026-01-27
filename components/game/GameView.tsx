@@ -9,7 +9,7 @@ import GameHeader from './GameHeader';
 import Chat from './Chat';
 import GameArea from './GameArea';
 import GameInput from './GameInput';
-import Leaderboard from './Leaderboard';
+import Leaderboard, { Player } from './Leaderboard';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { Room } from '@/types/Room';
@@ -35,13 +35,16 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     // --- GAME STATE MOCK ---
     const [timeLeft, setTimeLeft] = useState(0);
     const [hasGuessed, setHasGuessed] = useState(false);
-    const [players, setPlayers] = useState([]);
+    const [players, setPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
 
     // --- GAME STATE ---
     const [question, setQuestion] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [startTimer, setStartTimer] = useState(false);
+    const [isGameRunning, setIsGameRunning] = useState(false);
+    const [points, setPoints] = useState(0);
+    const [response, setResponse] = useState('');
 
     const handleGuestLogin = () => {
         if (guestNameInput.trim()) {
@@ -52,13 +55,16 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const getRoomData = async () => {
         try {
-            const res = await fetch(`http://localhost:3333/get-room/${roomId}`);
+            const res = await fetch(`http://localhost:3333/room/${roomId}`);
             const data = await res.json();
             setRoomData(data);
             setCreator(data.creator);
 
             const endTime = new Date(data.timerEnd).getTime();
-            const secondsRemaining = Math.floor((endTime - Date.now()) / 1000);
+            const secondsRemaining = Math.floor((endTime - Date.now()));
+            console.log(secondsRemaining)
+            console.log(endTime)
+            console.log(Date.now())
 
             setTimeLeft(Math.max(0, secondsRemaining));
         } catch (error) {
@@ -93,18 +99,39 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }]);
         });
 
-        newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date }) => {
+        newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date, isGameRunning: boolean }) => {
             console.log(data);
-            toast.success('New question');
             setQuestion(data.question['fr']);
             setImageUrl(data.imageUrl);
+            setResponse('');
 
-            const endTime = new Date(data.timerEnd).getTime();
-            const secondsRemaining = Math.floor((endTime - Date.now()));
-            console.log(secondsRemaining)
+            const endTime = new Date(data.timerEnd).getTime() / 1000;
+            const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
 
             setTimeLeft(Math.max(0, secondsRemaining));
             setStartTimer(true);
+            setIsGameRunning(data.isGameRunning);
+        });
+
+        newSocket.on('wrong_response', (data: { message: string, timestamp: Date, user: string, type: string }) => {
+            toast.error('Wrong response');
+        });
+
+        newSocket.on('correct_response', (data: { message: string, username: string, points: number }) => {
+            toast.success(data.message + data.points);
+            setPlayers(prev => [...prev, {
+                id: Date.now(),
+                name: data.username,
+                score: data.points,
+                rank: prev.length + 1,
+                avatar: 'from-purple-500 to-indigo-500',
+                streak: 0,
+                status: 'guessed'
+            }]);
+        });
+
+        newSocket.on('display_response', (data: { response: string }) => {
+            setResponse(data.response);
         });
 
         newSocket.connect();
@@ -134,9 +161,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         const timer = setInterval(() => {
             setTimeLeft((prev) => {
-                if (prev <= 1) {
+                if (prev <= 1 && startTimer) {
                     clearInterval(timer);
-                    socket?.emit('want_new_question', roomId, roomData?.pack, roomData?.timePerRound);
+
+                    setStartTimer(false);
                     return 0;
                 }
                 return prev - 1;
@@ -147,24 +175,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     }, [timeLeft, roomId, roomData, socket]);
 
     // --- HANDLERS ---
-    const handleGameGuess = (text: string) => {
+    const handleGameGuess = async (text: string) => {
         // Mock Game Logic check
-        const ANSWER = "CROISSANT";
         const guess = text.toUpperCase().trim();
 
-        if (guess === ANSWER) {
-            setHasGuessed(true);
-            setMessages(prev => [...prev, { id: Date.now(), type: 'success', user: userName, text: 'a trouvé la réponse !' }]);
-            setIsMobileChatOpen(false);
-            // Optionally emit 'guess' event to server
-            if (socket && isConnected) {
-                // socket.emit('guess', { roomId, guess: text, user: userName });
-            }
-        } else if (guess === "CROISANT") {
-            setMessages(prev => [...prev, { id: Date.now(), type: 'warning', text: 'Tu chauffes ! (Proche)' }]);
-        } else {
-            // Wrong guess
-        }
+        socket?.emit('verify_response', roomId, guess, userName);
     };
 
     const handleChatMessage = (text: string) => {
@@ -219,19 +234,23 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={roomData?.creator} handleStartGame={handleStartGame} />
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={roomData?.creator} handleStartGame={handleStartGame} isGameRunning={isGameRunning} />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} />
 
-                            <GameArea
-                                hasGuessed={hasGuessed}
-                                timeLeft={timeLeft}
-                                question={question}
-                                imageUrl={imageUrl}
-                            />
-
+                            {response ? <div className="flex-1 flex flex-col relative z-10 mask-gradient-top h-[calc(100vh-100px)]">
+                                <p className="text-2xl font-bold text-white text-center h-full flex items-center justify-center">{response}</p>
+                            </div> :
+                                <GameArea
+                                    hasGuessed={hasGuessed}
+                                    timeLeft={timeLeft}
+                                    question={question}
+                                    imageUrl={imageUrl}
+                                />
+                            }
                             <Chat
+                                players={players}
                                 messages={messages}
                                 userName={userName}
                                 onSendMessage={handleChatMessage}
