@@ -45,7 +45,6 @@ const HomeMockup = () => {
             cookies.set('user', JSON.stringify(userData));
             cookies.set('userName', userData.username);
             cookies.set('userAvatar', userData.avatar);
-            toast.success(`Heros ${userData.username} chargé !`);
           } else {
             console.error('Erreur fetch user');
             toast.error('Impossible de charger le profil');

@@ -18,11 +18,12 @@ const CreateRoomView = () => {
     const cookies = new Cookies();
 
     // --- ÉTAT DU FORMULAIRE ---
-    const [roomName, setRoomName] = useState("La Room de Hero");
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
     const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1"); // 'mix' ou id spécifique
     const [isPrivate, setIsPrivate] = useState(false);
     const [userName, setUserName] = useState(cookies.get('userName') || ''); // todo: vérifier si le user est connecté
+    const [roomName, setRoomName] = useState(`La Room de ${userName}`);
+
 
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);

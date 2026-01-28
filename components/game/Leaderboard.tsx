@@ -3,12 +3,9 @@ import { Users, Trophy, Flame } from 'lucide-react';
 
 export interface Player {
     id: number;
-    name: string;
+    username: string;
     score: number;
-    rank: number;
-    avatar: string;
-    streak: number;
-    status: string;
+    hasGuessed: boolean;
 }
 
 interface LeaderboardProps {
@@ -30,27 +27,24 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players }) => {
                 {[...players].sort((a, b) => b.score - a.score).map((player, idx) => (
 
                     // CARD
-                    <div key={player.id} className={`
+                    <div key={player.username} className={`
                         flex-none flex items-center gap-2 md:gap-3 p-2 rounded-xl border transition-all duration-300
-                        ${player.id === 1 ? 'bg-white/10 border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.15)]' : 'bg-transparent border-transparent md:hover:bg-white/5'}
+                        ${player.hasGuessed ? 'bg-white/10 border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.15)]' : 'bg-transparent border-transparent md:hover:bg-white/5'}
                         flex-col md:flex-row w-16 md:w-auto
                     `}>
                         <span className={`hidden md:block font-mono text-sm w-4 text-center ${idx < 3 ? 'text-yellow-400 font-bold' : 'text-slate-500'}`}>{idx + 1}</span>
 
                         <div className="relative">
-                            <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${player.avatar} flex items-center justify-center text-[10px] md:text-xs font-bold shadow-lg ring-2 ${player.status === 'guessed' ? 'ring-green-400' : 'ring-transparent'}`}>
-                                {player.name.substring(0, 1)}
+                            <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${player.avatar} flex items-center justify-center text-[10px] md:text-xs font-bold shadow-lg ring-2 ${player.hasGuessed ? 'ring-green-400' : 'ring-transparent'}`}>
+                                {player.username.substring(0, 1)}
                             </div>
-                            {player.streak > 2 && <div className="hidden md:block absolute -bottom-1 -right-1 bg-orange-500 rounded-full p-0.5 border border-black"><Flame className="w-2 h-2 text-white" /></div>}
-                            {player.status === 'guessed' && (
-                                <div className="md:hidden absolute -top-1 -right-1 bg-green-500 rounded-full p-0.5 border border-black"><Trophy className="w-2 h-2 text-white" /></div>
-                            )}
+                            {player.hasGuessed && <div className="hidden md:block absolute -bottom-1 -right-1 bg-orange-500 rounded-full p-0.5 border border-black"><Flame className="w-2 h-2 text-white" /></div>}
                         </div>
 
                         <div className="flex-1 min-w-0 flex flex-col items-center md:items-start w-full">
                             <div className="flex justify-between w-full">
-                                <span className={`text-[9px] md:text-sm font-medium truncate max-w-full md:max-w-[100px] ${player.status === 'guessed' ? 'text-green-400' : 'text-slate-200'} text-center md:text-left`}>{player.name}</span>
-                                {player.status === 'guessed' && <Trophy className="hidden md:block w-3 h-3 text-green-400" />}
+                                <span className={`text-[9px] md:text-sm font-medium truncate max-w-full md:max-w-[100px] ${player.hasGuessed ? 'text-green-400' : 'text-slate-200'} text-center md:text-left`}>{player.username}</span>
+                                {player.hasGuessed && <Trophy className="hidden md:block w-3 h-3 text-green-400" />}
                             </div>
 
                             {/* Score Bar (Desktop Only) */}
