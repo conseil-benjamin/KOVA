@@ -34,7 +34,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    // --- GAME STATE MOCK ---
     const [timeLeft, setTimeLeft] = useState(0);
     const [hasGuessed, setHasGuessed] = useState(false);
     const [players, setPlayers] = useState<Player[]>([]);
@@ -44,9 +43,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [question, setQuestion] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [startTimer, setStartTimer] = useState(false);
+    const [gameStartingSoonTimer, setGameStartingSoonTimer] = useState(0);
     const [isGameRunning, setIsGameRunning] = useState(false);
     const [points, setPoints] = useState(0);
     const [response, setResponse] = useState('');
+    const [scoreToWin, setScoreToWin] = useState(0);
 
     const handleGuestLogin = () => {
         if (guestNameInput.trim()) {
@@ -66,6 +67,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setCreator(data.creator);
             setIsGameRunning(data.isGameRunning);
             setPlayers(data.players);
+            setScoreToWin(data.scoreToWin);
 
             const endTime = new Date(data.timerEnd).getTime();
             const secondsRemaining = Math.floor((endTime - Date.now()));
@@ -138,13 +140,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('wrong_response', (data: { message: string, username: string, answer: string }) => {
-            toast.error('Wrong response ' + data.answer);
-
             setPlayers(prev => {
                 const playerIndex = prev.findIndex(p => p.username.toLowerCase() === data.username.toLowerCase());
                 if (playerIndex !== -1) {
-                    toast.error('User ' + data.username + ' has guessed wrong ' + data.answer);
-
                     const newPlayers = [...prev];
                     newPlayers[playerIndex] = {
                         ...newPlayers[playerIndex],
@@ -156,9 +154,19 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             });
         });
 
+        newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
+            toast.info('Game starting soon', {
+                duration: 5000,
+            });
+            const endTime = new Date(data.timerEnd).getTime() / 1000;
+            const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
+
+            setGameStartingSoonTimer(secondsRemaining);
+        });
+
         newSocket.on('correct_response', (data: { message: string, username: string, points: number }) => {
             setPlayers(prev => {
-                const playerIndex = prev.findIndex(p => p.username === data.username);
+                const playerIndex = prev.findIndex(p => p.username.toLowerCase() === data.username.toLowerCase());
                 if (playerIndex !== -1) {
                     const newPlayers = [...prev];
                     newPlayers[playerIndex] = {
@@ -237,6 +245,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             newSocket.off('correct_response');
             newSocket.off('update_room');
             newSocket.off('end_game');
+            newSocket.off('game_starting_soon');
+            newSocket.off('display_response');
         };
     }, [roomId]);
 
@@ -347,7 +357,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} isGameRunning={isGameRunning} />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-                            <Leaderboard players={players} />
+                            <Leaderboard players={players} scoreToWin={scoreToWin} />
 
                             {response ? <div className="flex-1 flex flex-col relative z-10 mask-gradient-top h-[calc(100vh-100px)]">
                                 <p className="text-2xl font-bold text-white text-center h-full flex items-center justify-center">{response}</p>
@@ -357,6 +367,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                     timeLeft={timeLeft}
                                     question={question}
                                     imageUrl={imageUrl}
+                                    gameStartingSoonTimer={gameStartingSoonTimer}
                                 />
                             }
                             <Chat
