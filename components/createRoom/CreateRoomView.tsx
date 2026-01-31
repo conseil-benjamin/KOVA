@@ -33,6 +33,8 @@ const CreateRoomView = () => {
     // Options de contenu
     const [enableBlindTest, setEnableBlindTest] = useState(true); // Son activé ?
     const [enableNSFW, setEnableNSFW] = useState(false); // Contenu adulte ?
+    const [enableAbbreviations, setEnableAbbreviations] = useState(false); // Raccourcis ?
+    const [enableShowWrongAnswers, setEnableShowWrongAnswers] = useState(false); // Afficher les réponses ?
 
     // Jokers / Items
     const [itemsEnabled, setItemsEnabled] = useState(true);
@@ -110,6 +112,8 @@ const CreateRoomView = () => {
                     <ContentOptionsSection
                         enableBlindTest={enableBlindTest} setEnableBlindTest={setEnableBlindTest}
                         enableNSFW={enableNSFW} setEnableNSFW={setEnableNSFW}
+                        enableAbbreviations={enableAbbreviations} setEnableAbbreviations={setEnableAbbreviations}
+                        enableShowWrongAnswers={enableShowWrongAnswers} setEnableShowWrongAnswers={setEnableShowWrongAnswers}
                     />
 
                 </div>

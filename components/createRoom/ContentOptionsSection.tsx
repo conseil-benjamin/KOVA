@@ -4,13 +4,19 @@ import { Volume2, Ghost } from 'lucide-react';
 interface ContentOptionsSectionProps {
     enableBlindTest: boolean;
     setEnableBlindTest: (val: boolean) => void;
+    enableShowWrongAnswers: boolean;
+    setEnableShowWrongAnswers: (val: boolean) => void;
     enableNSFW: boolean;
     setEnableNSFW: (val: boolean) => void;
+    enableAbbreviations: boolean;
+    setEnableAbbreviations: (val: boolean) => void;
 }
 
 const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
     enableBlindTest, setEnableBlindTest,
-    enableNSFW, setEnableNSFW
+    enableShowWrongAnswers, setEnableShowWrongAnswers,
+    enableNSFW, setEnableNSFW,
+    enableAbbreviations, setEnableAbbreviations
 }) => {
     return (
         <section className="bg-[#13131f] border border-white/5 rounded-2xl p-6 space-y-6">
@@ -49,6 +55,46 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                     className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableNSFW ? 'bg-red-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableNSFW ? 'translate-x-6' : 'translate-x-0'}`} />
+                </button>
+            </div>
+
+            <div className="h-px bg-white/5"></div>
+
+            <div className="flex items-center justify-between opacity-50 hover:opacity-100 transition">
+                <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${enableShowWrongAnswers ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
+                        <Ghost className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-white">Réponses</h3>
+                        <p className="text-xs text-slate-400">Afficher les mauvaises réponses des joueurs.</p>
+                    </div>
+                </div>
+                <button
+                    onClick={() => setEnableShowWrongAnswers(!enableShowWrongAnswers)}
+                    className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableShowWrongAnswers ? 'bg-red-500' : 'bg-slate-700'}`}
+                >
+                    <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableShowWrongAnswers ? 'translate-x-6' : 'translate-x-0'}`} />
+                </button>
+            </div>
+
+            <div className="h-px bg-white/5"></div>
+
+            <div className="flex items-center justify-between opacity-50 hover:opacity-100 transition">
+                <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${enableAbbreviations ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
+                        <Ghost className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-white">Raccourcis</h3>
+                        <p className="text-xs text-slate-400">Autoriser les abréviations.</p>
+                    </div>
+                </div>
+                <button
+                    onClick={() => setEnableAbbreviations(!enableAbbreviations)}
+                    className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableAbbreviations ? 'bg-red-500' : 'bg-slate-700'}`}
+                >
+                    <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableAbbreviations ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
             </div>
         </section>
