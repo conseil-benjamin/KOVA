@@ -77,7 +77,7 @@ const CreateRoomView = () => {
                 toast.success('Room created');
                 const roomId = await res.text();
                 console.log("Room ID:", roomId);
-                redirect(`/game/${roomId}`);
+                redirect(`/${roomId}`);
             } else {
                 toast.error('Room not created');
             }

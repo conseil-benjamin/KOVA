@@ -40,8 +40,6 @@ const GameInput: React.FC<GameInputProps> = ({
         setChatVal('');
     };
 
-    console.log(hasGuessed);
-
     return (
         <div className="flex-none bg-[#0f0f18]/80 backdrop-blur-xl border-t border-white/10 z-40 relative p-2 md:p-4">
 

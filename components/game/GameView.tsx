@@ -72,7 +72,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
             for (let i = 0; i < data.players.length; i++) {
                 const player = data.players[i];
-                if ((player.name === userName) && player.hasGuessed) {
+                console.log("salut52" + player.username.toLowerCase())
+                console.log("salut52" + userName.toLowerCase())
+                console.log(player.hasGuessed)
+                if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
                     setHasGuessed(true);
                 }
             }
@@ -134,8 +137,23 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setIsGameRunning(data.isGameRunning);
         });
 
-        newSocket.on('wrong_response', (data: { message: string, timestamp: Date, user: string, type: string }) => {
-            toast.error('Wrong response');
+        newSocket.on('wrong_response', (data: { message: string, username: string, answer: string }) => {
+            toast.error('Wrong response ' + data.answer);
+
+            setPlayers(prev => {
+                const playerIndex = prev.findIndex(p => p.username.toLowerCase() === data.username.toLowerCase());
+                if (playerIndex !== -1) {
+                    toast.error('User ' + data.username + ' has guessed wrong ' + data.answer);
+
+                    const newPlayers = [...prev];
+                    newPlayers[playerIndex] = {
+                        ...newPlayers[playerIndex],
+                        answer: data.answer,
+                    };
+                    return newPlayers;
+                }
+                return [...prev];
+            });
         });
 
         newSocket.on('correct_response', (data: { message: string, username: string, points: number }) => {
@@ -157,32 +175,48 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     hasGuessed: true,
                 }];
             });
-            if (data.username === userName) {
+            console.log("salu123", data.username)
+            console.log("salu123", userName)
+            if (data.username.toLowerCase() === userName.toLowerCase()) {
                 setHasGuessed(true);
             }
         });
 
         newSocket.on('display_response', (data: { response: string }) => {
-            setPlayers(prev => prev.map(p => ({ ...p, guessed: false })));
+            setPlayers(prev => prev.map(p => ({ ...p, hasGuessed: false })));
             setResponse(data.response);
             setHasGuessed(false);
-
-            setPlayers(prev => {
-                const playerIndex = prev.findIndex(p => p.username === userName);
-                if (playerIndex !== -1) {
-                    const newPlayers = [...prev];
-                    newPlayers[playerIndex] = {
-                        ...newPlayers[playerIndex],
-                        hasGuessed: false,
-                    };
-                    return newPlayers;
-                }
-                return prev;
-            });
+            resetAnswersPlayers();
+            console.log("salu1234", data.response)
         });
 
-        newSocket.on('update_room', (data: { room: Room }) => {
-            setRoomData(data.room);
+        newSocket.on('update_room', (room: Room) => {
+            setRoomData(room);
+            console.log("data.room", room)
+            for (let i = 0; i < room.players.length; i++) {
+                const player = room.players[i];
+                console.log("player", player)
+                setPlayers(prev => {
+                    const playerIndex = prev.findIndex(p => p.username === player.username);
+                    if (playerIndex !== -1) {
+                        const newPlayers = [...prev];
+                        newPlayers[playerIndex] = {
+                            ...newPlayers[playerIndex],
+                            score: player.score,
+                            hasGuessed: player.hasGuessed,
+                        };
+                        return newPlayers;
+                    } else {
+                        return [...prev, {
+                            id: Date.now(),
+                            username: player.username,
+                            score: player.score,
+                            hasGuessed: player.hasGuessed,
+                            answer: ""
+                        }];
+                    }
+                });
+            }
         });
 
         newSocket.on('end_game', () => {
@@ -249,6 +283,16 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         } else {
             toast.error('Non connecté au serveur.')
         }
+    };
+
+    const resetAnswersPlayers = () => {
+        setPlayers(prev => {
+            const newPlayers = [...prev];
+            newPlayers.forEach(player => {
+                player.answer = '';
+            });
+            return newPlayers;
+        });
     };
 
     return (

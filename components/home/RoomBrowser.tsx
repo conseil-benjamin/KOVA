@@ -56,7 +56,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
     }, [activeTab]);
 
     const joinRoom = (room: Room) => {
-        redirect(`/game/${room.idUrl}`);
+        redirect(`/${room.idUrl}`);
     }
 
     return (

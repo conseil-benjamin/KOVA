@@ -18,12 +18,25 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                 {/* Carte du jeu */}
                 <div className={`relative w-full aspect-[4/3] bg-black/50 rounded-2xl border border-white/10 shadow-2xl overflow-hidden group hover:border-white/20 transition-all ${isMobileMode ? 'max-w-full rounded-2xl' : 'max-w-3xl aspect-video rounded-3xl'}`}>
 
-                    {imageUrl != '' && imageUrl != null ? <img
-                        src={imageUrl}
-                        alt="Devinette"
-                        className="w-full h-full object-cover transition-all duration-300 ease-out"
-                        style={{ transform: hasGuessed ? 'scale(1.02)' : 'scale(1.05)' }}
-                    /> :
+                    {imageUrl != '' && imageUrl != null ?
+                        <div className="w-full h-full flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
+                            {/* Section Question : Prend 1/5 de la hauteur */}
+                            <div className="h-1/5 w-full flex items-center justify-center p-4">
+                                <p className="text-white text-xl md:text-2xl font-bold text-center">
+                                    {question}
+                                </p>
+                            </div>
+
+                            {/* Section Image : */}
+                            <div className="h-4/5 w-full overflow-hidden">
+                                <img
+                                    src={imageUrl}
+                                    alt="Devinette"
+                                    className="w-full h-full object-cover transition-all duration-300 ease-out"
+                                    style={{ transform: hasGuessed ? 'scale(1)' : 'scale(1.1)' }}
+                                />
+                            </div>
+                        </div> :
                         <div className="w-full h-full bg-gray-900 flex items-center justify-center">
                             <p className="text-white text-2xl font-bold">{question}</p>
                         </div>
@@ -46,7 +59,6 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             <div className="bg-black/80 text-green-400 px-6 py-3 rounded-2xl border border-green-500/50 shadow-[0_0_30px_rgba(34,197,94,0.4)] backdrop-xl transform rotate-[-2deg]">
                                 <span className={`font-black italic tracking-tighter ${isMobileMode ? 'text-2xl' : 'text-4xl'}`}>CORRECT !</span>
                             </div>
-                            <span className="mt-4 text-white font-mono font-bold text-xl drop-shadow-lg">+ {Math.floor(timeLeft * 100)} pts</span>
                         </div>
                     )}
                 </div>

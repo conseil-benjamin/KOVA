@@ -10,7 +10,6 @@ interface GameHeaderProps {
 }
 
 const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, isGameRunning }) => {
-    console.log("creator", creator);
 
     return (
         <header className="flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-30 shadow-lg h-14 md:h-16 pt-2 md:pt-0">

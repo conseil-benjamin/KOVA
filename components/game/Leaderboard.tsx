@@ -6,6 +6,7 @@ export interface Player {
     username: string;
     score: number;
     hasGuessed: boolean;
+    answer: string;
 }
 
 interface LeaderboardProps {
@@ -48,10 +49,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players }) => {
                             </div>
 
                             {/* Score Bar (Desktop Only) */}
-                            <div className="hidden md:block w-full bg-white/10 h-1 rounded-full mt-1 overflow-hidden">
+                            {/* <div className="hidden md:block w-full bg-white/10 h-1 rounded-full mt-1 overflow-hidden">
                                 <div className="h-full bg-purple-500 transition-all duration-1000" style={{ width: `${(player.score / 2000) * 100}%` }}></div>
                             </div>
-                            <span className="hidden md:block text-[10px] text-slate-400 font-mono">{player.score} pts</span>
+                            <span className="hidden md:block text-[10px] text-slate-400 font-mono">{player.score} pts</span> */}
+                            {!player.hasGuessed && <span className="hidden md:block text-[10px] text-slate-400 font-mono">{player.answer}</span>}
                         </div>
                     </div>
                 ))}
