@@ -2,7 +2,6 @@ import { Zap, LogIn } from 'lucide-react';
 import { redirect } from 'next/navigation'
 import { User } from '@/types/User';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
-import { DropdownMenuShortcut } from '../ui/dropdown-menu';
 import Cookies from 'universal-cookie';
 
 interface NavbarProps {

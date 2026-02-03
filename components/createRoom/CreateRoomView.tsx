@@ -31,10 +31,10 @@ const CreateRoomView = () => {
     const [timePerRound, setTimePerRound] = useState(15);
 
     // Options de contenu
-    const [enableBlindTest, setEnableBlindTest] = useState(true); // Son activé ?
+    const [enableBlindTest, setEnableBlindTest] = useState(false); // Son activé ?
     const [enableNSFW, setEnableNSFW] = useState(false); // Contenu adulte ?
-    const [enableAbbreviations, setEnableAbbreviations] = useState(false); // Raccourcis ?
-    const [enableShowWrongAnswers, setEnableShowWrongAnswers] = useState(false); // Afficher les réponses ?
+    const [enableAbbreviations, setEnableAbbreviations] = useState(true); // Raccourcis ?
+    const [enableShowWrongAnswers, setEnableShowWrongAnswers] = useState(true); // Afficher les réponses ?
 
     // Jokers / Items
     const [itemsEnabled, setItemsEnabled] = useState(true);
@@ -66,6 +66,8 @@ const CreateRoomView = () => {
             itemsEnabled, // boolean
             activeItems, // object
             timer: timePerRound,
+            enableAbbreviations,
+            enableShowWrongAnswers,
         };
 
         const result = await fetch('http://localhost:3333/launch-room', {

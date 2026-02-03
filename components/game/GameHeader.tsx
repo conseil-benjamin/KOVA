@@ -7,9 +7,10 @@ interface GameHeaderProps {
     creator?: string;
     handleStartGame?: () => void;
     isGameRunning?: boolean;
+    timerVisible?: boolean;
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, isGameRunning }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, isGameRunning, timerVisible }) => {
 
     return (
         <header className="flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-30 shadow-lg h-14 md:h-16 pt-2 md:pt-0">
@@ -38,7 +39,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                     )}
                 </div>
                 {
-                    isGameRunning &&
+                    (isGameRunning && timerVisible) &&
                     <div className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-300 ${timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700'} `}>
                         <Clock className={`w-3 h-3 md:w-4 md:h-4 ${timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400'} `} />
                         <span className={`font-mono font-nums ${timeLeft < 5 ? 'text-red-400' : 'text-cyan-400'} text-lg md:text-xl`}>
