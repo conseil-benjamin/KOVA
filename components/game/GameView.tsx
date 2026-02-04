@@ -15,6 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { Room } from '@/types/Room';
 import { Loader2 } from 'lucide-react';
+import EndGame from './EndGame';
 
 interface GameViewProps {
     roomId: string;
@@ -29,6 +30,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [userName, setUserName] = useState(cookies.get('userName') || '');
     const [guestNameInput, setGuestNameInput] = useState('');
     const [roomFound, setRoomFound] = useState(true);
+    const [isGameEnded, setIsGameEnded] = useState(false);
 
     const [roomData, setRoomData] = useState<Room>();
 
@@ -80,6 +82,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
                 const endTime = new Date(data.timerEnd).getTime();
                 const secondsRemaining = Math.floor((endTime - Date.now()));
+
+                if (data.status === "FINISHED") {
+                    setIsGameEnded(true);
+                }
 
                 for (let i = 0; i < data.players.length; i++) {
                     const player = data.players[i];
@@ -247,8 +253,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }
         });
 
-        newSocket.on('end_game', () => {
+        newSocket.on('game_finished', () => {
+            console.log("game_finished");
             setIsGameRunning(false);
+            setIsGameEnded(true);
         });
 
         newSocket.connect();
@@ -370,6 +378,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <Loader2 className="w-12 h-12 text-white animate-spin" />
                     </div>
                 </div>
+            ) : isGameEnded ? (
+                <EndGame players={players} />
             ) : (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
 

@@ -28,7 +28,7 @@ const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
                     <span className="text-purple-400 font-bold font-mono">{scoreToWin.toLocaleString()} pts</span>
                 </div>
                 <input
-                    type="range" min="1000" max="50000" step="1000"
+                    type="range" min="20" max="50000" step="10"
                     value={scoreToWin} onChange={(e) => setScoreToWin(Number(e.target.value))}
                     className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500"
                 />
