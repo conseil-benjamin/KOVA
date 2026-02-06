@@ -54,10 +54,15 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [response, setResponse] = useState('');
     const [scoreToWin, setScoreToWin] = useState(0);
 
-    const handleGuestLogin = () => {
-        if (guestNameInput.trim()) {
+    const handleGuestLogin = async () => {
+        // todo : vérifier en bdd qu'aucun user ne possède déjà cette username
+        const result = await fetch(`http://localhost:3333/users/${guestNameInput.trim()}`);
+        if (result.status !== 200) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
             setUserName(guestNameInput.trim());
+        } else {
+            toast.error('Username already exists');
+            return;
         }
     };
 
@@ -89,9 +94,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
                 for (let i = 0; i < data.players.length; i++) {
                     const player = data.players[i];
-                    console.log("salut52" + player.username.toLowerCase())
-                    console.log("salut52" + userName.toLowerCase())
-                    console.log(player.hasGuessed)
                     if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
                         setHasGuessed(true);
                     }
@@ -165,10 +167,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
-            toast.info('Game starting soon', {
-                duration: 5000,
-            });
-
             const endTime = new Date(data.timerEnd).getTime() / 1000;
             const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
             console.log(endTime);

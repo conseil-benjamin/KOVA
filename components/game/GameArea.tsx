@@ -21,7 +21,7 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-20">
                         <div className="bg-black/80 text-white px-6 py-3 rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.2)] backdrop-xl transform rotate-[-2deg]">
                             <span className={`font-black italic tracking-tighter ${isMobileMode ? 'text-2xl' : 'text-4xl'}`}>Game Starting Soon !</span>
-                            <span className={`font-black italic tracking-tighter ${isMobileMode ? 'text-2xl' : 'text-4xl'}`}>{gameStartingSoonTimer} seconds left</span>
+                            <span className={`font-black italic tracking-tighter ${isMobileMode ? 'text-2xl' : 'text-4xl'}`}> {gameStartingSoonTimer} seconds left</span>
                         </div>
                     </div>
                 ) : (
