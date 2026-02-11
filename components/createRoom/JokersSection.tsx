@@ -13,11 +13,12 @@ interface JokersSectionProps {
     setItemsEnabled: (val: boolean) => void;
     activeItems: ActiveItems;
     toggleItem: (key: keyof ActiveItems) => void;
+    isConsult: boolean;
 }
 
 const JokersSection: React.FC<JokersSectionProps> = ({
     itemsEnabled, setItemsEnabled,
-    activeItems, toggleItem
+    activeItems, toggleItem, isConsult
 }) => {
     return (
         <section className="space-y-4">
@@ -28,7 +29,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-slate-500">{itemsEnabled ? 'Activés' : 'Désactivés'}</span>
                     <button
-                        onClick={() => setItemsEnabled(!itemsEnabled)}
+                        onClick={() => !isConsult && setItemsEnabled(!itemsEnabled)}
                         className={`w-10 h-5 rounded-full transition-colors duration-200 flex items-center p-1 ${itemsEnabled ? 'bg-purple-600' : 'bg-slate-700'}`}
                     >
                         <div className={`w-3 h-3 bg-white rounded-full shadow-md transform transition-transform duration-200 ${itemsEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -39,7 +40,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
             <div className={`grid grid-cols-2 gap-3 transition-opacity duration-300 ${itemsEnabled ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
 
                 {/* Item: Freeze */}
-                <div onClick={() => toggleItem('freeze')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.freeze ? 'bg-blue-500/10 border-blue-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
+                <div onClick={() => !isConsult && toggleItem('freeze')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.freeze ? 'bg-blue-500/10 border-blue-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
                     <div className={`p-2 rounded-lg ${activeItems.freeze ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
                         <Clock className="w-4 h-4" />
                     </div>
@@ -50,7 +51,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                 </div>
 
                 {/* Item: Hint */}
-                <div onClick={() => toggleItem('hint')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.hint ? 'bg-indigo-500/10 border-indigo-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
+                <div onClick={() => !isConsult && toggleItem('hint')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.hint ? 'bg-indigo-500/10 border-indigo-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
                     <div className={`p-2 rounded-lg ${activeItems.hint ? 'bg-indigo-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
                         <Eye className="w-4 h-4" />
                     </div>
@@ -61,7 +62,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                 </div>
 
                 {/* Item: Ink */}
-                <div onClick={() => toggleItem('ink')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.ink ? 'bg-pink-500/10 border-pink-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
+                <div onClick={() => !isConsult && toggleItem('ink')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.ink ? 'bg-pink-500/10 border-pink-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
                     <div className={`p-2 rounded-lg ${activeItems.ink ? 'bg-pink-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
                         <Ghost className="w-4 h-4" />
                     </div>
@@ -72,7 +73,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                 </div>
 
                 {/* Item: Swap */}
-                <div onClick={() => toggleItem('swap')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.swap ? 'bg-orange-500/10 border-orange-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
+                <div onClick={() => !isConsult && toggleItem('swap')} className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${activeItems.swap ? 'bg-orange-500/10 border-orange-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
                     <div className={`p-2 rounded-lg ${activeItems.swap ? 'bg-orange-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
                         <Zap className="w-4 h-4" />
                     </div>

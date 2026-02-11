@@ -8,12 +8,13 @@ interface VictoryConditionsSectionProps {
     setTimePerRound: (val: number) => void;
     maxPlayers: number;
     setMaxPlayers: (val: number) => void;
+    isConsult: boolean;
 }
 
 const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
     scoreToWin, setScoreToWin,
     timePerRound, setTimePerRound,
-    maxPlayers, setMaxPlayers
+    maxPlayers, setMaxPlayers, isConsult
 }) => {
     return (
         <section className="bg-[#13131f] border border-white/5 rounded-2xl p-6 space-y-8">
@@ -28,7 +29,7 @@ const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
                     <span className="text-purple-400 font-bold font-mono">{scoreToWin.toLocaleString()} pts</span>
                 </div>
                 <input
-                    type="range" min="20" max="50000" step="10"
+                    type="range" min="50" max="500" step="10" disabled={isConsult}
                     value={scoreToWin} onChange={(e) => setScoreToWin(Number(e.target.value))}
                     className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500"
                 />
@@ -42,7 +43,7 @@ const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
                     <span className="text-blue-400 font-bold font-mono">{timePerRound} sec</span>
                 </div>
                 <input
-                    type="range" min="5" max="30" step="1"
+                    type="range" min="5" max="30" step="1" disabled={isConsult}
                     value={timePerRound} onChange={(e) => setTimePerRound(Number(e.target.value))}
                     className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
                 />
@@ -55,7 +56,7 @@ const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
                     <span className="text-green-400 font-bold font-mono">{maxPlayers}</span>
                 </div>
                 <input
-                    type="range" min="2" max="50" step="1"
+                    type="range" min="2" max="50" step="1" disabled={isConsult}
                     value={maxPlayers} onChange={(e) => setMaxPlayers(Number(e.target.value))}
                     className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-green-500"
                 />

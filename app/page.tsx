@@ -74,6 +74,7 @@ const HomeMockup = () => {
 
         if (res.ok) {
           const roomsData = await res.json();
+          console.log(roomsData);
           setRooms(roomsData);
         } else {
           toast.error('Impossible de charger les rooms');

@@ -27,6 +27,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
         if (rooms) {
             setFilteredRooms(rooms);
         }
+        console.log(rooms);
     }, [rooms]);
 
     useEffect(() => {
@@ -98,12 +99,26 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                     <div key={room._id} className="group bg-[#1a1a24] hover:bg-[#20202e] border border-white/5 hover:border-purple-500/30 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer relative shadow-lg">
 
                         {/* Image Header */}
-                        <div className={`h-24 relative`}>
-                            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
+                        <div className={`h-24 relative overflow-hidden rounded-t-lg`}> {/* Ajout de overflow-hidden pour les bords arrondis */}
+                            {/* L'image de fond */}
+                            <img
+                                src={room.backgroundImageUrl || 'https://votre-image-par-defaut.jpg'}
+                                alt={room.name}
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+
+                            {/* Overlay sombre au survol */}
+                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+
+                            {/* Badges */}
                             <div className="absolute top-2 right-2 flex gap-2">
-                                {room.isPrivate && <div className="bg-black/60 backdrop-blur px-2 py-1 rounded text-[10px] text-white flex items-center gap-1"><Lock className="w-3 h-3" /> Privé</div>}
+                                {room.isPrivate && (
+                                    <div className="bg-black/60 backdrop-blur px-2 py-1 rounded text-[10px] text-white flex items-center gap-1">
+                                        <Lock className="w-3 h-3" /> Privé
+                                    </div>
+                                )}
                                 <div className="bg-black/60 backdrop-blur px-2 py-1 rounded text-[10px] text-white flex items-center gap-1">
-                                    <Users className="w-3 h-3" /> {room.maxPlayers}
+                                    <Users className="w-3 h-3" /> {room.players.length + "/" + room.maxPlayers}
                                 </div>
                             </div>
                         </div>
@@ -130,11 +145,11 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
                             <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center">
                                 <div className="flex -space-x-2">
-                                    {[...Array(3)].map((_, i) => (
+                                    {/* [...Array(3)].map((_, i) => (
                                         <div key={i} className="w-6 h-6 rounded-full bg-slate-700 border border-[#1a1a24] text-[8px] flex items-center justify-center text-white">
                                             {String.fromCharCode(65 + i)}
                                         </div>
-                                    ))}
+                                    )) */}
                                     {/* {room.players > 3 && <div className="w-6 h-6 rounded-full bg-slate-800 border border-[#1a1a24] text-[8px] flex items-center justify-center text-slate-400">+{room.players - 3}</div>} */}
                                 </div>
                                 <button onClick={() => joinRoom(room)} className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition flex items-center gap-1">

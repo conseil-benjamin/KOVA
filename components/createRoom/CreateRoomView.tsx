@@ -17,7 +17,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescripti
 import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { Room, Player } from '@/types/Room';
 
-const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void }) => {
+const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();
 
     // --- ÉTAT DU FORMULAIRE ---
@@ -30,7 +30,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);
-    const [scoreToWin, setScoreToWin] = useState(10000);
+    const [scoreToWin, setScoreToWin] = useState(100);
     const [timePerRound, setTimePerRound] = useState(15);
 
     // Options de contenu
@@ -51,7 +51,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [guestNameInput, setGuestNameInput] = useState('');
 
     useEffect(() => {
-        if (isEditing) {
+        if (isEditing || isConsult) {
             setLanguage(dataRoom?.language || 'fr');
             setSelectedPack(dataRoom?.pack || "Le Grand Mix KOVA #1");
             setIsPrivate(dataRoom?.isPrivate || false);
@@ -197,7 +197,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                 <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col">
 
                     {/* --- HEADER --- */}
-                    <CreateRoomHeader setIsEditing={setIsEditing} isEditing={isEditing} />
+                    <CreateRoomHeader setIsEditing={setIsEditing} isEditing={isEditing} setIsConsult={setIsConsult} isConsult={isConsult} />
 
                     <main className="flex-1 max-w-6xl mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -210,10 +210,11 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 setRoomName={setRoomName}
                                 language={language}
                                 setLanguage={setLanguage}
+                                isConsult={isConsult}
                             />
 
                             {/* 2. Sélection du Pack */}
-                            <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} />
+                            <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} isConsult={isConsult} />
 
                             {/* 3. Options de Contenu */}
                             <ContentOptionsSection
@@ -221,6 +222,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 enableNSFW={enableNSFW} setEnableNSFW={setEnableNSFW}
                                 enableAbbreviations={enableAbbreviations} setEnableAbbreviations={setEnableAbbreviations}
                                 enableShowWrongAnswers={enableShowWrongAnswers} setEnableShowWrongAnswers={setEnableShowWrongAnswers}
+                                isConsult={isConsult}
                             />
 
                         </div>
@@ -233,22 +235,24 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 scoreToWin={scoreToWin} setScoreToWin={setScoreToWin}
                                 timePerRound={timePerRound} setTimePerRound={setTimePerRound}
                                 maxPlayers={maxPlayers} setMaxPlayers={setMaxPlayers}
+                                isConsult={isConsult}
                             />
 
                             {/* 5. Configuration des Jokers */}
                             <JokersSection
                                 itemsEnabled={itemsEnabled} setItemsEnabled={setItemsEnabled}
                                 activeItems={activeItems} toggleItem={toggleItem}
+                                isConsult={isConsult}
                             />
 
                             {/* 6. Confidentialité */}
-                            <PrivacySection isPrivate={isPrivate} setIsPrivate={setIsPrivate} />
+                            <PrivacySection isPrivate={isPrivate} setIsPrivate={setIsPrivate} isConsult={isConsult} />
 
                         </div>
                     </main>
 
                     {/* --- STICKY FOOTER (Action) --- */}
-                    <CreateRoomFooter selectedPackName={currentPack?.name} launchRoom={launchRoom} isEditing={isEditing} />
+                    <CreateRoomFooter selectedPackName={currentPack?.name} launchRoom={launchRoom} isEditing={isEditing} setIsEditing={setIsEditing} setIsConsult={setIsConsult} isConsult={isConsult} />
 
                 </div>
             )

@@ -5,9 +5,10 @@ import { packs } from './constants';
 interface PacksSectionProps {
     selectedPack: string;
     setSelectedPack: (id: string) => void;
+    isConsult: boolean;
 }
 
-const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPack }) => {
+const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPack, isConsult }) => {
     return (
         <section className="space-y-4">
             <div className="flex justify-between items-center">
@@ -23,7 +24,7 @@ const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPa
                 {packs.map(pack => (
                     <div
                         key={pack.id}
-                        onClick={() => setSelectedPack(pack.name)}
+                        onClick={() => !isConsult && setSelectedPack(pack.name)}
                         className={`
                             relative p-4 rounded-xl border cursor-pointer transition-all duration-200 group overflow-hidden
                             ${selectedPack === pack.name

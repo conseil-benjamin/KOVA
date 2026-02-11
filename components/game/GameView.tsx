@@ -40,6 +40,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isEditingRoom, setIsEditingRoom] = useState(false);
+    const [isConsultRules, setIsConsultRules] = useState(false);
 
     const [timeLeft, setTimeLeft] = useState(0);
     const [timerVisible, setTimerVisible] = useState(false);
@@ -196,7 +197,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     const newPlayers = [...prev];
                     newPlayers[playerIndex] = {
                         ...newPlayers[playerIndex],
-                        score: newPlayers[playerIndex].score + data.points,
+                        score: data.points,
                         hasGuessed: true,
                     };
                     return newPlayers;
@@ -310,7 +311,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     }, [timeLeft, roomId, roomData, socket]);
 
     const handleRestartGame = () => {
-        
+
     }
 
     // --- HANDLERS ---
@@ -379,13 +380,27 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 </div>
             ) : !roomFound ? (
                 <RoomNotFound />
+            ) : isConsultRules ? (
+                <CreateRoomView
+                    setIsConsult={setIsConsultRules}
+                    isConsult={true}
+                    socket={null}
+                    setRoomData={setRoomData}
+                    isEditing={false}
+                    dataRoom={roomData}
+                    setIsEditing={setIsEditingRoom}
+                    creator={creator}
+                />
             ) : isEditingRoom ? (
                 <CreateRoomView
+                    setIsConsult={setIsConsultRules}
+                    isConsult={false}
                     socket={socket}
                     setRoomData={setRoomData}
                     isEditing={true}
                     dataRoom={roomData}
                     setIsEditing={setIsEditingRoom}
+                    creator={creator}
                 />
             ) : isLoading ? (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
@@ -401,7 +416,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} />
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} />

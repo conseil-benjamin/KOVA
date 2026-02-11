@@ -5,9 +5,10 @@ interface RoomNameSectionProps {
     setRoomName: (name: string) => void;
     language: 'fr' | 'en';
     setLanguage: (lang: 'fr' | 'en') => void;
+    isConsult: boolean;
 }
 
-const RoomNameSection: React.FC<RoomNameSectionProps> = ({ roomName, setRoomName, language, setLanguage }) => {
+const RoomNameSection: React.FC<RoomNameSectionProps> = ({ roomName, setRoomName, language, setLanguage, isConsult }) => {
     return (
         <section className="space-y-4">
             <label className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
@@ -16,6 +17,7 @@ const RoomNameSection: React.FC<RoomNameSectionProps> = ({ roomName, setRoomName
             <div className="space-y-4">
                 <div className="bg-[#13131f] border border-white/5 rounded-2xl p-1">
                     <input
+                        disabled={isConsult}
                         type="text"
                         value={roomName}
                         onChange={(e) => setRoomName(e.target.value)}
@@ -26,20 +28,20 @@ const RoomNameSection: React.FC<RoomNameSectionProps> = ({ roomName, setRoomName
 
                 <div className="flex gap-2">
                     <button
-                        onClick={() => setLanguage('fr')}
+                        onClick={() => !isConsult && setLanguage('fr')}
                         className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${language === 'fr'
-                                ? 'bg-indigo-500/20 border-indigo-500 text-white'
-                                : 'bg-[#13131f] border-white/5 text-slate-400 hover:bg-white/5'
+                            ? 'bg-indigo-500/20 border-indigo-500 text-white'
+                            : 'bg-[#13131f] border-white/5 text-slate-400 hover:bg-white/5'
                             }`}
                     >
                         <span className="text-xl">🇫🇷</span>
                         <span className="font-bold">Français</span>
                     </button>
                     <button
-                        onClick={() => setLanguage('en')}
+                        onClick={() => !isConsult && setLanguage('en')}
                         className={`flex-1 p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${language === 'en'
-                                ? 'bg-indigo-500/20 border-indigo-500 text-white'
-                                : 'bg-[#13131f] border-white/5 text-slate-400 hover:bg-white/5'
+                            ? 'bg-indigo-500/20 border-indigo-500 text-white'
+                            : 'bg-[#13131f] border-white/5 text-slate-400 hover:bg-white/5'
                             }`}
                     >
                         <span className="text-xl">🇬🇧</span>

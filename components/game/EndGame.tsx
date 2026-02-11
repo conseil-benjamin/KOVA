@@ -82,7 +82,7 @@ const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEdit
                             setIsEditingRoom(!isEditingRoom);
                         }}
                     >
-                        <Edit size={20} /> Modifier règles
+                        <Edit size={20} className='cursor-pointer'/> Modifier règles
                     </button>
                 )}
             </div>

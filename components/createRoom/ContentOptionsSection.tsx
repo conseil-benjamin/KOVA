@@ -10,13 +10,14 @@ interface ContentOptionsSectionProps {
     setEnableNSFW: (val: boolean) => void;
     enableAbbreviations: boolean;
     setEnableAbbreviations: (val: boolean) => void;
+    isConsult: boolean;
 }
 
 const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
     enableBlindTest, setEnableBlindTest,
     enableShowWrongAnswers, setEnableShowWrongAnswers,
     enableNSFW, setEnableNSFW,
-    enableAbbreviations, setEnableAbbreviations
+    enableAbbreviations, setEnableAbbreviations, isConsult
 }) => {
     return (
         <section className="bg-[#13131f] border border-white/5 rounded-2xl p-6 space-y-6">
@@ -31,7 +32,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                     </div>
                 </div>
                 <button
-                    onClick={() => setEnableBlindTest(!enableBlindTest)}
+                    onClick={() => !isConsult && setEnableBlindTest(!enableBlindTest)}
                     className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableBlindTest ? 'bg-cyan-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableBlindTest ? 'translate-x-6' : 'translate-x-0'}`} />
@@ -51,7 +52,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                     </div>
                 </div>
                 <button
-                    onClick={() => setEnableNSFW(!enableNSFW)}
+                    onClick={() => !isConsult && setEnableNSFW(!enableNSFW)}
                     className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableNSFW ? 'bg-red-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableNSFW ? 'translate-x-6' : 'translate-x-0'}`} />
@@ -71,7 +72,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                     </div>
                 </div>
                 <button
-                    onClick={() => setEnableShowWrongAnswers(!enableShowWrongAnswers)}
+                    onClick={() => !isConsult && setEnableShowWrongAnswers(!enableShowWrongAnswers)}
                     className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableShowWrongAnswers ? 'bg-red-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableShowWrongAnswers ? 'translate-x-6' : 'translate-x-0'}`} />
@@ -91,7 +92,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                     </div>
                 </div>
                 <button
-                    onClick={() => setEnableAbbreviations(!enableAbbreviations)}
+                    onClick={() => !isConsult && setEnableAbbreviations(!enableAbbreviations)}
                     className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableAbbreviations ? 'bg-red-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableAbbreviations ? 'translate-x-6' : 'translate-x-0'}`} />
