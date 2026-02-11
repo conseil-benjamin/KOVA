@@ -16,6 +16,7 @@ import Cookies from "universal-cookie";
 import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from '@radix-ui/react-alert-dialog';
 import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { Room, Player } from '@/types/Room';
+import LoadingPage from '../loadingPage';
 
 const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();
@@ -196,8 +197,9 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                         </AlertDialogContent>
                     </AlertDialog>
                 </div>
+            ) : isLoading ? (
+                <LoadingPage />
             ) : (
-
                 <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col">
 
                     {/* --- HEADER --- */}
