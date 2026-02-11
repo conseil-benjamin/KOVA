@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { packs } from './constants';
 import CreateRoomHeader from './CreateRoomHeader';
 import CreateRoomFooter from './CreateRoomFooter';
@@ -15,13 +15,14 @@ import { redirect } from 'next/navigation';
 import Cookies from "universal-cookie";
 import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from '@radix-ui/react-alert-dialog';
 import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
+import { Room, Player } from '@/types/Room';
 
-const CreateRoomView = () => {
+const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void }) => {
     const cookies = new Cookies();
 
     // --- ÉTAT DU FORMULAIRE ---
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
-    const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1"); 
+    const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1");
     const [isPrivate, setIsPrivate] = useState(false);
     const [userName, setUserName] = useState(cookies.get('userName') || '');
     const [roomName, setRoomName] = useState(`La Room de ${userName}`);
@@ -49,6 +50,23 @@ const CreateRoomView = () => {
 
     const [guestNameInput, setGuestNameInput] = useState('');
 
+    useEffect(() => {
+        if (isEditing) {
+            setLanguage(dataRoom?.language || 'fr');
+            setSelectedPack(dataRoom?.pack || "Le Grand Mix KOVA #1");
+            setIsPrivate(dataRoom?.isPrivate || false);
+            setRoomName(dataRoom?.name || `La Room de ${dataRoom?.creator}`);
+            setMaxPlayers(dataRoom?.maxPlayers || 12);
+            setScoreToWin(dataRoom?.scoreToWin || 10000);
+            setTimePerRound(dataRoom?.timePerRound || 15);
+            setEnableBlindTest(dataRoom?.enableBlindTest || false);
+            setEnableNSFW(dataRoom?.enableNSFW || false);
+            setEnableAbbreviations(dataRoom?.enableAbbreviations || true);
+            setEnableShowWrongAnswers(dataRoom?.enableShowWrongAnswers || true);
+            setItemsEnabled(dataRoom?.itemsEnabled || true);
+        }
+    }, [isEditing, dataRoom])
+
     const toggleItem = (key: keyof typeof activeItems) => {
         setActiveItems(prev => ({ ...prev, [key]: !prev[key] }));
     };
@@ -71,12 +89,14 @@ const CreateRoomView = () => {
 
     const launchRoom = async () => {
         const roomData = {
+            idUrl: "",
             language,
             name: roomName,
             pack: selectedPack, // nom du pack
             isPrivate, // boolean
             creator: userName,
             maxPlayers, // int
+            players: [] as Player[], // array
             scoreToWin, // int
             timePerRound, // int
             enableBlindTest, // boolean
@@ -88,22 +108,51 @@ const CreateRoomView = () => {
             enableShowWrongAnswers,
         };
 
-        const result = await fetch('http://localhost:3333/launch-room', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(roomData),
-        }).then(async (res) => {
-            if (res.ok) {
-                toast.success('Room created');
-                const roomId = await res.text();
-                console.log("Room ID:", roomId);
-                redirect(`/${roomId}`);
-            } else {
-                toast.error('Room not created');
-            }
-        });
+        if (isEditing) {
+            roomData.idUrl = dataRoom?.idUrl || "";
+            roomData.players = dataRoom?.players || [];
+            console.log("Room data:", roomData);
+            const result = await fetch(`http://localhost:3333/room/${dataRoom?.idUrl}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(roomData),
+            }).then(async (res) => {
+                if (res.ok) {
+                    const responseData = await res.json();
+                    toast.success('Room updated');
+                    let updatedRoomData = responseData;
+                    if (responseData.roomData) {
+                        updatedRoomData = typeof responseData.roomData === 'string'
+                            ? JSON.parse(responseData.roomData)
+                            : responseData.roomData;
+                    }
+
+                    socket.emit('need_update_room', updatedRoomData.idUrl);
+                    setIsEditing(false);
+                } else {
+                    toast.error('Room not updated');
+                }
+            });
+        } else {
+            const result = await fetch('http://localhost:3333/launch-room', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(roomData),
+            }).then(async (res) => {
+                if (res.ok) {
+                    toast.success('Room created');
+                    const roomId = await res.text();
+                    console.log("Room ID:", roomId);
+                    redirect(`/${roomId}`);
+                } else {
+                    toast.error('Room not created');
+                }
+            });
+        }
     }
 
     return (
@@ -131,7 +180,7 @@ const CreateRoomView = () => {
                             </div>
 
                             <AlertDialogFooter>
-                                <AlertDialogCancel className="bg-white/5 hover:bg-white/10 border-white/10 text-white hover:text-white">Annuler</AlertDialogCancel>
+                                <AlertDialogCancel className="bg-white/5 hover:bg-white/10 border-white/10 text-white hover:text-white" onClick={() => redirect('/')}>Annuler</AlertDialogCancel>
                                 <AlertDialogAction
                                     onClick={handleGuestLogin}
                                     disabled={!guestNameInput.trim()}
@@ -148,7 +197,7 @@ const CreateRoomView = () => {
                 <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col">
 
                     {/* --- HEADER --- */}
-                    <CreateRoomHeader />
+                    <CreateRoomHeader setIsEditing={setIsEditing} isEditing={isEditing} />
 
                     <main className="flex-1 max-w-6xl mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -199,7 +248,7 @@ const CreateRoomView = () => {
                     </main>
 
                     {/* --- STICKY FOOTER (Action) --- */}
-                    <CreateRoomFooter selectedPackName={currentPack?.name} launchRoom={launchRoom} />
+                    <CreateRoomFooter selectedPackName={currentPack?.name} launchRoom={launchRoom} isEditing={isEditing} />
 
                 </div>
             )

@@ -1,13 +1,7 @@
 import React from 'react';
 import { Users, Trophy } from 'lucide-react';
 
-export interface Player {
-    id: number;
-    username: string;
-    score: number;
-    hasGuessed: boolean;
-    answer: string;
-}
+import { Player } from '@/types/Room';
 
 interface LeaderboardProps {
     players: Player[];

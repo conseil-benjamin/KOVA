@@ -10,12 +10,14 @@ import Chat from './Chat';
 import GameArea from './GameArea';
 import GameInput from './GameInput';
 import RoomNotFound from './RoomNotFound';
-import Leaderboard, { Player } from './Leaderboard';
+import Leaderboard from './Leaderboard';
+import { Player } from '@/types/Room';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { Room } from '@/types/Room';
 import { Loader2 } from 'lucide-react';
 import EndGame from './EndGame';
+import CreateRoomView from '../createRoom/CreateRoomView';
 
 interface GameViewProps {
     roomId: string;
@@ -37,6 +39,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     // --- UI STATE ---
     const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isEditingRoom, setIsEditingRoom] = useState(false);
 
     const [timeLeft, setTimeLeft] = useState(0);
     const [timerVisible, setTimerVisible] = useState(false);
@@ -203,6 +206,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     username: data.username,
                     score: data.points,
                     hasGuessed: true,
+                    answer: ""
                 }];
             });
             console.log("salu123", data.username)
@@ -224,6 +228,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('update_room', (room: Room) => {
             setRoomData(room);
+            setScoreToWin(room.scoreToWin);
             console.log("data.room", room)
             for (let i = 0; i < room.players.length; i++) {
                 const player = room.players[i];
@@ -304,6 +309,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         return () => clearInterval(timer);
     }, [timeLeft, roomId, roomData, socket]);
 
+    const handleRestartGame = () => {
+        
+    }
+
     // --- HANDLERS ---
     const handleGameGuess = async (text: string) => {
         // Mock Game Logic check
@@ -370,21 +379,29 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 </div>
             ) : !roomFound ? (
                 <RoomNotFound />
+            ) : isEditingRoom ? (
+                <CreateRoomView
+                    socket={socket}
+                    setRoomData={setRoomData}
+                    isEditing={true}
+                    dataRoom={roomData}
+                    setIsEditing={setIsEditingRoom}
+                />
             ) : isLoading ? (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
                     <div className="flex items-center justify-center h-full">
                         <Loader2 className="w-12 h-12 text-white animate-spin" />
                     </div>
                 </div>
-            ) : isGameEnded ? (
-                <EndGame players={players} />
+            ) : isGameEnded && !isEditingRoom ? (
+                <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} />
             ) : (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
 
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} isGameRunning={isGameRunning} timerVisible={timerVisible} />
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} />

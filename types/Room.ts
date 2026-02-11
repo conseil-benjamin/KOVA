@@ -1,3 +1,12 @@
+export interface Player {
+    id: number;
+    username: string;
+    score: number;
+    hasGuessed: boolean;
+    answer: string;
+    avatar?: string;
+}
+
 export interface Room {
     _id: string;
     idUrl: string;
@@ -6,7 +15,7 @@ export interface Room {
     isPrivate: boolean;
     creator: string;
     maxPlayers: number;
-    players: string[];
+    players: Player[];
     scoreToWin: number;
     timePerRound: number;
     enableBlindTest: boolean;

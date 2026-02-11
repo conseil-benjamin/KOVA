@@ -1,12 +1,17 @@
 import React from 'react';
-import { Trophy, Medal, Home, RotateCcw } from 'lucide-react';
+import { Trophy, Medal, Home, RotateCcw, Edit } from 'lucide-react';
 import { Player } from "./Leaderboard";
 
 interface EndGameProps {
     players: Player[];
+    creator: string;
+    username: string;
+    setIsEditingRoom: (value: boolean) => void;
+    isEditingRoom: boolean;
+    handleRestartGame: () => void;
 }
 
-const EndGame: React.FC<EndGameProps> = ({ players }) => {
+const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEditingRoom, isEditingRoom, handleRestartGame }) => {
     // Trier les joueurs par score décroissant et prendre les 3 meilleurs
     const podium = [...players]
         .sort((a, b) => b.score - a.score)
@@ -68,8 +73,18 @@ const EndGame: React.FC<EndGameProps> = ({ players }) => {
                     <Home size={20} /> Accueil
                 </button>
                 <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105">
-                    <RotateCcw size={20} /> Rejouer
+                    <RotateCcw size={20} onClick={handleRestartGame} /> Rejouer
                 </button>
+                {creator.toLowerCase() === username.toLowerCase() && (
+                    <button
+                        className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105"
+                        onClick={() => {
+                            setIsEditingRoom(!isEditingRoom);
+                        }}
+                    >
+                        <Edit size={20} /> Modifier règles
+                    </button>
+                )}
             </div>
         </div>
     );

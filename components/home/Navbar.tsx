@@ -7,9 +7,10 @@ import Cookies from 'universal-cookie';
 interface NavbarProps {
     isLoggedIn: boolean;
     user: User | null;
+    rooms: Room[];
 }
 
-export default function Navbar({ isLoggedIn, user }: NavbarProps) {
+export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
     const cookies = new Cookies();
 
     const logout = () => {
@@ -36,12 +37,12 @@ export default function Navbar({ isLoggedIn, user }: NavbarProps) {
                 {/* Stats globales (Desktop) */}
                 <div className="hidden md:flex items-center gap-4 text-xs font-mono text-slate-400 mr-4 border-r border-white/10 pr-6">
                     <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                        <span className="text-white font-bold">1,240</span> en ligne
+                        {/*<div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        {/*<span className="text-white font-bold">1,240</span> en ligne*/}
                     </div>
                     <div className="flex items-center gap-1.5">
                         <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                        <span className="text-white font-bold">85</span> parties
+                        <span className="text-white font-bold">{rooms.length}</span> parties
                     </div>
                 </div>
 
