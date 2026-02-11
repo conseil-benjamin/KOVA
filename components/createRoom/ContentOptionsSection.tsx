@@ -1,5 +1,5 @@
 import React from 'react';
-import { Volume2, Ghost } from 'lucide-react';
+import { Volume2, Ghost, MessageSquareQuote, Layers2 } from 'lucide-react';
 
 interface ContentOptionsSectionProps {
     enableBlindTest: boolean;
@@ -64,7 +64,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
             <div className="flex items-center justify-between opacity-50 hover:opacity-100 transition">
                 <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${enableShowWrongAnswers ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
-                        <Ghost className="w-5 h-5" />
+                        <MessageSquareQuote className="w-5 h-5" />
                     </div>
                     <div>
                         <h3 className="font-bold text-white">Réponses</h3>
@@ -84,7 +84,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
             <div className="flex items-center justify-between opacity-50 hover:opacity-100 transition">
                 <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${enableAbbreviations ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
-                        <Ghost className="w-5 h-5" />
+                        <Layers2 className="w-5 h-5" />
                     </div>
                     <div>
                         <h3 className="font-bold text-white">Raccourcis</h3>

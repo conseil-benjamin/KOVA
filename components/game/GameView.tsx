@@ -60,12 +60,13 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleGuestLogin = async () => {
         // todo : vérifier en bdd qu'aucun user ne possède déjà cette username
-        const result = await fetch(`http://localhost:3333/users/${guestNameInput.trim()}`);
+        const result = await fetch(`http://localhost:3333/users/username/${guestNameInput.trim()}`);
         if (result.status !== 200) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
             setUserName(guestNameInput.trim());
         } else {
             toast.error('Username already exists');
+            setUserName("");
             return;
         }
     };

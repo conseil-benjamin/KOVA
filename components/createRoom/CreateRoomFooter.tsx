@@ -21,8 +21,8 @@ const CreateRoomFooter: React.FC<CreateRoomFooterProps> = ({ selectedPackName, l
                 </div>
 
                 <div className="flex items-center gap-3 flex-1 md:flex-none justify-end">
-                    <button onClick={() => !isConsult ? setIsConsult(true) : !isEditing ? setIsEditing(false) : redirect('/')} className="px-6 py-3 rounded-xl font-bold text-slate-300 hover:text-white transition hidden md:block">
-                        {isConsult ? 'Retour' : !isEditing ? 'Annuler' : 'Retour'}
+                    <button onClick={() => isConsult ? setIsConsult(false) : isEditing ? setIsEditing(false) : redirect('/')} className="px-6 py-3 rounded-xl font-bold text-slate-300 hover:text-white transition hidden md:block">
+                        {isConsult ? 'Retour' : isEditing ? 'Annuler' : 'Retour'}
                     </button>
                     {!isConsult && (
                         <button onClick={launchRoom} className="flex-1 md:flex-none px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 active:scale-95 transition shadow-lg shadow-purple-900/20 flex items-center justify-center gap-2">
