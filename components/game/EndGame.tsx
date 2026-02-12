@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trophy, Medal, Home, RotateCcw, Edit } from 'lucide-react';
 import { Player } from "./Leaderboard";
+import Lobby from './Lobby';
 
 interface EndGameProps {
     players: Player[];
@@ -9,11 +10,14 @@ interface EndGameProps {
     setIsEditingRoom: (value: boolean) => void;
     isEditingRoom: boolean;
     handleRestartGame: () => void;
+    oldPlayers: Player[];
+    handleLeaveGame: () => void;
 }
 
-const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEditingRoom, isEditingRoom, handleRestartGame }) => {
+const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEditingRoom, isEditingRoom, handleRestartGame, oldPlayers, handleLeaveGame }) => {
     // Trier les joueurs par score décroissant et prendre les 3 meilleurs
-    const podium = [...players]
+
+    const podium = [...oldPlayers]
         .sort((a, b) => b.score - a.score)
         .slice(0, 3);
 
@@ -67,14 +71,22 @@ const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEdit
                 })}
             </div>
 
+            <Lobby players={players} />
+
             {/* Actions */}
             <div className="flex gap-4 mt-8">
                 <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-6 py-3 rounded-full transition-colors">
                     <Home size={20} /> Accueil
                 </button>
-                <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105">
-                    <RotateCcw size={20} onClick={handleRestartGame} /> Rejouer
-                </button>
+                {players.some(player => player.username.toLowerCase() === username.toLowerCase()) ? (
+                    <button onClick={handleLeaveGame} className="flex items-center gap-2 bg-red-600 hover:bg-red-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-red-500/20 transition-transform hover:scale-105">
+                        <RotateCcw size={20} /> Quitter
+                    </button>
+                ) : (
+                    <button onClick={handleRestartGame} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105">
+                        <RotateCcw size={20} /> Rejouer
+                    </button>
+                )}
                 {creator.toLowerCase() === username.toLowerCase() && (
                     <button
                         className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105"
@@ -82,7 +94,7 @@ const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEdit
                             setIsEditingRoom(!isEditingRoom);
                         }}
                     >
-                        <Edit size={20} className='cursor-pointer'/> Modifier règles
+                        <Edit size={20} className='cursor-pointer' /> Modifier règles
                     </button>
                 )}
             </div>

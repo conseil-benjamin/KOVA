@@ -46,6 +46,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [timerVisible, setTimerVisible] = useState(false);
     const [hasGuessed, setHasGuessed] = useState(false);
     const [players, setPlayers] = useState<Player[]>([]);
+    const [oldPlayers, setOldPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
 
     // --- GAME STATE ---
@@ -89,6 +90,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setIsGameRunning(data.isGameRunning);
                 setPlayers(data.players);
                 setScoreToWin(data.scoreToWin);
+                setOldPlayers(data.oldPlayers);
 
                 const endTime = new Date(data.timerEnd).getTime();
                 const secondsRemaining = Math.floor((endTime - Date.now()));
@@ -258,10 +260,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }
         });
 
-        newSocket.on('game_finished', () => {
+        newSocket.on('game_finished', (oldPlayers: Player[]) => {
             console.log("game_finished");
             setIsGameRunning(false);
             setIsGameEnded(true);
+            setOldPlayers(oldPlayers);
         });
 
         newSocket.connect();
@@ -283,15 +286,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         };
     }, [roomId]);
 
-    // --- JOIN ROOM LOGIC ---
-    useEffect(() => {
-        if (socket && isConnected && userName && roomFound) {
-            console.log("Tentative de rejoindre la room:", roomId, "avec", userName);
-            const avatar = cookies.get('userAvatar') || 'red';
-            socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar });
-        }
-    }, [socket, isConnected, userName, roomId]);
-
     // --- LOGIQUE TIMER ---
     useEffect(() => {
         if (timeLeft <= 0) return;
@@ -311,11 +305,33 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         return () => clearInterval(timer);
     }, [timeLeft, roomId, roomData, socket]);
 
-    const handleRestartGame = () => {
+    // --- HANDLERS ---
 
+    const handleJoinRoom = () => {
+        console.log("handleJoinRoom");
+        if (socket && isConnected && userName && roomFound) {
+            console.log("Tentative de rejoindre la room:", roomId, "avec", userName);
+            const avatar = cookies.get('userAvatar') || 'red';
+            socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar });
+        }
     }
 
-    // --- HANDLERS ---
+    const handleRestartGame = () => {
+        console.log("handleRestartGame");
+        if (socket && isConnected) {
+            console.log(userName);
+            const avatar = cookies.get('userAvatar') || 'red';
+            socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar });
+        }
+    }
+
+    const handleLeaveGame = () => {
+        console.log("handleLeaveGame");
+        if (socket && isConnected) {
+            socket.emit('leave_room', roomId.toUpperCase(), userName);
+        }
+    }
+
     const handleGameGuess = async (text: string) => {
         // Mock Game Logic check
         const guess = text.toUpperCase().trim();
@@ -410,14 +426,14 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     </div>
                 </div>
             ) : isGameEnded && !isEditingRoom ? (
-                <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} />
+                <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} />
             ) : (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
 
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} />
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame}/>
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} />

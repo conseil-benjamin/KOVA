@@ -12,9 +12,11 @@ interface GameHeaderProps {
     timerVisible?: boolean;
     setIsConsult: (value: boolean) => void;
     isConsult?: boolean;
+    handleJoinRoom?: () => void;
+    handleLeaveGame?: () => void;
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame }) => {
 
     return (
         <header className="flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-30 shadow-lg h-14 md:h-16 pt-2 md:pt-0">
@@ -42,11 +44,13 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                         <div className='flex gap-2'>
                             <button className='px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition cursor-pointer' onClick={() => setIsEditingRoom(!isEditingRoom)}>Modifier la partie</button>
                             <button className="px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition cursor-pointer" onClick={handleStartGame}>Lancer partie</button>
+                            <button className="px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition cursor-pointer" onClick={handleJoinRoom}>Rejoindre</button>
                         </div>
                     )}
                     {!isGameRunning && creator !== currentUser && (
                         <div className='flex gap-2'>
                             <button className='px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition cursor-pointer' onClick={() => setIsConsult(!isConsult)}>Consulter les règles</button>
+                            <button className="px-4 py-2 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition cursor-pointer" onClick={handleJoinRoom}>Rejoindre</button>
                         </div>
                     )}
                 </div>
