@@ -61,7 +61,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleGuestLogin = async () => {
         // todo : vérifier en bdd qu'aucun user ne possède déjà cette username
-        const result = await fetch(`http://localhost:3333/users/username/${guestNameInput.trim()}`);
+        const result = await fetch(`/api/users/username/${guestNameInput.trim()}`);
         if (result.status !== 200) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
             setUserName(guestNameInput.trim());
@@ -75,7 +75,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const getRoomData = async () => {
         try {
             setIsLoading(true);
-            const res = await fetch(`http://localhost:3333/room/${roomId.toUpperCase()}`);
+            const res = await fetch(`/api/room/${roomId.toUpperCase()}`);
             const data = await res.json();
             console.log(res.status)
             if (data === null || data === undefined || res.status === 404) {

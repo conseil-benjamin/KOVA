@@ -31,7 +31,7 @@ const HomeMockup = () => {
 
       const fetchUser = async () => {
         try {
-          const res = await fetch(`http://localhost:3333/users/${email}`, {
+          const res = await fetch(`/api/users/${email}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const HomeMockup = () => {
 
     const fetchPublicRooms = async () => {
       try {
-        const res = await fetch(`http://localhost:3333/rooms`, {
+        const res = await fetch(`/api/rooms`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const HomeMockup = () => {
       ) : (
         <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white pb-20 md:pb-0">
 
-          <Navbar isLoggedIn={isLoggedIn} user={user} rooms={rooms}/>
+          <Navbar isLoggedIn={isLoggedIn} user={user} rooms={rooms} />
 
           {/* --- CONTENT LAYOUT --- */}
           <div className="pt-24 px-4 md:px-8 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">

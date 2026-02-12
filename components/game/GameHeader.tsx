@@ -1,5 +1,6 @@
 import React from 'react';
 import { Hexagon, Clock, Menu } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 interface GameHeaderProps {
     timeLeft: number;
@@ -30,7 +31,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                         <span className="font-black text-[10px] md:text-xs text-purple-300">K</span>
                     </div>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col" onClick={() => redirect('/')}>
                     <h1 className="font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-indigo-400 italic drop-shadow-[0_0_10px_rgba(168,85,247,0.5)] text-2xl md:text-3xl" style={{ fontFamily: '"Arial Black", sans-serif' }}>
                         KOVA
                     </h1>
@@ -79,7 +80,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 ring-2 ring-white/20"></div>
                 </div>
             </div>
-        </header>
+        </header >
     );
 };
 

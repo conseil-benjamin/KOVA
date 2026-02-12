@@ -31,7 +31,7 @@ const AuthMockup = () => {
 
         if (isLogin) {
             const base64encodedData = Buffer.from(`${formData.email}:${formData.password}`).toString('base64');
-            const res = await fetch('http://localhost:3333/login', {
+            const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const AuthMockup = () => {
                 toast.error('Une erreur est survenue');
             }
         } else {
-            const res = await fetch('http://localhost:3333/register', {
+            const res = await fetch('/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -76,7 +76,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     const handleGuestLogin = async () => {
         setIsLoading(true);
-        const result = await fetch(`http://localhost:3333/users/username/${guestNameInput.trim()}`, {
+        const result = await fetch(`/api/users/username/${guestNameInput.trim()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             roomData.idUrl = dataRoom?.idUrl || "";
             roomData.players = dataRoom?.players || [];
             console.log("Room data:", roomData);
-            const result = await fetch(`http://localhost:3333/room/${dataRoom?.idUrl}`, {
+            const result = await fetch(`/api/room/${dataRoom?.idUrl}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                 }
             });
         } else {
-            const result = await fetch('http://localhost:3333/launch-room', {
+            const result = await fetch('/api/launch-room', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
