@@ -236,31 +236,30 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         newSocket.on('update_room', (room: Room) => {
             setRoomData(room);
             setScoreToWin(room.scoreToWin);
-            console.log("data.room", room)
-            for (let i = 0; i < room.players.length; i++) {
-                const player = room.players[i];
-                console.log("player", player)
-                setPlayers(prev => {
-                    const playerIndex = prev.findIndex(p => p.username.toLowerCase() === player.username.toLowerCase());
-                    if (playerIndex !== -1) {
-                        const newPlayers = [...prev];
-                        newPlayers[playerIndex] = {
-                            ...newPlayers[playerIndex],
-                            score: player.score,
-                            hasGuessed: player.hasGuessed,
+
+            setPlayers(prev => {
+                return room.players.map(roomPlayer => {
+                    const existingPlayer = prev.find(p => p.username.toLowerCase() === roomPlayer.username.toLowerCase());
+
+                    if (existingPlayer) {
+                        return {
+                            ...existingPlayer,
+                            score: roomPlayer.score,
+                            hasGuessed: roomPlayer.hasGuessed,
+                            avatar: roomPlayer.avatar || existingPlayer.avatar
                         };
-                        return newPlayers;
                     } else {
-                        return [...prev, {
+                        return {
                             id: Date.now(),
-                            username: player.username,
-                            score: player.score,
-                            hasGuessed: player.hasGuessed,
-                            answer: ""
-                        }];
+                            username: roomPlayer.username,
+                            score: roomPlayer.score,
+                            hasGuessed: roomPlayer.hasGuessed,
+                            answer: "",
+                            avatar: roomPlayer.avatar
+                        };
                     }
                 });
-            }
+            });
         });
 
         newSocket.on('game_finished', (oldPlayers: Player[]) => {
@@ -443,7 +442,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <Loader2 className="w-12 h-12 text-white animate-spin" />
                     </div>
                 </div>
-            ) : isGameEnded && !isEditingRoom ? (
+            ) : (isGameEnded && !isEditingRoom && oldPlayers) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} />
             ) : (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
