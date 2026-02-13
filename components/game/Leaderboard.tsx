@@ -36,7 +36,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players, scoreToWin }) => {
             <div className="hidden md:block h-[1px] mx-4 bg-gradient-to-r from-transparent via-white/5 to-transparent mb-2" />
 
             <div className="flex-1 flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible md:overflow-y-auto p-2 md:p-3 space-x-2 md:space-x-0 md:space-y-2 no-scrollbar mask-gradient-right md:mask-none">
-                {[...players].sort((a, b) => b.score - a.score).map((player, idx) => (
+                {players && players.length > 0 && [...players].sort((a, b) => b.score - a.score).map((player, idx) => (
 
                     // CARD
                     <div key={player.username} className={`

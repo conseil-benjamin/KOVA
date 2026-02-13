@@ -18,6 +18,7 @@ import { Room } from '@/types/Room';
 import { Loader2 } from 'lucide-react';
 import EndGame from './EndGame';
 import CreateRoomView from '../createRoom/CreateRoomView';
+import { redirect } from 'next/navigation';
 
 interface GameViewProps {
     roomId: string;
@@ -84,8 +85,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             } else {
                 setRoomFound(true);
                 setRoomData(data);
-                console.log(data)
-                console.log(data.creator)
                 setCreator(data.creator);
                 setIsGameRunning(data.isGameRunning);
                 setPlayers(data.players);
@@ -97,15 +96,18 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
                 if (data.status === "FINISHED") {
                     setIsGameEnded(true);
+                } else if (data.status === "TIMER_START") {
+                    gameStarted(data);
                 }
 
-                for (let i = 0; i < data.players.length; i++) {
-                    const player = data.players[i];
-                    if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
-                        setHasGuessed(true);
+                if (data.players && data.players.length > 0) {
+                    for (let i = 0; i < data.players.length; i++) {
+                        const player = data.players[i];
+                        if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
+                            setHasGuessed(true);
+                        }
                     }
                 }
-
                 setTimeLeft(Math.max(0, secondsRemaining));
                 setTimerVisible(true);
             }
@@ -122,6 +124,25 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
         }
     };
+
+    async function gameStarted(data: { timerEnd: Date }) {
+        const endTime = new Date(data.timerEnd).getTime() / 1000;
+        const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
+        console.log(secondsRemaining);
+
+
+        setGameStartingSoonTimer(secondsRemaining);
+
+        const timer = setInterval(() => {
+            setGameStartingSoonTimer((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    }
 
     // --- SOCKET CONNECTION ---
     useEffect(() => {
@@ -174,23 +195,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
-            const endTime = new Date(data.timerEnd).getTime() / 1000;
-            const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
-            console.log(endTime);
-            console.log(Date.now() / 1000);
-            console.log(secondsRemaining);
-
-            setGameStartingSoonTimer(secondsRemaining);
-
-            const timer = setInterval(() => {
-                setGameStartingSoonTimer((prev) => {
-                    if (prev <= 1) {
-                        clearInterval(timer);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
+            gameStarted(data);
         });
 
         newSocket.on('correct_response', (data: { message: string, username: string, points: number }) => {
@@ -213,8 +218,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     answer: ""
                 }];
             });
-            console.log("salu123", data.username)
-            console.log("salu123", userName)
             if (data.username.toLowerCase() === userName.toLowerCase()) {
                 setHasGuessed(true);
             }
@@ -238,7 +241,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 const player = room.players[i];
                 console.log("player", player)
                 setPlayers(prev => {
-                    const playerIndex = prev.findIndex(p => p.username === player.username);
+                    const playerIndex = prev.findIndex(p => p.username.toLowerCase() === player.username.toLowerCase());
                     if (playerIndex !== -1) {
                         const newPlayers = [...prev];
                         newPlayers[playerIndex] = {
@@ -305,6 +308,20 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         return () => clearInterval(timer);
     }, [timeLeft, roomId, roomData, socket]);
 
+    // --- AUTO JOIN LOGIC ---
+    useEffect(() => {
+        if (socket && isConnected && userName) {
+            const isCreator = creator.toLowerCase() === userName.toLowerCase();
+            const isPlayer = players.some(p => p.username.toLowerCase() === userName.toLowerCase());
+
+            if (isCreator || isPlayer) {
+                console.log("Auto-joining room for", userName);
+                const avatar = cookies.get('userAvatar') || 'red';
+                socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar });
+            }
+        }
+    }, [socket, isConnected, creator, userName, roomId]);
+
     // --- HANDLERS ---
 
     const handleJoinRoom = () => {
@@ -329,6 +346,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         console.log("handleLeaveGame");
         if (socket && isConnected) {
             socket.emit('leave_room', roomId.toUpperCase(), userName);
+            redirect("/")
         }
     }
 
@@ -433,7 +451,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame}/>
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} />

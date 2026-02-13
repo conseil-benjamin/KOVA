@@ -118,7 +118,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                                     </div>
                                 )}
                                 <div className="bg-black/60 backdrop-blur px-2 py-1 rounded text-[10px] text-white flex items-center gap-1">
-                                    <Users className="w-3 h-3" /> {room.players.length + "/" + room.maxPlayers}
+                                    <Users className="w-3 h-3" /> {room.players && room.players.length + "/" + room.maxPlayers}
                                 </div>
                             </div>
                         </div>
@@ -130,11 +130,6 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                                     <h3 className="font-bold text-white group-hover:text-purple-400 transition">{room.name}</h3>
                                     <p className="text-xs text-slate-500">{room.pack}</p>
                                 </div>
-                                {/* room.status === 'playing' ? (
-                                    <span className="text-[10px] font-mono text-green-400 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">EN JEU ({room.round})</span>
-                                ) : (
-                                    <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">LOBBY</span>
-                                ) */}
                             </div>
 
                             <div className="flex gap-2 mt-4">

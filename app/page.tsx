@@ -17,7 +17,7 @@ import { Room } from '@/types/Room';
 const HomeMockup = () => {
   // --- ÉTAT ---
   const [activeTab, setActiveTab] = useState('ALL');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' ou 'list'
+  const [viewMode, setViewMode] = useState('grid');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
