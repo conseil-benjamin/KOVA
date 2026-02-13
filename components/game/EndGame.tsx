@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Medal, Home, RotateCcw, Edit } from 'lucide-react';
+import { Trophy, Medal, Home, RotateCcw, Edit, LogOut } from 'lucide-react';
 import { Player } from "./Leaderboard";
 import Lobby from './Lobby';
 
@@ -81,7 +81,7 @@ const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEdit
                 </button>
                 {players.some(player => player.username.toLowerCase() === username.toLowerCase()) ? (
                     <button onClick={handleLeaveGame} className="flex items-center gap-2 bg-red-600 hover:bg-red-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-red-500/20 transition-transform hover:scale-105">
-                        <RotateCcw size={20} /> Quitter
+                        <LogOut size={20} /> Quitter
                     </button>
                 ) : (
                     <button onClick={handleJoinRoom} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105">

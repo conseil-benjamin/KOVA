@@ -17,9 +17,10 @@ interface GameHeaderProps {
     handleJoinRoom?: () => void;
     handleLeaveGame?: () => void;
     players?: Player[];
+    gameStartingSoonTimer?: number;
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const userInGame = players?.find((player) => player.username.toLowerCase() === currentUser?.toLowerCase());
 
@@ -77,7 +78,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
 
                 {/* Timer Display */}
                 {
-                    (isGameRunning && timerVisible) &&
+                    (isGameRunning && timerVisible && gameStartingSoonTimer === 0 && timeLeft > 0) &&
                     <div className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-300 ${timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700'} `}>
                         <Clock className={`w-3 h-3 md:w-4 md:h-4 ${timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400'} `} />
                         <span className={`font-mono font-nums ${timeLeft < 5 ? 'text-red-400' : 'text-cyan-400'} text-lg md:text-xl`}>

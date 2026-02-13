@@ -269,11 +269,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             });
         });
 
-        newSocket.on('game_finished', (oldPlayers: Player[]) => {
+        newSocket.on('game_finished', (data: { message: string, players: Player[] }) => {
             console.log("game_finished");
-            console.log("oldPlayers", oldPlayers);
+            console.log("oldPlayers", data.players);
+            setPlayers([]);
             setIsGameRunning(false);
-            setOldPlayers(oldPlayers);
+            setOldPlayers(data.players);
         });
 
         newSocket.connect();
@@ -296,10 +297,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     }, [roomId]);
 
     useEffect(() => {
-        if (oldPlayers.length > 0 && !isGameEnded && !isGameRunning) {
+        if (oldPlayers && oldPlayers.length > 0 && !isGameEnded && !isGameRunning && players.length === 0) {
             setIsGameEnded(true);
         }
-    }, [oldPlayers]);
+    }, [oldPlayers, players]);
 
     // --- LOGIQUE TIMER ---
     useEffect(() => {
@@ -464,7 +465,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} />
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer}
+                        />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} />
