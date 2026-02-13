@@ -10,11 +10,12 @@ interface EndGameProps {
     setIsEditingRoom: (value: boolean) => void;
     isEditingRoom: boolean;
     handleRestartGame: () => void;
+    handleJoinRoom: () => void;
     oldPlayers: Player[];
     handleLeaveGame: () => void;
 }
 
-const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEditingRoom, isEditingRoom, handleRestartGame, oldPlayers, handleLeaveGame }) => {
+const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEditingRoom, isEditingRoom, handleRestartGame, handleJoinRoom, oldPlayers, handleLeaveGame }) => {
     // Trier les joueurs par score décroissant et prendre les 3 meilleurs
 
     const podium = [...oldPlayers]
@@ -83,19 +84,25 @@ const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEdit
                         <RotateCcw size={20} /> Quitter
                     </button>
                 ) : (
-                    <button onClick={handleRestartGame} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105">
+                    <button onClick={handleJoinRoom} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105">
                         <RotateCcw size={20} /> Rejouer
                     </button>
                 )}
                 {creator.toLowerCase() === username.toLowerCase() && (
-                    <button
-                        className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105"
-                        onClick={() => {
-                            setIsEditingRoom(!isEditingRoom);
-                        }}
-                    >
-                        <Edit size={20} className='cursor-pointer' /> Modifier règles
-                    </button>
+                    <>
+                        <button
+                            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-indigo-500/20 transition-transform hover:scale-105"
+                            onClick={() => {
+                                setIsEditingRoom(!isEditingRoom);
+                            }}
+                        >
+                            <Edit size={20} className='cursor-pointer' /> Modifier règles
+                        </button>
+
+                        <button onClick={handleRestartGame} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-green-500/20 transition-transform hover:scale-105">
+                            <RotateCcw size={20} /> Lancer une nouvelle partie
+                        </button>
+                    </>
                 )}
             </div>
         </div>

@@ -164,9 +164,14 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }]);
         });
 
-        newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date, isGameRunning: boolean }) => {
+        newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
-            setQuestion(data.question['fr']);
+            console.log(roomData?.language);
+            if (data.language === "fr") {
+                setQuestion(data.question['fr']);
+            } else {
+                setQuestion(data.question['en']);
+            }
             setImageUrl(data.imageUrl);
             setResponse('');
 
@@ -196,6 +201,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
             gameStarted(data);
+            setIsGameRunning(true);
+            setIsGameEnded(false);
         });
 
         newSocket.on('correct_response', (data: { message: string, username: string, points: number }) => {
@@ -264,8 +271,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('game_finished', (oldPlayers: Player[]) => {
             console.log("game_finished");
+            console.log("oldPlayers", oldPlayers);
             setIsGameRunning(false);
-            setIsGameEnded(true);
             setOldPlayers(oldPlayers);
         });
 
@@ -287,6 +294,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             newSocket.off('display_response');
         };
     }, [roomId]);
+
+    useEffect(() => {
+        if (oldPlayers.length > 0 && !isGameEnded && !isGameRunning) {
+            setIsGameEnded(true);
+        }
+    }, [oldPlayers]);
 
     // --- LOGIQUE TIMER ---
     useEffect(() => {
@@ -334,10 +347,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleRestartGame = () => {
         console.log("handleRestartGame");
-        if (socket && isConnected) {
+        if (socket && isConnected && (creator === userName)) {
             console.log(userName);
-            const avatar = cookies.get('userAvatar') || 'red';
-            socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar });
+            // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
+            socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
+            setIsGameRunning(true);
+            setIsGameEnded(false);
         }
     }
 
@@ -352,8 +367,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const handleGameGuess = async (text: string) => {
         // Mock Game Logic check
         const guess = text.toUpperCase().trim();
-
-        socket?.emit('verify_response', roomId.toUpperCase(), guess, userName);
+        socket?.emit('verify_response', roomId.toUpperCase(), guess, userName, roomData?.language);
     };
 
     const handleChatMessage = (text: string) => {
@@ -442,8 +456,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <Loader2 className="w-12 h-12 text-white animate-spin" />
                     </div>
                 </div>
-            ) : (isGameEnded && !isEditingRoom && oldPlayers) ? (
-                <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} />
+            ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
+                <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} />
             ) : (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
 

@@ -24,4 +24,5 @@ export interface Room {
     activeItems: string[];
     createdAt: string;
     timer: number;
+    language: string;
 }
