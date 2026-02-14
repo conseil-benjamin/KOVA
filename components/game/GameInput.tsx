@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send, ChevronDown, MessageSquare } from 'lucide-react';
+import { Player } from '@/types/Room';
 
 interface ChatMessage {
     id: number | string;
@@ -16,10 +17,12 @@ interface GameInputProps {
     onSendGuess: (msg: string) => void;
     onSendChat: (msg: string) => void;
     hasGuessed: boolean;
+    players: Player[];
+    username: string;
 }
 
 const GameInput: React.FC<GameInputProps> = ({
-    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed
+    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username
 }) => {
     // Game Answer State
     const [guessVal, setGuessVal] = useState('');
@@ -39,6 +42,8 @@ const GameInput: React.FC<GameInputProps> = ({
         onSendChat(chatVal);
         setChatVal('');
     };
+
+    const isInGame = players.some((player) => player.username.toLowerCase() === username.toLowerCase());
 
     return (
         <div className="flex-none bg-[#0f0f18]/80 backdrop-blur-xl border-t border-white/10 z-40 relative p-2 md:p-4">
@@ -107,7 +112,7 @@ const GameInput: React.FC<GameInputProps> = ({
                     value={guessVal}
                     onChange={(e) => setGuessVal(e.target.value)}
                     placeholder={hasGuessed ? "Attente des autres..." : "Ta réponse..."}
-                    disabled={hasGuessed}
+                    disabled={hasGuessed || !isInGame}
                     className={`
                         flex-1 bg-white/5 border-2 transition-all shadow-inner outline-none
                         ${hasGuessed ? 'border-green-500/50 text-green-400 placeholder:text-green-500/50' : 'border-white/10 focus:border-purple-500 text-white placeholder:text-slate-500'}
@@ -116,7 +121,7 @@ const GameInput: React.FC<GameInputProps> = ({
                 />
                 <button
                     type="submit"
-                    disabled={hasGuessed || !guessVal}
+                    disabled={hasGuessed || !guessVal || !isInGame}
                     className={`
                         flex-shrink-0 transition-all shadow-lg flex items-center justify-center
                         ${hasGuessed ? 'bg-slate-800 opacity-50' : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 active:scale-95 text-white'}

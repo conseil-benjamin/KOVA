@@ -18,9 +18,10 @@ interface GameHeaderProps {
     handleLeaveGame?: () => void;
     players?: Player[];
     gameStartingSoonTimer?: number;
+    handleCancelStartGame?: () => void;
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const userInGame = players?.find((player) => player.username.toLowerCase() === currentUser?.toLowerCase());
 
@@ -50,7 +51,9 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                     {creator === currentUser && !isGameRunning && (
                         <div className='flex gap-2'>
                             <button className='px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition border border-white/10 text-sm font-medium' onClick={() => setIsEditingRoom(!isEditingRoom)}>Modifier</button>
-                            {players && players.length > 0 && (
+                            {players && players.length > 0 && gameStartingSoonTimer != 0 ? (
+                                <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleCancelStartGame}>Annuler</button>
+                            ) : (
                                 <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleStartGame}>Lancer</button>
                             )}
                             {!userInGame ? (

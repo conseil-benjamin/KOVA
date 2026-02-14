@@ -99,9 +99,11 @@ const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEdit
                             <Edit size={20} className='cursor-pointer' /> Modifier règles
                         </button>
 
-                        <button onClick={handleRestartGame} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-green-500/20 transition-transform hover:scale-105">
-                            <RotateCcw size={20} /> Lancer une nouvelle partie
-                        </button>
+                        {players.length > 0 && players.some(player => player.username.toLowerCase() === username.toLowerCase()) && (
+                            <button onClick={handleRestartGame} className="flex items-center gap-2 bg-green-600 hover:bg-green-500 px-8 py-3 rounded-full font-bold shadow-lg shadow-green-500/20 transition-transform hover:scale-105">
+                                <RotateCcw size={20} /> Lancer une nouvelle partie
+                            </button>
+                        )}
                     </>
                 )}
             </div>

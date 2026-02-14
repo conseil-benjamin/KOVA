@@ -164,6 +164,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }]);
         });
 
+        newSocket.on('cancel_start', () => {
+            setGameStartingSoonTimer(0);
+            toast.error('Game cancelled');
+        });
+
         newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
             console.log(roomData?.language);
@@ -201,7 +206,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
             gameStarted(data);
-            setIsGameRunning(true);
             setIsGameEnded(false);
         });
 
@@ -337,6 +341,14 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     // --- HANDLERS ---
 
+    const handleCancelStartGame = () => {
+        console.log("handleCancelStartGame");
+        if (socket && isConnected && (creator === userName)) {
+            socket?.emit('cancel_start', roomId);
+            setIsGameRunning(false);
+        }
+    }
+
     const handleJoinRoom = () => {
         console.log("handleJoinRoom");
         if (socket && isConnected && userName && roomFound) {
@@ -350,9 +362,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         console.log("handleRestartGame");
         if (socket && isConnected && (creator === userName)) {
             console.log(userName);
-            // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
             socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
-            setIsGameRunning(true);
             setIsGameEnded(false);
         }
     }
@@ -465,7 +475,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer}
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame}
                         />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
@@ -497,6 +507,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             onSendGuess={handleGameGuess}
                             onSendChat={handleChatMessage}
                             hasGuessed={hasGuessed}
+                            players={players}
+                            username={userName}
                         />
 
                     </div>
