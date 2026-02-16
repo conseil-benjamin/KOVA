@@ -46,6 +46,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [timeLeft, setTimeLeft] = useState(0);
     const [timerVisible, setTimerVisible] = useState(false);
     const [hasGuessed, setHasGuessed] = useState(false);
+    const [focusInputResponse, setFocusInputResponse] = useState(false);
     const [players, setPlayers] = useState<Player[]>([]);
     const [oldPlayers, setOldPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
@@ -97,7 +98,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 if (data.status === "FINISHED") {
                     setIsGameEnded(true);
                 } else if (data.status === "TIMER_START") {
-                    gameStarted(data);
+                    gameStartingSoon(data);
                 }
 
                 if (data.players && data.players.length > 0) {
@@ -125,10 +126,13 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         }
     };
 
-    async function gameStarted(data: { timerEnd: Date }) {
-        const endTime = new Date(data.timerEnd).getTime() / 1000;
+    async function gameStartingSoon(timerEnd: Date) {
+        // todo : problème ici je recois un objet Room au lieu d'une date
+        console.log("before", timerEnd);
+        const endTime = new Date(timerEnd).getTime() / 1000;
+        console.log("after",endTime);
         const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
-        console.log(secondsRemaining);
+        console.log("total", secondsRemaining);
 
 
         setGameStartingSoonTimer(secondsRemaining);
@@ -183,10 +187,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             const endTime = new Date(data.timerEnd).getTime() / 1000;
             const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
 
-            setTimeLeft(Math.max(0, secondsRemaining));
+            // todo : besoin de trouver un meilleur fix que de faire + 1
+            setTimeLeft(Math.max(0, (secondsRemaining + 1)));
             setTimerVisible(true);
             setStartTimer(true);
             setIsGameRunning(data.isGameRunning);
+            setFocusInputResponse(true);
         });
 
         newSocket.on('wrong_response', (data: { message: string, username: string, answer: string }) => {
@@ -205,7 +211,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
-            gameStarted(data);
+            gameStartingSoon(data.timerEnd);
             setIsGameEnded(false);
         });
 
@@ -239,7 +245,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setResponse(data.response);
             setHasGuessed(false);
             resetAnswersPlayers();
-            console.log("salu1234", data.response)
             setTimerVisible(false);
             setTimeLeft(0);
         });
@@ -305,25 +310,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setIsGameEnded(true);
         }
     }, [oldPlayers, players]);
-
-    // --- LOGIQUE TIMER ---
-    useEffect(() => {
-        if (timeLeft <= 0) return;
-
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1 && startTimer) {
-                    clearInterval(timer);
-
-                    setStartTimer(false);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [timeLeft, roomId, roomData, socket]);
 
     // --- AUTO JOIN LOGIC ---
     useEffect(() => {
@@ -475,7 +461,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame}
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer}
                         />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
@@ -509,6 +495,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             hasGuessed={hasGuessed}
                             players={players}
                             username={userName}
+                            focusInputResponse={focusInputResponse}
+                            setFocusInputResponse={setFocusInputResponse}
+                            timerVisible={timerVisible}
                         />
 
                     </div>

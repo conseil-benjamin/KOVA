@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Send, ChevronDown, MessageSquare } from 'lucide-react';
 import { Player } from '@/types/Room';
 
@@ -19,15 +19,19 @@ interface GameInputProps {
     hasGuessed: boolean;
     players: Player[];
     username: string;
+    focusInputResponse: boolean;
+    setFocusInputResponse: (val: boolean) => void;
+    timerVisible: boolean;
 }
 
 const GameInput: React.FC<GameInputProps> = ({
-    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username
+    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username, focusInputResponse, setFocusInputResponse, timerVisible
 }) => {
     // Game Answer State
     const [guessVal, setGuessVal] = useState('');
     // Chat Message State
     const [chatVal, setChatVal] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const handleGuessSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,8 +47,14 @@ const GameInput: React.FC<GameInputProps> = ({
         setChatVal('');
     };
 
-    const isInGame = players.some((player) => player.username.toLowerCase() === username.toLowerCase());
+    useEffect(() => {
+        if (focusInputResponse && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [focusInputResponse]);
 
+    const isInGame = players.some((player) => player.username.toLowerCase() === username.toLowerCase());
+    console.log(focusInputResponse);
     return (
         <div className="flex-none bg-[#0f0f18]/80 backdrop-blur-xl border-t border-white/10 z-40 relative p-2 md:p-4">
 
@@ -108,20 +118,22 @@ const GameInput: React.FC<GameInputProps> = ({
 
             <form onSubmit={handleGuessSubmit} className="max-w-4xl mx-auto relative flex gap-2 md:gap-4 items-center">
                 <input
+                    ref={inputRef}
                     type="text"
                     value={guessVal}
+                    onFocus={() => setFocusInputResponse(false)}
                     onChange={(e) => setGuessVal(e.target.value)}
                     placeholder={hasGuessed ? "Attente des autres..." : "Ta réponse..."}
-                    disabled={hasGuessed || !isInGame}
+                    disabled={hasGuessed || !isInGame || !timerVisible}
                     className={`
                         flex-1 bg-white/5 border-2 transition-all shadow-inner outline-none
                         ${hasGuessed ? 'border-green-500/50 text-green-400 placeholder:text-green-500/50' : 'border-white/10 focus:border-purple-500 text-white placeholder:text-slate-500'}
-                        rounded-xl md:rounded-2xl py-3 pl-4 pr-10 md:py-4 md:pl-6 md:pr-12 text-base md:text-lg
+                        rounded-xl md:rounded-2xl py-3 pl-4 pr-10 md:py-4 md:pl-6 md:pr-12 text-base md:text-lg text-center
                     `}
                 />
                 <button
                     type="submit"
-                    disabled={hasGuessed || !guessVal || !isInGame}
+                    disabled={hasGuessed || !guessVal || !isInGame || !timerVisible}
                     className={`
                         flex-shrink-0 transition-all shadow-lg flex items-center justify-center
                         ${hasGuessed ? 'bg-slate-800 opacity-50' : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 active:scale-95 text-white'}
@@ -136,3 +148,4 @@ const GameInput: React.FC<GameInputProps> = ({
 };
 
 export default GameInput;
+

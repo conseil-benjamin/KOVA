@@ -90,7 +90,9 @@ const HomeMockup = () => {
   return (
     <>
       {loading ? (
-        <LoadingPage />
+        <div className="flex items-center justify-center h-[100dvh] bg-[#0a0a0f] w-full">
+          <LoadingPage />
+        </div>
       ) : (
         <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white pb-20 md:pb-0">
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Hexagon, Clock, Menu, X, Play, Settings, BookOpen, LogOut } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { Player } from '@/types/Room';
@@ -19,11 +19,33 @@ interface GameHeaderProps {
     players?: Player[];
     gameStartingSoonTimer?: number;
     handleCancelStartGame?: () => void;
+    setStartTimer: (value: boolean) => void;
+    setTimeLeft: React.Dispatch<React.SetStateAction<number>>;
+    startTimer: boolean
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame, setStartTimer, setTimeLeft, startTimer }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const userInGame = players?.find((player) => player.username.toLowerCase() === currentUser?.toLowerCase());
+
+    // --- LOGIQUE TIMER ---
+    useEffect(() => {
+        if (timeLeft <= 0) return;
+
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1 && startTimer) {
+                    clearInterval(timer);
+
+                    setStartTimer(false);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [timeLeft]);
 
     return (
         <header className="relative flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-50 shadow-lg h-14 md:h-16 pt-2 md:pt-0">

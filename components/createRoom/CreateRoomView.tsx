@@ -27,7 +27,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [isPrivate, setIsPrivate] = useState(false);
     const [userName, setUserName] = useState(cookies.get('userName') || '');
     const [roomName, setRoomName] = useState(`La Room de ${userName}`);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);
@@ -66,6 +66,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             setEnableShowWrongAnswers(dataRoom?.enableShowWrongAnswers || true);
             setItemsEnabled(dataRoom?.itemsEnabled || true);
         }
+        setIsLoading(false);
     }, [isEditing, dataRoom])
 
     const toggleItem = (key: keyof typeof activeItems) => {
@@ -93,6 +94,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     };
 
     const launchRoom = async () => {
+        setIsLoading(true);
         const roomData = {
             idUrl: "",
             language,
@@ -158,6 +160,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                 }
             });
         }
+        setIsLoading(false);
     }
 
     return (
@@ -198,7 +201,9 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                     </AlertDialog>
                 </div>
             ) : isLoading ? (
-                <LoadingPage />
+                <div className="flex items-center justify-center h-[100dvh] bg-[#0a0a0f] w-full">
+                    <LoadingPage />
+                </div>
             ) : (
                 <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col">
 
