@@ -1,5 +1,6 @@
 import React from 'react';
-import { Music, Eye, Lock } from 'lucide-react';
+import { Music, Eye, Lock, Loader } from 'lucide-react';
+import LoadingPage from '../loadingPage';
 
 interface GameAreaProps {
     isMobileMode?: boolean;
@@ -24,6 +25,8 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             <span className={`font-black italic tracking-tighter ${isMobileMode ? 'text-2xl' : 'text-4xl'}`}> {gameStartingSoonTimer} seconds left</span>
                         </div>
                     </div>
+                ) : (gameStartingSoonTimer < 0 || gameStartingSoonTimer === 0) && !question ? (
+                    <Loader />
                 ) : (
                     <>
                         < div className={`relative w-full aspect-[4/3] bg-black/50 rounded-2xl border border-white/10 shadow-2xl overflow-hidden group hover:border-white/20 transition-all ${isMobileMode ? 'max-w-full rounded-2xl' : 'max-w-3xl aspect-video rounded-3xl'}`}>

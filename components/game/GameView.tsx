@@ -98,7 +98,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 if (data.status === "FINISHED") {
                     setIsGameEnded(true);
                 } else if (data.status === "TIMER_START") {
-                    gameStartingSoon(data);
+                    gameStartingSoon(data.timerEnd);
                 }
 
                 if (data.players && data.players.length > 0) {
@@ -127,15 +127,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     };
 
     async function gameStartingSoon(timerEnd: Date) {
-        // todo : problème ici je recois un objet Room au lieu d'une date
-        console.log("before", timerEnd);
         const endTime = new Date(timerEnd).getTime() / 1000;
-        console.log("after",endTime);
-        const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
-        console.log("total", secondsRemaining);
+        const secondsRemaining = Math.max(endTime - Date.now() / 1000);
 
-
-        setGameStartingSoonTimer(secondsRemaining);
+        setGameStartingSoonTimer(secondsRemaining.toFixed(0));
 
         const timer = setInterval(() => {
             setGameStartingSoonTimer((prev) => {
