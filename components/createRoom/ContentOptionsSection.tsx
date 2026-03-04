@@ -41,7 +41,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
 
             <div className="h-px bg-white/5"></div>
 
-            <div className="flex items-center justify-between opacity-50 hover:opacity-100 transition">
+            <div className="flex items-center justify-between opacity-80 hover:opacity-100 transition">
                 <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${enableNSFW ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
                         <Ghost className="w-5 h-5" />
@@ -61,7 +61,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
 
             <div className="h-px bg-white/5"></div>
 
-            <div className="flex items-center justify-between opacity-50 hover:opacity-100 transition">
+            <div className="flex items-center justify-between opacity-80 hover:opacity-100 transition">
                 <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${enableShowWrongAnswers ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
                         <MessageSquareQuote className="w-5 h-5" />
@@ -81,7 +81,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
 
             <div className="h-px bg-white/5"></div>
 
-            <div className="flex items-center justify-between opacity-50 hover:opacity-100 transition">
+            <div className="flex items-center justify-between opacity-80 hover:opacity-100 transition">
                 <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${enableAbbreviations ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
                         <Layers2 className="w-5 h-5" />

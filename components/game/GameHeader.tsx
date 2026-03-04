@@ -85,7 +85,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                             )}
                         </div>
                     )}
-                    {!isGameRunning && (
+                    {!isGameRunning && creator !== currentUser && (
                         <div className='flex gap-2'>
                             <button className='px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition border border-white/10 text-sm font-medium' onClick={() => setIsConsult(!isConsult)}>Règles</button>
                         </div>
