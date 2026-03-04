@@ -1,0 +1,100 @@
+
+C:\Projects\KOVA\app\profile\[username]\page.tsx
+   25:19  warning  'setRooms' is assigned a value but never used                    @typescript-eslint/no-unused-vars
+  108:74  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Projects\KOVA\components\profile\StatsGrid.tsx
+  24:76  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  48:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Projects\KOVA\components\profile\StatsGrid.tsx:48:18
+  46 |             </h2>
+  47 |             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+> 48 |                 <StatCard
+     |                  ^^^^^^^^ This component is created during render
+  49 |                     icon={Gamepad2}
+  50 |                     label="Parties Jouées"
+  51 |                     value={stats.gamesPlayed.toLocaleString()}
+
+C:\Projects\KOVA\components\profile\StatsGrid.tsx:24:22
+  22 |
+  23 |     // Helper for small cards
+> 24 |     const StatCard = ({ icon: Icon, label, value, colorClass, highlight }: any) => (
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |         <div className={`p-5 rounded-2xl border bg-slate-800/30 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl ${highlight ? 'border-indigo-500/30 shadow-indigo-500/10' : 'border-white/5 hover:border-white/10'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |             }`}>
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 36 |         </div>
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |     );
+     | ^^^^^^ The component is created during render here
+  38 |
+  39 |     return (
+  40 |         <div className="space-y-6">  react-hooks/static-components
+  54:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Projects\KOVA\components\profile\StatsGrid.tsx:54:18
+  52 |                     colorClass="bg-blue-500/20 text-blue-400"
+  53 |                 />
+> 54 |                 <StatCard
+     |                  ^^^^^^^^ This component is created during render
+  55 |                     icon={Award}
+  56 |                     label="Victoires"
+  57 |                     value={stats.gamesWon.toLocaleString()}
+
+C:\Projects\KOVA\components\profile\StatsGrid.tsx:24:22
+  22 |
+  23 |     // Helper for small cards
+> 24 |     const StatCard = ({ icon: Icon, label, value, colorClass, highlight }: any) => (
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |         <div className={`p-5 rounded-2xl border bg-slate-800/30 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl ${highlight ? 'border-indigo-500/30 shadow-indigo-500/10' : 'border-white/5 hover:border-white/10'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |             }`}>
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 36 |         </div>
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |     );
+     | ^^^^^^ The component is created during render here
+  38 |
+  39 |     return (
+  40 |         <div className="space-y-6">                  react-hooks/static-components
+  61:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Projects\KOVA\components\profile\StatsGrid.tsx:61:18
+  59 |                     highlight
+  60 |                 />
+> 61 |                 <StatCard
+     |                  ^^^^^^^^ This component is created during render
+  62 |                     icon={Target}
+  63 |                     label="Win Rate"
+  64 |                     value={`${winRate}%`}
+
+C:\Projects\KOVA\components\profile\StatsGrid.tsx:24:22
+  22 |
+  23 |     // Helper for small cards
+> 24 |     const StatCard = ({ icon: Icon, label, value, colorClass, highlight }: any) => (
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |         <div className={`p-5 rounded-2xl border bg-slate-800/30 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl ${highlight ? 'border-indigo-500/30 shadow-indigo-500/10' : 'border-white/5 hover:border-white/10'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |             }`}>
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 36 |         </div>
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |     );
+     | ^^^^^^ The component is created during render here
+  38 |
+  39 |     return (
+  40 |         <div className="space-y-6">                                                                    react-hooks/static-components
+
+✖ 6 problems (5 errors, 1 warning)
+

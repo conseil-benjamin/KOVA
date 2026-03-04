@@ -4,6 +4,12 @@ export interface UserStats {
   gamesPlayed: number;
   gamesWon: number;
   totalCorrectAnswers: number;
+  xpToNextLevel?: number;
+  gamesPodium?: number;
+  winsStreak?: number;
+  bestResponseTime?: number;
+  bestWinsStreak?: number;
+  totalPlayTime?: number;
 }
 
 export interface UserInventory {

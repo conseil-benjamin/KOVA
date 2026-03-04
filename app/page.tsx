@@ -37,7 +37,6 @@ const HomeMockup = () => {
               'Content-Type': 'application/json',
             },
           });
-          setLoading(false);
 
           if (res.ok) {
             const userData = await res.json();
@@ -54,8 +53,6 @@ const HomeMockup = () => {
         }
       };
 
-      // const fetchDonneesSite 
-
       fetchUser();
     }
     else {
@@ -70,7 +67,6 @@ const HomeMockup = () => {
             'Content-Type': 'application/json',
           },
         });
-        setLoading(false);
 
         if (res.ok) {
           const roomsData = await res.json();
@@ -81,10 +77,11 @@ const HomeMockup = () => {
         }
       } catch (error) {
         console.error("Erreur connexion API:", error);
+      } finally {
+        setLoading(false);
       }
     }
     fetchPublicRooms();
-    setLoading(false);
   }, []);
 
   return (

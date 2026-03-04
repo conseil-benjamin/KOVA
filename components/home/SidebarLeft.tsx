@@ -10,9 +10,9 @@ interface SidebarLeftProps {
 }
 
 export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: SidebarLeftProps) {
-    const xpToNextLevel = user?.stats?.xpToNextLevel;
-    const xp = user?.stats?.xp;
-    const level = user?.stats?.level;
+    const xpToNextLevel = user?.stats?.xpToNextLevel || 1;
+    const xp = user?.stats?.xp || 0;
+    const level = user?.stats?.level || 1;
     const xpPercentage = (xp / xpToNextLevel) * 100;
 
     return (
