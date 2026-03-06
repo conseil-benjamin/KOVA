@@ -2,6 +2,7 @@ import React from 'react';
 import { Trophy, Medal, Home, RotateCcw, Edit, LogOut } from 'lucide-react';
 import { Player } from "./Leaderboard";
 import Lobby from './Lobby';
+import { redirect } from 'next/navigation';
 
 interface EndGameProps {
     players: Player[];
@@ -76,7 +77,7 @@ const EndGame: React.FC<EndGameProps> = ({ players, creator, username, setIsEdit
 
             {/* Actions */}
             <div className="flex gap-4 mt-8">
-                <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-6 py-3 rounded-full transition-colors">
+                <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-6 py-3 rounded-full transition-colors" onClick={() => redirect('/')}>
                     <Home size={20} /> Accueil
                 </button>
                 {players.some(player => player.username.toLowerCase() === username.toLowerCase()) ? (
