@@ -26,3 +26,12 @@ Page profil utilisateur :
 - Afficher des graphiques avec des statistiques sur les parties jouées par l'utilisateur
 - Nombres de parties jouées
 - Nombres de parties gagnées
+
+
+
+
+PACK
+
+- Possibilité de sélectionner plusieurs packs
+- Un pack généraliste avec des questions de tous les autres packs
+- Ensuite des packs par thèmes (films, séries, musique, sport, histoire, géographie, etc.)

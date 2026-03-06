@@ -46,11 +46,12 @@ function AlertDialogOverlay({
 
 function AlertDialogContent({
   className,
+  onClickOutside,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Content>) {
+}: React.ComponentProps<typeof AlertDialogPrimitive.Content> & { onClickOutside?: () => void }) {
   return (
     <AlertDialogPortal>
-      <AlertDialogOverlay />
+      <AlertDialogOverlay onClick={onClickOutside} />
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         className={cn(

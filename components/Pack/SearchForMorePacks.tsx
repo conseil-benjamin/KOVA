@@ -1,34 +1,35 @@
-import React from 'react';
-import { Dices, Plus, Check, Search, Volume2 } from 'lucide-react';
-import { packs } from './constants';
+import { Check, Volume2 } from "lucide-react";
+import { packs } from "../createRoom/constants";
+import { useState } from "react";
 
-interface PacksSectionProps {
-    selectedPack: string;
-    setSelectedPack: (id: string) => void;
-    isConsult: boolean;
-    setShowModalMorePacks: (show: boolean) => void;
-}
+const SearchForMorePacks = ({ selectedPack, setSelectedPack }: { selectedPack: string; setSelectedPack: (pack: string) => void }) => {
+    const [search, setSearch] = useState('');
 
-const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPack, isConsult, setShowModalMorePacks }) => {
     return (
-        <section className="space-y-4">
-            <div className="flex justify-between items-center">
-                <label className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <Dices className="w-4 h-4" /> Packs de Questions
-                </label>
+        <div className="space-y-4">
+            <h1 className="text-xl font-bold text-white">Rechercher des packs</h1>
+
+            <div className="py-2">
+                <input
+                    type="text"
+                    placeholder="Rechercher un pack..."
+                    onChange={(e) => setSearch(e.target.value)}
+                    value={search}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500 transition-colors"
+                />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {packs.slice(0, 4).map(pack => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto">
+                {packs.filter(pack => pack.name.toLowerCase().includes(search.toLowerCase())).map(pack => (
                     <div
                         key={pack.id}
-                        onClick={() => !isConsult && setSelectedPack(pack.name)}
+                        onClick={() => setSelectedPack(pack.name)}
                         className={`
-                            relative p-4 rounded-xl border cursor-pointer transition-all duration-200 group overflow-hidden
-                            ${selectedPack === pack.name
+                                relative p-4 rounded-xl border cursor-pointer transition-all duration-200 group overflow-hidden
+                                ${selectedPack === pack.name
                                 ? 'bg-[#1a1a24] border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.2)]'
                                 : 'bg-[#13131f] border-white/5 hover:border-white/20 hover:bg-[#1a1a24]'}
-                        `}
+                            `}
                     >
                         {/* Fond Gradient subtil si sélectionné */}
                         {selectedPack === pack.name && <div className={`absolute inset-0 bg-gradient-to-br ${pack.color} opacity-10`}></div>}
@@ -55,17 +56,9 @@ const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPa
                         </div>
                     </div>
                 ))}
-
-                {/* Bouton Plus de packs */}
-                {!isConsult && (
-                    <div onClick={() => setShowModalMorePacks(true)} className="p-4 rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-slate-500 hover:text-white hover:border-white/30 cursor-pointer transition h-full min-h-[100px]">
-                        <Search className="w-6 h-6" />
-                        <span className="text-sm font-medium">Découvrir plus de packs</span>
-                    </div>
-                )}
             </div>
-        </section>
+        </div>
     );
 };
 
-export default PacksSection;
+export default SearchForMorePacks;

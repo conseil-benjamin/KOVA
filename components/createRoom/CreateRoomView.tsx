@@ -13,10 +13,10 @@ import PrivacySection from './PrivacySection';
 import { toast } from 'sonner';
 import { redirect } from 'next/navigation';
 import Cookies from "universal-cookie";
-import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from '@radix-ui/react-alert-dialog';
-import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
+import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction, AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { Room, Player } from '@/types/Room';
 import LoadingPage from '../loadingPage';
+import SearchForMorePacks from '../Pack/SearchForMorePacks';
 
 const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();
@@ -28,6 +28,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [userName, setUserName] = useState(cookies.get('userName') || '');
     const [roomName, setRoomName] = useState(`La Room de ${userName}`);
     const [isLoading, setIsLoading] = useState(true);
+    const [showModalMorePacks, setShowModalMorePacks] = useState(false);
 
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);
@@ -225,7 +226,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                             />
 
                             {/* 2. Sélection du Pack */}
-                            <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} isConsult={isConsult} />
+                            <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} isConsult={isConsult} setShowModalMorePacks={setShowModalMorePacks} />
 
                             {/* 3. Options de Contenu */}
                             <ContentOptionsSection
@@ -264,6 +265,25 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
                     {/* --- STICKY FOOTER (Action) --- */}
                     <CreateRoomFooter selectedPackName={currentPack?.name} launchRoom={launchRoom} isEditing={isEditing} setIsEditing={setIsEditing} setIsConsult={setIsConsult} isConsult={isConsult} />
+
+                    <AlertDialog open={showModalMorePacks} onOpenChange={setShowModalMorePacks}>
+                        <AlertDialogContent
+                            className="bg-neutral-900 border border-white/10 text-white max-w-3xl w-[90vw] max-h-[85vh] p-0 flex flex-col"
+                            onClickOutside={() => setShowModalMorePacks(false)}
+                        >
+                            <div className="p-6 overflow-y-auto flex-1">
+                                <SearchForMorePacks selectedPack={selectedPack} setSelectedPack={setSelectedPack} />
+                            </div>
+                            <AlertDialogFooter className="p-6 pt-0 border-t border-white/10 mt-auto">
+                                <AlertDialogAction
+                                    onClick={() => setShowModalMorePacks(false)}
+                                    className="bg-purple-600 hover:bg-purple-700 text-white border-0 w-full mt-4"
+                                >
+                                    Fermer
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
 
                 </div>
             )
