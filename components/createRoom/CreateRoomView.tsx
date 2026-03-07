@@ -21,6 +21,7 @@ import SearchForMorePacks from '../Pack/SearchForMorePacks';
 const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();
 
+    console.log(dataRoom);
     // --- ÉTAT DU FORMULAIRE ---
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
     const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1");
@@ -43,11 +44,11 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     // Jokers / Items
     const [itemsEnabled, setItemsEnabled] = useState(true);
-    const [activeItems, setActiveItems] = useState({
-        hint: true,   // Indice
-        freeze: true, // Geler le temps
-        ink: true,    // Tache d'encre
-        swap: false   // Échanger les scores (Chaotique)
+    const [activeItems, setActiveItems] = useState<{ [key: string]: number }>({
+        hint: 1,
+        freeze: 1,
+        ink: 1,
+        swap: 0
     });
 
     const [guestNameInput, setGuestNameInput] = useState('');
@@ -66,12 +67,23 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             setEnableAbbreviations(dataRoom?.enableAbbreviations || true);
             setEnableShowWrongAnswers(dataRoom?.enableShowWrongAnswers || true);
             setItemsEnabled(dataRoom?.itemsEnabled || true);
+            const fetchedItems = dataRoom?.activeItems || [];
+            setActiveItems(fetchedItems.length > 0
+                ? fetchedItems.reduce((acc: any, item: any) => ({ ...acc, [item.id]: item.maxUses }), {})
+                : {
+                    hint: 1,
+                    freeze: 1,
+                    ink: 1,
+                    swap: 0
+                }
+            );
         }
         setIsLoading(false);
     }, [isEditing, dataRoom])
 
-    const toggleItem = (key: keyof typeof activeItems) => {
-        setActiveItems(prev => ({ ...prev, [key]: !prev[key] }));
+    const updateItemUses = (key: string, newValue: number) => {
+        if (newValue < 0) return;
+        setActiveItems(prev => ({ ...prev, [key]: newValue }));
     };
 
     const currentPack = packs.find(p => p.id === selectedPack);
@@ -105,6 +117,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             creator: userName,
             maxPlayers, // int
             players: [] as Player[], // array
+            oldPlayers: [] as Player[], // array
             scoreToWin, // int
             timePerRound, // int
             enableBlindTest, // boolean
@@ -118,7 +131,8 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
         if (isEditing) {
             roomData.idUrl = dataRoom?.idUrl || "";
-            roomData.players = dataRoom?.players || [];
+            roomData.players = dataRoom?.status === "FINISHED" ? [] : (dataRoom?.players || []);
+            roomData.oldPlayers = dataRoom?.oldPlayers || [];
             console.log("Room data:", roomData);
             const result = await fetch(`/api/room/${dataRoom?.idUrl}`, {
                 method: 'PUT',
@@ -250,10 +264,9 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 isConsult={isConsult}
                             />
 
-                            {/* 5. Configuration des Jokers */}
                             <JokersSection
                                 itemsEnabled={itemsEnabled} setItemsEnabled={setItemsEnabled}
-                                activeItems={activeItems} toggleItem={toggleItem}
+                                activeItems={activeItems} updateItemUses={updateItemUses}
                                 isConsult={isConsult}
                             />
 

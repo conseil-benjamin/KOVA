@@ -4,6 +4,7 @@ export interface Player {
     score: number;
     hasGuessed: boolean;
     answer: string;
+    responseTime?: number;
     avatar?: string;
 }
 
@@ -16,12 +17,17 @@ export interface Room {
     creator: string;
     maxPlayers: number;
     players: Player[];
+    oldPlayers: Player[];
     scoreToWin: number;
     timePerRound: number;
+    timerEnd: Date;
+    status?: string | 'FINISHED' | 'PLAYING' | 'WAITING' | 'TIMER_START';
+    enableAbbreviations: boolean;
+    enableShowWrongAnswers: boolean;
     enableBlindTest: boolean;
     enableNSFW: boolean;
     itemsEnabled: boolean;
-    activeItems: string[];
+    activeItems: { id: string; maxUses: number }[];
     createdAt: string;
     timer: number;
     language: string;

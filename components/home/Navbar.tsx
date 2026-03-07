@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { User } from '@/types/User';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import Cookies from 'universal-cookie';
+import { Room } from '@/types/Room';
 
 interface NavbarProps {
     isLoggedIn: boolean;
@@ -23,7 +24,7 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
     return (
         <nav className="fixed top-0 w-full h-16 bg-black/40 backdrop-blur-xl border-b border-white/5 z-50 flex items-center justify-between px-4 md:px-8">
             {/* Logo */}
-            <div className="flex items-center gap-2 md:gap-3 cursor-pointer">
+            <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => redirect('/')}>
                 <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-1.5 md:p-2 rounded-lg shadow-[0_0_15px_rgba(139,92,246,0.5)]">
                     <Zap className="w-5 h-5 text-white fill-white" />
                 </div>
@@ -60,9 +61,8 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                                 </div>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56" align="start">
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem onClick={logout} style={{ cursor: 'pointer', }}>
+                                    <DropdownMenuItem onClick={() => redirect(`/profile/${user?.username}`)} style={{ cursor: 'pointer' }}>
                                         Mon profile
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={logout} style={{ cursor: 'pointer' }}>

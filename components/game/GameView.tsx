@@ -19,6 +19,7 @@ import { Loader2 } from 'lucide-react';
 import EndGame from './EndGame';
 import CreateRoomView from '../createRoom/CreateRoomView';
 import { redirect } from 'next/navigation';
+import Lobby from './Lobby';
 
 interface GameViewProps {
     roomId: string;
@@ -34,6 +35,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [guestNameInput, setGuestNameInput] = useState('');
     const [roomFound, setRoomFound] = useState(true);
     const [isGameEnded, setIsGameEnded] = useState(false);
+    const [isGameNotStarted, setIsGameNotStarted] = useState(false);
 
     const [roomData, setRoomData] = useState<Room>();
 
@@ -50,6 +52,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [players, setPlayers] = useState<Player[]>([]);
     const [oldPlayers, setOldPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
+    const [activesItems, setActivesItems] = useState<{ id: string; maxUses: number }[]>([]);
+    const [jokersLeft, setJokersLeft] = useState<{ id: string; maxUses: number }[]>([]);
 
     // --- GAME STATE ---
     const [question, setQuestion] = useState('');
@@ -62,7 +66,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [scoreToWin, setScoreToWin] = useState(0);
 
     const handleGuestLogin = async () => {
-        // todo : vérifier en bdd qu'aucun user ne possède déjà cette username
         const result = await fetch(`/api/users/username/${guestNameInput.trim()}`);
         if (result.status !== 200) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
@@ -91,6 +94,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setPlayers(data.players);
                 setScoreToWin(data.scoreToWin);
                 setOldPlayers(data.oldPlayers);
+                setActivesItems(data.activeItems);
 
                 const endTime = new Date(data.timerEnd).getTime();
                 const secondsRemaining = Math.floor((endTime - Date.now()));
@@ -99,11 +103,15 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     setIsGameEnded(true);
                 } else if (data.status === "TIMER_START") {
                     gameStartingSoon(data.timerEnd);
+                } else if (data.status === "LOBBY") {
+                    // TODO : Gérer l'afficghage du lobby avant le début d'une partie 
+                    setIsGameNotStarted(true);
                 }
 
                 if (data.players && data.players.length > 0) {
                     for (let i = 0; i < data.players.length; i++) {
                         const player = data.players[i];
+                        setJokersLeft(player.jokers);
                         if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
                             setHasGuessed(true);
                         }
@@ -120,9 +128,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     };
 
     const handleStartGame = () => {
-        if (creator === userName) {
+        if (creator === userName && players.length > 0) {
             // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
             socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
+        } else if (creator === userName && players.length <= 0) {
+            toast.error('Il faut au moins 2 joueurs pour lancer une partie.');
         }
     };
 
@@ -170,6 +180,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
+            setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
             console.log(roomData?.language);
             if (data.language === "fr") {
                 setQuestion(data.question['fr']);
@@ -208,9 +219,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
             gameStartingSoon(data.timerEnd);
             setIsGameEnded(false);
+            setIsGameNotStarted(false);
         });
 
-        newSocket.on('correct_response', (data: { message: string, username: string, points: number }) => {
+        newSocket.on('correct_response', (data: { message: string, username: string, points: number, responseTime: number }) => {
             setPlayers(prev => {
                 const playerIndex = prev.findIndex(p => p.username.toLowerCase() === data.username.toLowerCase());
                 if (playerIndex !== -1) {
@@ -219,6 +231,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         ...newPlayers[playerIndex],
                         score: data.points,
                         hasGuessed: true,
+                        responseTime: data.responseTime
                     };
                     return newPlayers;
                 }
@@ -227,7 +240,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     username: data.username,
                     score: data.points,
                     hasGuessed: true,
-                    answer: ""
+                    answer: "",
+                    responseTime: data.responseTime
                 }];
             });
             if (data.username.toLowerCase() === userName.toLowerCase()) {
@@ -252,6 +266,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 return room.players.map(roomPlayer => {
                     const existingPlayer = prev.find(p => p.username.toLowerCase() === roomPlayer.username.toLowerCase());
 
+                    setJokersLeft(roomPlayer.jokers);
+
                     if (existingPlayer) {
                         return {
                             ...existingPlayer,
@@ -273,17 +289,25 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             });
         });
 
-        newSocket.on('game_finished', (data: { message: string, players: Player[] }) => {
+        newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
             console.log("game_finished");
             console.log("oldPlayers", data.players);
             setPlayers([]);
             setIsGameRunning(false);
             setOldPlayers(data.players);
+            setRoomData(data.roomData);
+            console.log("roomDatadddddddddddddddddddddddd", data.roomData);
         });
 
         newSocket.connect();
 
         getRoomData();
+
+        console.log("roomData", roomData);
+        console.log("isGameEnded", isGameEnded);
+        console.log("isEditingRoom", isEditingRoom);
+        console.log("oldPlayers", oldPlayers);
+        console.log("oldPlayers.length", oldPlayers?.length);
 
         return () => {
             newSocket.disconnect();
@@ -309,16 +333,15 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     // --- AUTO JOIN LOGIC ---
     useEffect(() => {
         if (socket && isConnected && userName) {
-            const isCreator = creator.toLowerCase() === userName.toLowerCase();
             const isPlayer = players.some(p => p.username.toLowerCase() === userName.toLowerCase());
 
-            if (isCreator || isPlayer) {
+            if (isPlayer) {
                 console.log("Auto-joining room for", userName);
                 const avatar = cookies.get('userAvatar') || 'red';
                 socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar });
             }
         }
-    }, [socket, isConnected, creator, userName, roomId]);
+    }, [socket, isConnected, userName, roomId]);
 
     // --- HANDLERS ---
 
@@ -370,6 +393,13 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.error('Non connecté au serveur.')
         }
     };
+
+    const handleUseJoker = (item: string) => {
+        console.log("handleUseJoker", item);
+        if (socket && isConnected) {
+            socket.emit('use_joker', roomId.toUpperCase(), item, userName);
+        }
+    }
 
     const resetAnswersPlayers = () => {
         setPlayers(prev => {
@@ -448,6 +478,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <Loader2 className="w-12 h-12 text-white animate-spin" />
                     </div>
                 </div>
+            ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
+                <Lobby players={players} />
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} />
             ) : (
@@ -471,6 +503,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                     question={question}
                                     imageUrl={imageUrl}
                                     gameStartingSoonTimer={gameStartingSoonTimer}
+                                    activesItems={activesItems}
+                                    jokersLeft={jokersLeft}
                                 />
                             }
                             <Chat

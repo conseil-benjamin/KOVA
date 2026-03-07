@@ -9,9 +9,11 @@ interface GameAreaProps {
     imageUrl: string;
     question: string;
     gameStartingSoonTimer: number;
+    activesItems: { id: string; maxUses: number }[];
+    jokersLeft: { id: string; maxUses: number }[];
 }
 
-const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, gameStartingSoonTimer }) => {
+const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, gameStartingSoonTimer, activesItems, jokersLeft }) => {
     return (
         <section className="flex-1 flex flex-col relative z-10">
 
@@ -76,19 +78,16 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             )}
                         </div>
 
-                        <div className="flex gap-3 z-20 absolute bottom-4 right-4 flex-col md:static md:flex-row md:mt-8 md:gap-6">
-                            <button className="backdrop-md flex items-center justify-center gap-3 transition-all active:scale-95 group shadow-lg w-10 h-10 md:w-auto md:h-auto md:px-6 md:py-3 rounded-full md:rounded-xl bg-indigo-600/20 border border-indigo-500/30 md:hover:bg-indigo-600 md:hover:border-indigo-400 text-indigo-200">
-                                <Eye className="w-4 h-4 md:w-5 md:h-5 md:group-hover:text-white" />
-                                <span className="hidden md:block font-bold md:group-hover:text-white">Indice</span>
-                                <span className="bg-black rounded text-indigo-400 border border-indigo-500/30 absolute -top-1 -right-1 text-[9px] px-1 md:static md:text-xs md:ml-2 md:px-1.5 md:py-0.5">50</span>
-                            </button>
-
-                            <button className="backdrop-md flex items-center justify-center gap-3 transition-all active:scale-95 group shadow-lg w-10 h-10 md:w-auto md:h-auto md:px-6 md:py-3 rounded-full md:rounded-xl bg-blue-600/20 border border-blue-500/30 md:hover:bg-blue-600 md:hover:border-blue-400 text-blue-200">
-                                <Lock className="w-4 h-4 md:w-5 md:h-5 md:group-hover:text-white" />
-                                <span className="hidden md:block font-bold md:group-hover:text-white">Freeze</span>
-                                <span className="bg-black rounded text-blue-400 border border-blue-500/30 absolute -top-1 -right-1 text-[9px] px-1 md:static md:text-xs md:ml-2 md:px-1.5 md:py-0.5">100</span>
-                            </button>
+                        {/* Jokers Left */}
+                        <div className="flex gap-3 z-20 absolute bottom-4 left-4 flex-col md:static md:flex-row md:mt-8 md:gap-6">
+                            {jokersLeft && jokersLeft.length > 0 && jokersLeft.map((item, index) => (
+                                <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
+                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <button className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
+                                </div>
+                            ))}
                         </div>
+
                     </>
                 )}
 
