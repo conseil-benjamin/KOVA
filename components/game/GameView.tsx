@@ -20,6 +20,7 @@ import EndGame from './EndGame';
 import CreateRoomView from '../createRoom/CreateRoomView';
 import { redirect } from 'next/navigation';
 import Lobby from './Lobby';
+import LoadingPage from '../loadingPage';
 
 interface GameViewProps {
     roomId: string;
@@ -282,7 +283,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             score: roomPlayer.score,
                             hasGuessed: roomPlayer.hasGuessed,
                             answer: "",
-                            avatar: roomPlayer.avatar
+                            avatar: roomPlayer.avatar,
+                            jokers: roomPlayer.jokers
                         };
                     }
                 });
@@ -296,8 +298,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setIsGameRunning(false);
             setOldPlayers(data.players);
             setRoomData(data.roomData);
-            console.log("roomDatadddddddddddddddddddddddd", data.roomData);
         });
+
+        newSocket.emit('join_room', roomId.toUpperCase());
 
         newSocket.connect();
 
@@ -474,8 +477,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 />
             ) : isLoading ? (
                 <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-12 h-12 text-white animate-spin" />
+                    <div className="flex items-center justify-center h-full w-full">
+                        <LoadingPage />
                     </div>
                 </div>
             ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (

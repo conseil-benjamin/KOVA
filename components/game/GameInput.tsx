@@ -123,7 +123,7 @@ const GameInput: React.FC<GameInputProps> = ({
                     value={guessVal}
                     onFocus={() => setFocusInputResponse(false)}
                     onChange={(e) => setGuessVal(e.target.value)}
-                    placeholder={hasGuessed ? "Attente des autres..." : "Ta réponse..."}
+                    placeholder={hasGuessed ? "Attente des autres..." : !isInGame ? "Rejoindre pour jouer" : "Ta réponse..."}
                     disabled={hasGuessed || !isInGame || !timerVisible}
                     className={`
                         flex-1 bg-white/5 border-2 transition-all shadow-inner outline-none

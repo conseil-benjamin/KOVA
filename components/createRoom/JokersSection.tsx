@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, Clock, Eye, Ghost } from 'lucide-react';
+import { Zap, Clock, Eye, Ghost, ArrowLeftRight } from 'lucide-react';
 
 interface ActiveItems {
     [key: string]: number;
@@ -112,7 +112,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                         onClick={() => !isConsult && updateItemUses('swap', activeItems.swap > 0 ? 0 : 1)}
                     >
                         <div className={`p-2 rounded-lg ${activeItems.swap > 0 ? 'bg-orange-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
-                            <Zap className="w-4 h-4" />
+                            <ArrowLeftRight className="w-4 h-4" />
                         </div>
                         <div>
                             <div className={`text-sm font-bold ${activeItems.swap > 0 ? 'text-white' : 'text-slate-400'}`}>Swap</div>
