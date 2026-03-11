@@ -133,6 +133,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             roomData.idUrl = dataRoom?.idUrl || "";
             roomData.players = dataRoom?.status === "FINISHED" ? [] : (dataRoom?.players || []);
             roomData.oldPlayers = dataRoom?.oldPlayers || [];
+            roomData.activeItems = activeItems;
             console.log("Room data:", roomData);
             const result = await fetch(`/api/room/${dataRoom?.idUrl}`, {
                 method: 'PUT',

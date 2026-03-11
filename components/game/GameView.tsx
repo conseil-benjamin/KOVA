@@ -58,6 +58,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     // --- GAME STATE ---
     const [question, setQuestion] = useState('');
+    const [hint, setHint] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [startTimer, setStartTimer] = useState(false);
     const [gameStartingSoonTimer, setGameStartingSoonTimer] = useState(0);
@@ -181,6 +182,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
+            setHint('');
             setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
             console.log(roomData?.language);
             if (data.language === "fr") {
@@ -257,6 +259,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             resetAnswersPlayers();
             setTimerVisible(false);
             setTimeLeft(0);
+        });
+
+        newSocket.on('hint_used', (data: { hint: string, username: string }) => {
+            console.log("hint_used", data);
+            alert("hint_used" + data.username);
+            setHint(hint)
         });
 
         newSocket.on('update_room', (room: Room) => {
@@ -399,6 +407,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleUseJoker = (item: string) => {
         console.log("handleUseJoker", item);
+        alert("Joker utilisé " + item);
         if (socket && isConnected) {
             socket.emit('use_joker', roomId.toUpperCase(), item, userName);
         }
@@ -508,6 +517,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                     gameStartingSoonTimer={gameStartingSoonTimer}
                                     activesItems={activesItems}
                                     jokersLeft={jokersLeft}
+                                    handleUseJoker={handleUseJoker}
+                                    hint={hint}
                                 />
                             }
                             <Chat

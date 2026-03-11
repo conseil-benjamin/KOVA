@@ -11,9 +11,11 @@ interface GameAreaProps {
     gameStartingSoonTimer: number;
     activesItems: { id: string; maxUses: number }[];
     jokersLeft: { id: string; maxUses: number }[];
+    handleUseJoker: (item: string) => void;
+    hint: string;
 }
 
-const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, gameStartingSoonTimer, activesItems, jokersLeft }) => {
+const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint }) => {
     return (
         <section className="flex-1 flex flex-col relative z-10">
 
@@ -78,12 +80,20 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             )}
                         </div>
 
+                        {/* Hint */}
+                        {hint && (
+                            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
+                                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                <span>{hint}</span>
+                            </div>
+                        )}
+
                         {/* Jokers Left */}
                         <div className="flex gap-3 z-20 absolute bottom-4 left-4 flex-col md:static md:flex-row md:mt-8 md:gap-6">
                             {jokersLeft && jokersLeft.length > 0 && jokersLeft.map((item, index) => (
                                 <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
                                     <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                                    <button className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
+                                    <button onClick={() => handleUseJoker(item.name)} className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
                                 </div>
                             ))}
                         </div>
