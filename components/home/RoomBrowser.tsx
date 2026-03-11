@@ -1,6 +1,6 @@
 import { Room } from '@/types/Room';
 import { Search, Globe, Music, Film, Gamepad2, LayoutGrid, List, Lock, Users, ChevronRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { act, useEffect, useState } from 'react';
 import { redirect } from 'next/navigation';
 
 interface RoomBrowserProps {
@@ -36,22 +36,18 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
             return;
         }
         const filtered = rooms.filter((room: Room) => {
-            return room.name.toLowerCase().includes(searchQuery.toLowerCase())
-
-            /*    room.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                room.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-                */
+            return (room.name.toLowerCase().includes(searchQuery.toLowerCase()) || room.tags.some((tag: string) => tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())))
         });
         setFilteredRooms(filtered);
     }, [searchQuery]);
 
     useEffect(() => {
-        if (activeTab === 'ALL') {
+        if (activeTab === 'Tout') {
             setFilteredRooms(rooms);
             return;
         }
         const filtered = rooms.filter((room: Room) => {
-            return room.category.toLowerCase() === activeTab.toLowerCase();
+            return room.tags.some((tag: string) => tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(activeTab.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()))
         });
         setFilteredRooms(filtered);
     }, [activeTab]);
@@ -79,8 +75,8 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                     {categories.map(cat => (
                         <button
                             key={cat.id}
-                            onClick={() => setActiveTab(cat.id)}
-                            className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition whitespace-nowrap ${activeTab === cat.id ? 'bg-white text-black' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
+                            onClick={() => setActiveTab(cat.label)}
+                            className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition whitespace-nowrap ${activeTab === cat.label ? 'bg-white text-black' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
                         >
                             <cat.icon className="w-3 h-3" />
                             {cat.label}

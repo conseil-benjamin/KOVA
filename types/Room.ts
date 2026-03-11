@@ -13,6 +13,7 @@ export interface Room {
     idUrl: string;
     name: string;
     pack: string;
+    tags: string[];
     isPrivate: boolean;
     creator: string;
     maxPlayers: number;
