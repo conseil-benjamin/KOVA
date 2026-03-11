@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Eye, Lock, Loader } from 'lucide-react';
+import { Music, Eye, Lock, Loader, BadgeQuestionMark, ArrowRightLeft, Timer } from 'lucide-react';
 import LoadingPage from '../loadingPage';
 
 interface GameAreaProps {
@@ -10,7 +10,7 @@ interface GameAreaProps {
     question: string;
     gameStartingSoonTimer: number;
     activesItems: { id: string; maxUses: number }[];
-    jokersLeft: { id: string; maxUses: number }[];
+    jokersLeft: { name: string; useLeft: number }[];
     handleUseJoker: (item: string) => void;
     hint: string;
 }
@@ -82,8 +82,8 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
 
                         {/* Hint */}
                         {hint && (
-                            <div className="absolute bottom-4 right-4 bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
-                                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            <div className="flex items-center justify-center align-center gap-2 absolute bottom-4 right-4 bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 shadow-lg">
+                                <Eye className="w-3 h-3 text-pink-400" />
                                 <span>{hint}</span>
                             </div>
                         )}
@@ -91,9 +91,12 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                         {/* Jokers Left */}
                         <div className="flex gap-3 z-20 absolute bottom-4 left-4 flex-col md:static md:flex-row md:mt-8 md:gap-6">
                             {jokersLeft && jokersLeft.length > 0 && jokersLeft.map((item, index) => (
-                                <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
-                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                                    <button onClick={() => handleUseJoker(item.name)} className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
+                                <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg cursor-pointer">
+                                    {item.name === "hint" && <Eye className="w-3 h-3 text-pink-400" />}
+                                    {item.name === "freeze" && <Timer className="w-3 h-3 text-pink-400" />}
+                                    {item.name === "ink" && <Music className="w-3 h-3 text-pink-400" />}
+                                    {item.name === "swap" && <ArrowRightLeft className="w-3 h-3 text-pink-400" />}
+                                    <button disabled={item.useLeft == 0} onClick={() => handleUseJoker(item.name)} className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize disabled:opacity-50">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
                                 </div>
                             ))}
                         </div>

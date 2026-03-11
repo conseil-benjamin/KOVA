@@ -54,7 +54,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [oldPlayers, setOldPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
     const [activesItems, setActivesItems] = useState<{ id: string; maxUses: number }[]>([]);
-    const [jokersLeft, setJokersLeft] = useState<{ id: string; maxUses: number }[]>([]);
+    const [jokersLeft, setJokersLeft] = useState<{ name: string; useLeft: number }[]>([]);
 
     // --- GAME STATE ---
     const [question, setQuestion] = useState('');
@@ -262,9 +262,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('hint_used', (data: { hint: string, username: string }) => {
-            console.log("hint_used", data);
-            alert("hint_used" + data.username);
-            setHint(hint)
+            console.log("hint_used", data.hint);
+            setHint(data.hint)
         });
 
         newSocket.on('update_room', (room: Room) => {
@@ -282,7 +281,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             ...existingPlayer,
                             score: roomPlayer.score,
                             hasGuessed: roomPlayer.hasGuessed,
-                            avatar: roomPlayer.avatar || existingPlayer.avatar
+                            avatar: roomPlayer.avatar || existingPlayer.avatar,
+                            jokers: roomPlayer.jokers
                         };
                     } else {
                         return {
@@ -407,8 +407,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleUseJoker = (item: string) => {
         console.log("handleUseJoker", item);
-        alert("Joker utilisé " + item);
         if (socket && isConnected) {
+            console.log("Sending joker use:", userName);
             socket.emit('use_joker', roomId.toUpperCase(), item, userName);
         }
     }
