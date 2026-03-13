@@ -1,5 +1,6 @@
 import React from 'react';
 import { Zap, Clock, Eye, Ghost, ArrowLeftRight } from 'lucide-react';
+import { Room } from '@/types/Room';
 
 interface ActiveItems {
     [key: string]: number;

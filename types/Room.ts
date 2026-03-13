@@ -6,6 +6,7 @@ export interface Player {
     answer: string;
     responseTime?: number;
     avatar?: string;
+    jokers: { name: string; useLeft: number }[];
 }
 
 export interface Room {
@@ -32,4 +33,6 @@ export interface Room {
     createdAt: string;
     timer: number;
     language: string;
+    backgroundImageUrl: string;
+    isGameRunning: boolean;
 }

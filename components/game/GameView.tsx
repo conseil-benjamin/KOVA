@@ -184,7 +184,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             console.log(data);
             setHint('');
             setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
-            console.log(roomData?.language);
             if (data.language === "fr") {
                 setQuestion(data.question['fr']);
             } else {
@@ -335,10 +334,16 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         };
     }, [roomId]);
 
+    // TODO : FIX l'histoire des oldPlayers tout ca côté back et front
     useEffect(() => {
         if (oldPlayers && oldPlayers.length > 0 && !isGameEnded && !isGameRunning && players.length === 0) {
             setIsGameEnded(true);
         }
+        console.log("oldPlayers", oldPlayers);
+        console.log("isGameEnded", isGameEnded);
+        console.log("isGameRunning", isGameRunning);
+        console.log("players.length", players.length);
+
     }, [oldPlayers, players]);
 
     // --- AUTO JOIN LOGIC ---

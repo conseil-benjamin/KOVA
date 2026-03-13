@@ -16,6 +16,8 @@ interface GameAreaProps {
 }
 
 const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint }) => {
+    console.log("activesItems" + JSON.stringify(activesItems));
+    console.log("jokersLeft" + JSON.stringify(jokersLeft));
     return (
         <section className="flex-1 flex flex-col relative z-10">
 
@@ -90,15 +92,20 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
 
                         {/* Jokers Left */}
                         <div className="flex gap-3 z-20 absolute bottom-4 left-4 flex-col md:static md:flex-row md:mt-8 md:gap-6">
-                            {jokersLeft && jokersLeft.length > 0 && jokersLeft.map((item, index) => (
-                                <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg cursor-pointer">
-                                    {item.name === "hint" && <Eye className="w-3 h-3 text-pink-400" />}
-                                    {item.name === "freeze" && <Timer className="w-3 h-3 text-pink-400" />}
-                                    {item.name === "ink" && <Music className="w-3 h-3 text-pink-400" />}
-                                    {item.name === "swap" && <ArrowRightLeft className="w-3 h-3 text-pink-400" />}
-                                    <button disabled={item.useLeft == 0} onClick={() => handleUseJoker(item.name)} className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize disabled:opacity-50">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
-                                </div>
-                            ))}
+                            {jokersLeft && jokersLeft.map((item, index) => {
+                                const isActive = Array.isArray(activesItems)
+                                    ? (activesItems.find(a => a.id === item.name)?.maxUses ?? 0) > 0
+                                    : ((activesItems as any)?.[item.name] ?? 0) > 0;
+                                return isActive && (
+                                    <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg cursor-pointer">
+                                        {item.name === "hint" && <Eye className="w-3 h-3 text-pink-400" />}
+                                        {item.name === "freeze" && <Timer className="w-3 h-3 text-pink-400" />}
+                                        {item.name === "ink" && <Music className="w-3 h-3 text-pink-400" />}
+                                        {item.name === "swap" && <ArrowRightLeft className="w-3 h-3 text-pink-400" />}
+                                        <button disabled={item.useLeft == 0} onClick={() => handleUseJoker(item.name)} className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize disabled:opacity-50">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
+                                    </div>
+                                )
+                            })}
                         </div>
 
                     </>

@@ -21,7 +21,6 @@ import SearchForMorePacks from '../Pack/SearchForMorePacks';
 const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();
 
-    console.log(dataRoom);
     // --- ÉTAT DU FORMULAIRE ---
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
     const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1");
@@ -50,11 +49,17 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
         ink: 1,
         swap: 0
     });
+    const [status, setStatus] = useState("LOBBY"); // LOBBY, TIMER_START, FINISHED
+    const [backgroundImageUrl, setBackgroundImageUrl] = useState("")
+    const [isGameRunning, setIsGameRunning] = useState(false)
+    const [tags, setTags] = useState<string[]>([])
 
     const [guestNameInput, setGuestNameInput] = useState('');
 
     useEffect(() => {
         if (isEditing || isConsult) {
+            console.log("dataRoom?.activeItems", dataRoom?.activeItems);
+
             setLanguage(dataRoom?.language || 'fr');
             setSelectedPack(dataRoom?.pack || "Le Grand Mix KOVA #1");
             setIsPrivate(dataRoom?.isPrivate || false);
@@ -67,16 +72,21 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             setEnableAbbreviations(dataRoom?.enableAbbreviations || true);
             setEnableShowWrongAnswers(dataRoom?.enableShowWrongAnswers || true);
             setItemsEnabled(dataRoom?.itemsEnabled || true);
-            const fetchedItems = dataRoom?.activeItems || [];
-            setActiveItems(fetchedItems.length > 0
-                ? fetchedItems.reduce((acc: any, item: any) => ({ ...acc, [item.id]: item.maxUses }), {})
-                : {
-                    hint: 1,
-                    freeze: 1,
-                    ink: 1,
-                    swap: 0
-                }
-            );
+            const fetchedItems: any = dataRoom?.activeItems;
+            if (Array.isArray(fetchedItems)) {
+                setActiveItems(fetchedItems.length > 0
+                    ? fetchedItems.reduce((acc: any, item: any) => ({ ...acc, [item.id]: item.maxUses }), {})
+                    : { hint: 1, freeze: 1, ink: 0, swap: 0 }
+                );
+            } else if (fetchedItems && typeof fetchedItems === 'object') {
+                setActiveItems(fetchedItems);
+            } else {
+                setActiveItems({ hint: 1, freeze: 1, ink: 0, swap: 0 });
+            }
+            setStatus(dataRoom?.status || "LOBBY");
+            setBackgroundImageUrl(dataRoom?.backgroundImageUrl || "");
+            setIsGameRunning(dataRoom?.isGameRunning || false);
+            setTags(dataRoom?.tags || [])
         }
         setIsLoading(false);
     }, [isEditing, dataRoom])
@@ -127,11 +137,15 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             timer: timePerRound,
             enableAbbreviations,
             enableShowWrongAnswers,
+            status,
+            backgroundImageUrl,
+            isGameRunning,
+            tags
         };
 
         if (isEditing) {
             roomData.idUrl = dataRoom?.idUrl || "";
-            roomData.players = dataRoom?.status === "FINISHED" ? [] : (dataRoom?.players || []);
+            roomData.players = (dataRoom?.status === "FINISHED" && dataRoom?.players.length === 0) ? [] : (dataRoom?.players || []);
             roomData.oldPlayers = dataRoom?.oldPlayers || [];
             roomData.activeItems = activeItems;
             console.log("Room data:", roomData);
