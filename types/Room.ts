@@ -29,7 +29,7 @@ export interface Room {
     enableBlindTest: boolean;
     enableNSFW: boolean;
     itemsEnabled: boolean;
-    activeItems: { id: string; maxUses: number }[];
+    activeItems: { [key: string]: number };
     createdAt: string;
     timer: number;
     language: string;

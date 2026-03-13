@@ -53,7 +53,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [players, setPlayers] = useState<Player[]>([]);
     const [oldPlayers, setOldPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
-    const [activesItems, setActivesItems] = useState<{ id: string; maxUses: number }[]>([]);
+    const [activesItems, setActivesItems] = useState<{ [key: string]: number }>();
     const [jokersLeft, setJokersLeft] = useState<{ name: string; useLeft: number }[]>([]);
 
     // --- GAME STATE ---
@@ -267,6 +267,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('update_room', (room: Room) => {
             setRoomData(room);
+            setActivesItems(room.activeItems);
             setScoreToWin(room.scoreToWin);
 
             setPlayers(prev => {

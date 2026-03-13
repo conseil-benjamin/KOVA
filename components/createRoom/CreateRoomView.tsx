@@ -72,17 +72,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             setEnableAbbreviations(dataRoom?.enableAbbreviations || true);
             setEnableShowWrongAnswers(dataRoom?.enableShowWrongAnswers || true);
             setItemsEnabled(dataRoom?.itemsEnabled || true);
-            const fetchedItems: any = dataRoom?.activeItems;
-            if (Array.isArray(fetchedItems)) {
-                setActiveItems(fetchedItems.length > 0
-                    ? fetchedItems.reduce((acc: any, item: any) => ({ ...acc, [item.id]: item.maxUses }), {})
-                    : { hint: 1, freeze: 1, ink: 0, swap: 0 }
-                );
-            } else if (fetchedItems && typeof fetchedItems === 'object') {
-                setActiveItems(fetchedItems);
-            } else {
-                setActiveItems({ hint: 1, freeze: 1, ink: 0, swap: 0 });
-            }
+            setActiveItems(dataRoom?.activeItems || { hint: 1, freeze: 1, ink: 0, swap: 0 });
             setStatus(dataRoom?.status || "LOBBY");
             setBackgroundImageUrl(dataRoom?.backgroundImageUrl || "");
             setIsGameRunning(dataRoom?.isGameRunning || false);
