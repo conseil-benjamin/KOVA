@@ -24,7 +24,6 @@ export interface UserInventory {
 export interface User {
   _id: string;
   username: string;
-  email: string;
   avatar: string; // ex: "from-blue-400 to-blue-600"
   title: string;
   stats: UserStats;

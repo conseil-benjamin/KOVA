@@ -25,13 +25,13 @@ const Home = () => {
 
   useEffect(() => {
     const cookies = new Cookies();
-    const email = cookies.get('email');
-    if (email) {
+    const username = cookies.get('userName');
+    if (username) {
       setIsLoggedIn(true);
 
       const fetchUser = async () => {
         try {
-          const res = await fetch(`/api/users/${email}`, {
+          const res = await fetch(`/api/users/${username}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

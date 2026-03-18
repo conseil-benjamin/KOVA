@@ -15,7 +15,6 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
     const cookies = new Cookies();
 
     const logout = () => {
-        cookies.remove('email');
         cookies.remove('user');
         cookies.remove('userName');
         window.location.reload();

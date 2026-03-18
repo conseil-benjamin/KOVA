@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthVisuals from '@/components/auth/AuthVisuals';
 import AuthForm from '@/components/auth/AuthForm';
 import { redirect } from 'next/navigation';
@@ -11,13 +11,13 @@ const Auth = () => {
     const [isLogin, setIsLogin] = useState(true); // Toggle Login/Register
     const cookies = new Cookies();
     const [selectedAvatar, setSelectedAvatar] = useState('blue');
+    const [image, setImage] = useState<File | null>(null);
 
     const [formData, setFormData] = useState({
         username: '',
-        email: '',
         password: '',
         avatar: selectedAvatar,
-        file
+        image: image
     });
 
     const avatars = [
@@ -28,20 +28,31 @@ const Auth = () => {
         { id: 'orange', gradient: 'from-orange-400 to-orange-600' },
     ];
 
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        console.log(file);
+        if (file) {
+            setImage(file);
+            setFormData({ ...formData, image: file });
+        }
+    };
+
     const handleSubmit = async () => {
+        const formDataToSend = new FormData();
+
+        formDataToSend.append('image', formData.image);
+        formDataToSend.append('username', formData.username);
+        formDataToSend.append('password', formData.password);
+        formDataToSend.append('avatar', formData.avatar);
 
         if (isLogin) {
-            const base64encodedData = Buffer.from(`${formData.email}:${formData.password}`).toString('base64');
             const res = await fetch('/api/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Basic ${base64encodedData}`
-                },
+                body: formDataToSend
             });
             if (res.ok) {
                 toast.success('Connexion reussie');
-                cookies.set('email', formData.email);
+                cookies.set('userName', formData.username);
                 redirect('/');
             } else {
                 toast.error('Une erreur est survenue');
@@ -49,14 +60,10 @@ const Auth = () => {
         } else {
             const res = await fetch('/api/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                body: formDataToSend
             });
             if (res.ok) {
                 toast.success('Inscription reussie');
-                cookies.set('email', formData.email);
                 cookies.set('userName', formData.username);
                 redirect('/');
             } else {
@@ -65,6 +72,10 @@ const Auth = () => {
         }
 
     };
+
+    useEffect(() => {
+        setFormData(prev => ({ ...prev, avatar: selectedAvatar }));
+    }, [selectedAvatar]);
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
@@ -82,6 +93,7 @@ const Auth = () => {
                     username={formData.username}
                     selectedAvatar={selectedAvatar}
                     avatars={avatars}
+                    handleImageUpload={handleImageUpload}
                 />
                 <AuthForm
                     handleSubmit={handleSubmit}

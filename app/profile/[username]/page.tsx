@@ -29,10 +29,9 @@ export default function ProfilePage({ params }: { params: Params }) {
             try {
                 setLoading(true);
                 const cookies = new Cookies();
-                const email = cookies.get('email');
                 const loggedInUserFromCookie = cookies.get('user');
 
-                if (email && loggedInUserFromCookie) {
+                if (username && loggedInUserFromCookie) {
                     setIsLoggedIn(true);
                     setCurrentUser(loggedInUserFromCookie);
                 } else {

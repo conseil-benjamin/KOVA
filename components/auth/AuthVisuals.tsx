@@ -9,9 +9,10 @@ interface AuthVisualsProps {
     username: string;
     selectedAvatar: string;
     avatars: { id: string, gradient: string }[];
+    handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars }: AuthVisualsProps) {
+export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars, handleImageUpload }: AuthVisualsProps) {
     return (
         <div className="hidden md:flex w-2/5 bg-gradient-to-br from-[#1a1a24] to-[#0f0f18] p-8 flex-col justify-between relative overflow-hidden border-r border-white/5">
 
@@ -57,7 +58,7 @@ export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars
                             <p className="text-sm text-slate-400">Crée ton profil, personnalise ton avatar et commence ton ascension.</p>
                         </div>
 
-                    <InputFile/>
+                    <InputFile handleImageUpload={handleImageUpload}/>
                     </>
                 )}
             </div>
