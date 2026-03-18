@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Zap, Gamepad2, Users } from 'lucide-react';
+import {InputFile} from "@/components/ui/fileInput";
 
 interface AuthVisualsProps {
     isLogin: boolean;
@@ -55,6 +56,8 @@ export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars
                             <h2 className="text-2xl font-bold text-white mb-2">Rejoins l'arène</h2>
                             <p className="text-sm text-slate-400">Crée ton profil, personnalise ton avatar et commence ton ascension.</p>
                         </div>
+
+                    <InputFile/>
                     </>
                 )}
             </div>

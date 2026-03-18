@@ -14,7 +14,7 @@ import { Loader2Icon } from 'lucide-react';
 import LoadingPage from '@/components/loadingPage';
 import { Room } from '@/types/Room';
 
-const HomeMockup = () => {
+const Home = () => {
   // --- ÉTAT ---
   const [activeTab, setActiveTab] = useState('Tout');
   const [viewMode, setViewMode] = useState('grid');
@@ -120,4 +120,4 @@ const HomeMockup = () => {
   );
 };
 
-export default HomeMockup;
+export default Home;

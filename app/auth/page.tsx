@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 import Cookies from 'universal-cookie';
 
-const AuthMockup = () => {
+const Auth = () => {
     const [isLogin, setIsLogin] = useState(true); // Toggle Login/Register
     const cookies = new Cookies();
     const [selectedAvatar, setSelectedAvatar] = useState('blue');
@@ -16,7 +16,8 @@ const AuthMockup = () => {
         username: '',
         email: '',
         password: '',
-        avatar: selectedAvatar
+        avatar: selectedAvatar,
+        file
     });
 
     const avatars = [
@@ -98,4 +99,4 @@ const AuthMockup = () => {
     );
 };
 
-export default AuthMockup;
+export default Auth;
