@@ -6,12 +6,14 @@ import AuthForm from '@/components/auth/AuthForm';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 import Cookies from 'universal-cookie';
+import AuthService from '@/services/authService'
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true); // Toggle Login/Register
     const cookies = new Cookies();
     const [selectedAvatar, setSelectedAvatar] = useState('blue');
     const [image, setImage] = useState<File | null>(null);
+    const authService = new AuthService();
 
     const [formData, setFormData] = useState({
         username: '',
@@ -30,7 +32,7 @@ const Auth = () => {
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        console.log(file);
+
         if (file) {
             setImage(file);
             setFormData({ ...formData, image: file });
@@ -46,10 +48,7 @@ const Auth = () => {
         formDataToSend.append('avatar', formData.avatar);
 
         if (isLogin) {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                body: formDataToSend
-            });
+            const res = await authService.login(formDataToSend)
             if (res.ok) {
                 toast.success('Connexion reussie');
                 cookies.set('userName', formData.username);
@@ -58,10 +57,7 @@ const Auth = () => {
                 toast.error('Une erreur est survenue');
             }
         } else {
-            const res = await fetch('/api/register', {
-                method: 'POST',
-                body: formDataToSend
-            });
+            const res = await authService.register(formDataToSend)
             if (res.ok) {
                 toast.success('Inscription reussie');
                 cookies.set('userName', formData.username);

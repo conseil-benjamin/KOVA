@@ -41,7 +41,7 @@ export default function ProfilePage({ params }: { params: Params }) {
 
                 // Fetch the profile target user
                 // Adjust endpoint if your backend uses a different path to fetch by username
-                const res = await fetch(`/api/users/username/${username}`, {
+                const res = await fetch(`${process.env.API_URL}/api/users/username/${username}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

@@ -25,10 +25,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, isOwner }) => {
                 <div className="relative flex-shrink-0">
                     <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-indigo-500 to-purple-600 shadow-2xl shadow-indigo-500/20">
                         <div className={`w-full h-full rounded-full bg-gradient-to-br ${user.avatar || 'from-slate-700 to-slate-800'} flex items-center justify-center border-4 border-slate-900`}>
-                            {/* Initials fallback if no avatar image */}
-                            <span className="text-3xl font-black text-white/50 tracking-wider">
+                            {user.imageUrl ? (
+                                <img src={user.imageUrl} alt={user.imageUrl} className={'rounded-full'}/>
+                            ) : (
+                                <span className="text-3xl font-black text-white/50 tracking-wider">
                                 {user.username.substring(0, 2).toUpperCase()}
                             </span>
+                            )}
                         </div>
                     </div>
                     <div className="absolute -bottom-2 -right-2 bg-slate-900 rounded-full p-1.5 border border-white/10 shadow-xl">

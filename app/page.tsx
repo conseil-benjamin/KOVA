@@ -31,7 +31,7 @@ const Home = () => {
 
       const fetchUser = async () => {
         try {
-          const res = await fetch(`/api/users/${username}`, {
+          const res = await fetch(`${process.env.API_URL}/api/users/${username}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ const Home = () => {
 
     const fetchPublicRooms = async () => {
       try {
-        const res = await fetch(`/api/rooms`, {
+        const res = await fetch(`${process.env.API_URL}/api/rooms`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

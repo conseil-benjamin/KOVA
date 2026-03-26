@@ -51,22 +51,6 @@ export default function AuthForm({
             {/* Formulaire */}
             <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
 
-                {/* Username (Register Only) */}
-                <div className={`space-y-1 transition-all duration-300 overflow-hidden`}>
-                    <label className="text-xs font-bold text-slate-300 uppercase ml-1">Pseudo</label>
-                    <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-purple-500 transition" />
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="Ton nom de guerrier"
-                            value={formData.username}
-                            onChange={handleInputChange}
-                            className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500 transition-all"
-                        />
-                    </div>
-                </div>
-
                 {/* Avatar Selection (Register Only) */}
                 <div className={`space-y-2 transition-all duration-300 overflow-hidden ${isLogin ? 'h-0 opacity-0' : 'h-24 opacity-100'}`}>
                     <label className="text-xs font-bold text-slate-300 uppercase ml-1">Choisis ta couleur</label>
@@ -81,6 +65,22 @@ export default function AuthForm({
                                 {selectedAvatar === avatar.id && <Check className="w-5 h-5 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
                             </button>
                         ))}
+                    </div>
+                </div>
+
+                {/* Username (Register Only) */}
+                <div className={`space-y-1 transition-all duration-300 overflow-hidden`}>
+                    <label className="text-xs font-bold text-slate-300 uppercase ml-1">Pseudo</label>
+                    <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-purple-500 transition" />
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Ton nom de guerrier"
+                            value={formData.username}
+                            onChange={handleInputChange}
+                            className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500 transition-all"
+                        />
                     </div>
                 </div>
 

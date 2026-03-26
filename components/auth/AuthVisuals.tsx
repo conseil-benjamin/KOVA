@@ -1,8 +1,9 @@
 "use client";
 
 import React from 'react';
-import { Zap, Gamepad2, Users } from 'lucide-react';
+import {Zap, Gamepad2, Users, ArrowLeft} from 'lucide-react';
 import {InputFile} from "@/components/ui/fileInput";
+import { useRouter } from 'next/navigation'
 
 interface AuthVisualsProps {
     isLogin: boolean;
@@ -13,13 +14,24 @@ interface AuthVisualsProps {
 }
 
 export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars, handleImageUpload }: AuthVisualsProps) {
+    const router = useRouter()
+
+    const handleBack = () => {
+        // Si l'historique est vide (longueur 1 ou 2 selon les navigateurs),
+        if (window.history.length <= 1) {
+            router.push('/');
+        } else {
+            window.history.back();
+        }
+    };
+
     return (
         <div className="hidden md:flex w-2/5 bg-gradient-to-br from-[#1a1a24] to-[#0f0f18] p-8 flex-col justify-between relative overflow-hidden border-r border-white/5">
 
             {/* Logo */}
             <div className="flex items-center gap-2 z-10">
                 <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-1.5 rounded-lg shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-                    <Zap className="w-5 h-5 text-white fill-white" />
+                    <ArrowLeft className={'cursor-pointer'} onClick={() => handleBack()}/>
                 </div>
                 <h1 className="text-xl font-black tracking-tighter text-white italic">
                     POPSAUCE <span className="text-xs not-italic font-mono text-purple-400">MAX</span>

@@ -90,7 +90,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     const handleGuestLogin = async () => {
         setIsLoading(true);
-        const result = await fetch(`/api/users/username/${guestNameInput.trim()}`, {
+        const result = await fetch(`${process.env.API_URL}/api/users/username/${guestNameInput.trim()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             roomData.oldPlayers = dataRoom?.oldPlayers || [];
             roomData.activeItems = activeItems;
             console.log("Room data:", roomData);
-            const result = await fetch(`/api/room/${dataRoom?.idUrl}`, {
+            const result = await fetch(`${process.env.API_URL}/api/room/${dataRoom?.idUrl}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -163,7 +163,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                 }
             });
         } else {
-            const result = await fetch('/api/launch-room', {
+            const result = await fetch(`${process.env.API_URL}/api/launch-room`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

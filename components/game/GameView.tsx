@@ -68,7 +68,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [scoreToWin, setScoreToWin] = useState(0);
 
     const handleGuestLogin = async () => {
-        const result = await fetch(`/api/users/username/${guestNameInput.trim()}`);
+        const result = await fetch(`${process.env.API_URL}/api/users/username/${guestNameInput.trim()}`);
         if (result.status !== 200) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
             setUserName(guestNameInput.trim());
@@ -82,7 +82,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const getRoomData = async () => {
         try {
             setIsLoading(true);
-            const res = await fetch(`/api/room/${roomId.toUpperCase()}`);
+            const res = await fetch(`${process.env.API_URL}/api/room/${roomId.toUpperCase()}`);
             const data = await res.json();
             console.log(res.status)
             if (data === null || data === undefined || res.status === 404) {
@@ -335,7 +335,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         };
     }, [roomId]);
 
-    // TODO : FIX l'histoire des oldPlayers tout ca côté back et front
     useEffect(() => {
         if (oldPlayers && oldPlayers.length > 0 && !isGameEnded && !isGameRunning && players.length === 0) {
             setIsGameEnded(true);
