@@ -49,7 +49,8 @@ const Auth = () => {
 
         if (isLogin) {
             const res = await authService.login(formDataToSend)
-            if (res.ok) {
+            console.log(res);
+            if (res.status === 200) {
                 toast.success('Connexion reussie');
                 cookies.set('userName', formData.username);
                 redirect('/');

@@ -9,12 +9,14 @@ import { User } from '@/types/User';
 import LoadingPage from '@/components/loadingPage';
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import StatsGrid from '@/components/profile/StatsGrid';
+import UserService from "@/services/userService";
 
 // We define the props as recommended for next > 15
 type Params = Promise<{ username: string }>;
 
 export default function ProfilePage({ params }: { params: Params }) {
     const { username } = use(params);
+    const userService = new UserService();
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -40,30 +42,10 @@ export default function ProfilePage({ params }: { params: Params }) {
                 }
 
                 // Fetch the profile target user
-                // Adjust endpoint if your backend uses a different path to fetch by username
-                const res = await fetch(`${process.env.API_URL}/api/users/username/${username}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (res.ok) {
-                    const userData = await res.json();
-                    // Provide default missing stats locally for testing if db isn't updated yet
-                    const enhancedUserData: User = {
-                        ...userData,
-                        stats: {
-                            ...userData.stats,
-                            xpToNextLevel: userData.stats.xpToNextLevel || 400,
-                            gamesPodium: userData.stats.gamesPodium || 0,
-                            winsStreak: userData.stats.winsStreak || 0,
-                            bestResponseTime: userData.stats.bestResponseTime || 0,
-                            bestWinsStreak: userData.stats.bestWinsStreak || 0,
-                            totalPlayTime: userData.stats.totalPlayTime || 0,
-                        }
-                    };
-                    setProfileUser(enhancedUserData);
+                const res = await userService.getUserDataByUsername(username);
+                if (res.status === 200) {
+                    const userData = await res.data;
+                    setProfileUser(userData);
                 } else {
                     toast.error('Utilisateur non trouvé');
                 }

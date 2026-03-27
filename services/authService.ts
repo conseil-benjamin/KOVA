@@ -1,29 +1,27 @@
-"use server"
-
 import axios, {AxiosInstance, AxiosResponse} from "axios";
 
 class AuthService {
 
     login = async (formDataToSend) => {
-        const res = axios.post(`${process.env.API_URL}/api/login`, formDataToSend)
-        .then((response: AxiosResponse) => {
-            console.log(response);
-        })
-        .catch((error: AxiosResponse) => {
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, formDataToSend);
+            console.log("response", response);
+            return response;
+        } catch (error) {
             console.log(error);
-        })
-       return res;
+            return error;
+        }
     }
 
     register = async (formDataToSend) => {
-        const res = axios.post(`${process.env.API_URL}/api/register`, formDataToSend)
-        .then((response: AxiosResponse) => {
-            console.log(response)
-        })
-        .catch((error: AxiosResponse) => {
-            console.log(error)
-        })
-        return res;
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, formDataToSend);
+            console.log(response);
+            return response;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
     }
 }
 

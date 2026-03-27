@@ -17,9 +17,13 @@ import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescripti
 import { Room, Player } from '@/types/Room';
 import LoadingPage from '../loadingPage';
 import SearchForMorePacks from '../Pack/SearchForMorePacks';
+import RoomService from "@/services/roomService";
+import UserService from "@/services/userService";
 
 const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();
+    const roomService = new RoomService();
+    const userService = new UserService();
 
     // --- ÉTAT DU FORMULAIRE ---
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
@@ -90,12 +94,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     const handleGuestLogin = async () => {
         setIsLoading(true);
-        const result = await fetch(`${process.env.API_URL}/api/users/username/${guestNameInput.trim()}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        const result = await userService.getUserDataByUsername(guestNameInput);
         if (result.status !== 200) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
             setUserName(guestNameInput.trim());
@@ -139,46 +138,31 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             roomData.oldPlayers = dataRoom?.oldPlayers || [];
             roomData.activeItems = activeItems;
             console.log("Room data:", roomData);
-            const result = await fetch(`${process.env.API_URL}/api/room/${dataRoom?.idUrl}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(roomData),
-            }).then(async (res) => {
-                if (res.ok) {
-                    const responseData = await res.json();
-                    toast.success('Room updated');
-                    let updatedRoomData = responseData;
-                    if (responseData.roomData) {
-                        updatedRoomData = typeof responseData.roomData === 'string'
-                            ? JSON.parse(responseData.roomData)
-                            : responseData.roomData;
-                    }
-
-                    socket.emit('need_update_room', updatedRoomData.idUrl);
-                    setIsEditing(false);
-                } else {
-                    toast.error('Room not updated');
+            const result = await roomService.editRoom(roomData)
+            if (result.ok) {
+                const responseData = await result.json();
+                toast.success('Room updated');
+                let updatedRoomData = responseData;
+                if (responseData.roomData) {
+                    updatedRoomData = typeof responseData.roomData === 'string'
+                        ? JSON.parse(responseData.roomData)
+                        : responseData.roomData;
                 }
-            });
+                socket.emit('need_update_room', updatedRoomData.idUrl);
+                setIsEditing(false);
+            } else {
+                toast.error('Room not updated');
+            }
         } else {
-            const result = await fetch(`${process.env.API_URL}/api/launch-room`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(roomData),
-            }).then(async (res) => {
-                if (res.ok) {
-                    toast.success('Room created');
-                    const roomId = await res.text();
-                    console.log("Room ID:", roomId);
-                    redirect(`/${roomId}`);
-                } else {
-                    toast.error('Room not created');
-                }
-            });
+            const result = await roomService.launchRoom(roomData)
+            if (result.ok) {
+                toast.success('Room created');
+                const roomId = await result.text();
+                console.log("Room ID:", roomId);
+                redirect(`/${roomId}`);
+            } else {
+                toast.error('Room not created');
+            }
         }
         setIsLoading(false);
     }

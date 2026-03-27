@@ -21,12 +21,16 @@ import CreateRoomView from '../createRoom/CreateRoomView';
 import { redirect } from 'next/navigation';
 import Lobby from './Lobby';
 import LoadingPage from '../loadingPage';
+import UserService from "@/services/userService";
+import RoomService from "@/services/roomService";
 
 interface GameViewProps {
     roomId: string;
 }
 
 const GameView: React.FC<GameViewProps> = ({ roomId }) => {
+    const userService = new UserService();
+    const roomService = new RoomService();
     // --- SOCKET LOGIC ---
     const [socket, setSocket] = useState<Socket | null>(null);
     const [isConnected, setIsConnected] = useState(false);
@@ -68,7 +72,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [scoreToWin, setScoreToWin] = useState(0);
 
     const handleGuestLogin = async () => {
-        const result = await fetch(`${process.env.API_URL}/api/users/username/${guestNameInput.trim()}`);
+        const result = await userService.getUserDataByUsername(guestNameInput.trim());
         if (result.status !== 200) {
             cookies.set('userName', guestNameInput.trim(), { path: '/' });
             setUserName(guestNameInput.trim());
@@ -82,7 +86,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const getRoomData = async () => {
         try {
             setIsLoading(true);
-            const res = await fetch(`${process.env.API_URL}/api/room/${roomId.toUpperCase()}`);
+            const res = await roomService.getRoom();
             const data = await res.json();
             console.log(res.status)
             if (data === null || data === undefined || res.status === 404) {

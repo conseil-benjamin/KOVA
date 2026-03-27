@@ -8,13 +8,15 @@ import SidebarRight from '@/components/home/SidebarRight';
 import MobileFab from '@/components/home/MobileFab';
 import Cookies from 'universal-cookie';
 import { toast } from 'sonner';
-import { redirect } from 'next/navigation';
 import { User } from '@/types/User';
-import { Loader2Icon } from 'lucide-react';
 import LoadingPage from '@/components/loadingPage';
 import { Room } from '@/types/Room';
+import RoomService from "@/services/roomService";
+import UserService from "@/services/userService";
 
 const Home = () => {
+  const roomService = new RoomService();
+  const userService = new UserService();
   // --- ÉTAT ---
   const [activeTab, setActiveTab] = useState('Tout');
   const [viewMode, setViewMode] = useState('grid');
@@ -31,19 +33,15 @@ const Home = () => {
 
       const fetchUser = async () => {
         try {
-          const res = await fetch(`${process.env.API_URL}/api/users/${username}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (res.ok) {
-            const userData = await res.json();
+          const res = await userService.getUserDataByUsername(username);
+          if (res.status === 200) {
+            const userData = await res.data;
+            console.log("userData fetch", userData);
             setUser(userData);
             cookies.set('user', JSON.stringify(userData));
             cookies.set('userName', userData.username);
             cookies.set('userAvatar', userData.avatar);
+            console.log("userData", userData);
           } else {
             console.error('Erreur fetch user');
             toast.error('Impossible de charger le profil');
@@ -61,15 +59,9 @@ const Home = () => {
 
     const fetchPublicRooms = async () => {
       try {
-        const res = await fetch(`${process.env.API_URL}/api/rooms`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (res.ok) {
-          const roomsData = await res.json();
+        const res = await roomService.getAllPublicRooms();
+        if (res.status === 200) {
+          const roomsData = await res.data;
           console.log(roomsData);
           setRooms(roomsData);
         } else {
