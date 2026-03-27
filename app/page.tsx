@@ -63,7 +63,9 @@ const Home = () => {
         if (res.status === 200) {
           const roomsData = await res.data;
           console.log(roomsData);
-          setRooms(roomsData);
+          if (roomsData.length > 0) {
+            setRooms(roomsData);
+          }
         } else {
           toast.error('Impossible de charger les rooms');
         }

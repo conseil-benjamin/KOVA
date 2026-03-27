@@ -21,16 +21,18 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
     ];
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredRooms, setFilteredRooms] = useState(rooms);
+    const [filteredRooms, setFilteredRooms] = useState([]);
 
     useEffect(() => {
-        if (rooms) {
+        if (rooms && Array.isArray(rooms)) {
             setFilteredRooms(rooms);
         }
         console.log(rooms);
     }, [rooms]);
 
     useEffect(() => {
+        if (!rooms || !Array.isArray(rooms)) return;
+        
         if (searchQuery === '') {
             setFilteredRooms(rooms);
             return;
@@ -39,9 +41,11 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
             return (room.name.toLowerCase().includes(searchQuery.toLowerCase()) || room.tags.some((tag: string) => tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())))
         });
         setFilteredRooms(filtered);
-    }, [searchQuery]);
+    }, [searchQuery, rooms]);
 
     useEffect(() => {
+        if (!rooms || !Array.isArray(rooms)) return;
+        
         if (activeTab === 'Tout') {
             setFilteredRooms(rooms);
             return;
@@ -50,7 +54,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
             return room.tags.some((tag: string) => tag.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(activeTab.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()))
         });
         setFilteredRooms(filtered);
-    }, [activeTab]);
+    }, [activeTab, rooms]);
 
     const joinRoom = (room: Room) => {
         redirect(`/${room.idUrl}`);
@@ -91,7 +95,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
             {/* Liste des Rooms */}
             <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-                {filteredRooms.map((room: Room) => (
+                {filteredRooms && filteredRooms.length > 0 && filteredRooms.map((room: Room) => (
                     <div key={room._id} className="group bg-[#1a1a24] hover:bg-[#20202e] border border-white/5 hover:border-purple-500/30 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer relative shadow-lg">
 
                         {/* Image Header */}

@@ -139,7 +139,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             roomData.activeItems = activeItems;
             console.log("Room data:", roomData);
             const result = await roomService.editRoom(roomData)
-            if (result.ok) {
+            if (result.status === 200) {
                 const responseData = await result.json();
                 toast.success('Room updated');
                 let updatedRoomData = responseData;
@@ -155,7 +155,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             }
         } else {
             const result = await roomService.launchRoom(roomData)
-            if (result.ok) {
+            if (result.status === 200) {
                 toast.success('Room created');
                 const roomId = await result.text();
                 console.log("Room ID:", roomId);

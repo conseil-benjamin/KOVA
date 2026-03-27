@@ -10,6 +10,7 @@ import AuthService from '@/services/authService'
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true); // Toggle Login/Register
+    const [alreadyLoggedIn, setAlreadyLoggedIn] = useState(true);
     const cookies = new Cookies();
     const [selectedAvatar, setSelectedAvatar] = useState('blue');
     const [image, setImage] = useState<File | null>(null);
@@ -59,7 +60,7 @@ const Auth = () => {
             }
         } else {
             const res = await authService.register(formDataToSend)
-            if (res.ok) {
+            if (res.status === 200) {
                 toast.success('Inscription reussie');
                 cookies.set('userName', formData.username);
                 redirect('/');
@@ -74,37 +75,47 @@ const Auth = () => {
         setFormData(prev => ({ ...prev, avatar: selectedAvatar }));
     }, [selectedAvatar]);
 
+    useEffect(() => {
+        const user = cookies.get('user');
+        if (user) {
+            redirect('/');
+        } else {
+            setAlreadyLoggedIn(false);
+        }
+    }, []);
+
     return (
-        <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
+        {alreadyLoggedIn === false && (
+            <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
 
-            {/* --- FOND ANIMÉ (Background FX) --- */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+                {/* --- FOND ANIMÉ (Background FX) --- */}
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+                </div>
+
+                {/* --- MAIN CARD --- */}
+                <div className="w-full max-w-4xl bg-[#13131f]/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
+                    <AuthVisuals
+                        isLogin={isLogin}
+                        username={formData.username}
+                        selectedAvatar={selectedAvatar}
+                        avatars={avatars}
+                        handleImageUpload={handleImageUpload}
+                    />
+                    <AuthForm
+                        handleSubmit={handleSubmit}
+                        isLogin={isLogin}
+                        setIsLogin={setIsLogin}
+                        formData={formData}
+                        setFormData={setFormData}
+                        selectedAvatar={selectedAvatar}
+                        setSelectedAvatar={setSelectedAvatar}
+                        avatars={avatars}
+                    />
+                </div>
             </div>
-
-            {/* --- MAIN CARD --- */}
-            <div className="w-full max-w-4xl bg-[#13131f]/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
-                <AuthVisuals
-                    isLogin={isLogin}
-                    username={formData.username}
-                    selectedAvatar={selectedAvatar}
-                    avatars={avatars}
-                    handleImageUpload={handleImageUpload}
-                />
-                <AuthForm
-                    handleSubmit={handleSubmit}
-                    isLogin={isLogin}
-                    setIsLogin={setIsLogin}
-                    formData={formData}
-                    setFormData={setFormData}
-                    selectedAvatar={selectedAvatar}
-                    setSelectedAvatar={setSelectedAvatar}
-                    avatars={avatars}
-                />
-            </div>
-
-        </div>
+        )}
     );
 };
 
