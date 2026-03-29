@@ -75,7 +75,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             setEnableNSFW(dataRoom?.enableNSFW || false);
             setEnableAbbreviations(dataRoom?.enableAbbreviations || true);
             setEnableShowWrongAnswers(dataRoom?.enableShowWrongAnswers || true);
-            setItemsEnabled(dataRoom?.itemsEnabled || true);
+            setItemsEnabled(dataRoom?.itemsEnabled || false);
             setActiveItems(dataRoom?.activeItems || { hint: 1, freeze: 1, ink: 0, swap: 0 });
             setStatus(dataRoom?.status || "LOBBY");
             setBackgroundImageUrl(dataRoom?.backgroundImageUrl || "");
@@ -129,7 +129,10 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             status,
             backgroundImageUrl,
             isGameRunning,
-            tags
+            tags,
+            _id: "",
+            createdAt: new Date().toISOString(),
+            timerEnd: new Date(Date.now() + timePerRound * 1000),
         };
 
         if (isEditing) {
@@ -140,7 +143,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             console.log("Room data:", roomData);
             const result = await roomService.editRoom(roomData)
             if (result.status === 200) {
-                const responseData = await result.json();
+                const responseData = await result.data;
                 toast.success('Room updated');
                 let updatedRoomData = responseData;
                 if (responseData.roomData) {
@@ -155,9 +158,10 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             }
         } else {
             const result = await roomService.launchRoom(roomData)
+            console.log("Launch room result:", result);
             if (result.status === 200) {
                 toast.success('Room created');
-                const roomId = await result.text();
+                const roomId = await result.data;
                 console.log("Room ID:", roomId);
                 redirect(`/${roomId}`);
             } else {

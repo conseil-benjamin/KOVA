@@ -86,8 +86,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const getRoomData = async () => {
         try {
             setIsLoading(true);
-            const res = await roomService.getRoom();
-            const data = await res.json();
+            const res = await roomService.getRoom(roomId);
+            const data = await res.data;
             console.log(res.status)
             if (data === null || data === undefined || res.status === 404) {
                 setRoomFound(false);
@@ -110,7 +110,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 } else if (data.status === "TIMER_START") {
                     gameStartingSoon(data.timerEnd);
                 } else if (data.status === "LOBBY") {
-                    // TODO : Gérer l'afficghage du lobby avant le début d'une partie 
+                    // TODO : Gérer l'afficghage du lobby avant le début d'une partie
                     setIsGameNotStarted(true);
                 }
 
@@ -134,10 +134,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     };
 
     const handleStartGame = () => {
-        if (creator === userName && players.length > 0) {
+        if (creator.toLowerCase() === userName.toLowerCase() && players.length > 0) {
             // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
             socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
-        } else if (creator === userName && players.length <= 0) {
+        } else if (creator.toLowerCase() === userName.toLowerCase() && players.length <= 0) {
             toast.error('Il faut au moins 2 joueurs pour lancer une partie.');
         }
     };
@@ -367,7 +367,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleCancelStartGame = () => {
         console.log("handleCancelStartGame");
-        if (socket && isConnected && (creator === userName)) {
+        if (socket && isConnected && (creator.toLowerCase() === userName.toLowerCase())) {
             socket?.emit('cancel_start', roomId);
             setIsGameRunning(false);
         }
@@ -384,7 +384,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleRestartGame = () => {
         console.log("handleRestartGame");
-        if (socket && isConnected && (creator === userName)) {
+        if (socket && isConnected && (creator.toLowerCase() === userName.toLowerCase())) {
             console.log(userName);
             socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
             setIsGameEnded(false);

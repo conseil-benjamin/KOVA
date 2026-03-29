@@ -28,6 +28,10 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const userInGame = players?.find((player) => player.username.toLowerCase() === currentUser?.toLowerCase());
 
+    console.log("creator:", creator, "currentUser:", currentUser);
+    console.log("creator (trimmed):", creator?.trim(), "currentUser (trimmed):", currentUser?.trim());
+    console.log("Equality check:", creator?.trim().toLowerCase() === currentUser?.trim().toLowerCase());
+
     // --- LOGIQUE TIMER ---
     useEffect(() => {
         if (timeLeft <= 0) return;
@@ -70,12 +74,12 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
             <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 top-1/2 -translate-y-1/2 mt-1 z-40">
                 {/* Desktop Menu */}
                 <div className="hidden md:flex flex-col items-center">
-                    {creator === currentUser && !isGameRunning && (
+                    {creator?.toLowerCase().trim() === currentUser?.toLowerCase().trim() && !isGameRunning && (
                         <div className='flex gap-2'>
                             <button className='px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition border border-white/10 text-sm font-medium' onClick={() => setIsEditingRoom(!isEditingRoom)}>Modifier</button>
                             {players && players.length > 0 && gameStartingSoonTimer != 0 ? (
                                 <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleCancelStartGame}>Annuler</button>
-                            ) : (
+                            ) : players && players.length > 0 &&(
                                 <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleStartGame}>Lancer</button>
                             )}
                             {!userInGame ? (
@@ -85,12 +89,12 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                             )}
                         </div>
                     )}
-                    {!isGameRunning && creator !== currentUser && (
+                    {!isGameRunning && creator?.toLowerCase() !== currentUser?.toLowerCase() && (
                         <div className='flex gap-2'>
                             <button className='px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition border border-white/10 text-sm font-medium' onClick={() => setIsConsult(!isConsult)}>Règles</button>
                         </div>
                     )}
-                    {creator !== currentUser && (
+                    {creator?.toLowerCase() !== currentUser?.toLowerCase() && (
                         <div className='flex gap-2'>
                             {!userInGame ? (
                                 <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleJoinRoom}>Rejoindre</button>
@@ -146,7 +150,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
 
                     {/* Game Actions */}
                     <div className="flex flex-col gap-3">
-                        {creator === currentUser && !isGameRunning && (
+                        {creator?.toLowerCase() === currentUser?.toLowerCase() && !isGameRunning && (
                             <>
                                 <button
                                     className="flex items-center justify-center gap-2 p-3 w-full rounded-xl bg-purple-600 text-white font-bold shadow-[0_0_15px_rgba(168,85,247,0.3)] active:scale-95 transition"
@@ -172,7 +176,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                             </button>
                         )}
 
-                        {!isGameRunning && creator !== currentUser && (
+                        {!isGameRunning && creator?.toLowerCase() !== currentUser?.toLowerCase() && (
                             <button
                                 className="flex items-center justify-center gap-2 p-3 w-full rounded-xl bg-slate-800 border border-white/10 text-white active:bg-slate-700 transition"
                                 onClick={() => { setIsConsult(true); setIsMobileMenuOpen(false); }}

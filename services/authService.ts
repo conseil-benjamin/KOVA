@@ -2,7 +2,7 @@ import axios, {AxiosInstance, AxiosResponse} from "axios";
 
 class AuthService {
 
-    login = async (formDataToSend) => {
+    login = async (formDataToSend: FormData) => {
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, formDataToSend);
             console.log("response", response);
@@ -13,7 +13,7 @@ class AuthService {
         }
     }
 
-    register = async (formDataToSend) => {
+    register = async (formDataToSend: FormData) => {
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, formDataToSend);
             console.log(response);

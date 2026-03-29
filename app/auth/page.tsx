@@ -85,7 +85,8 @@ const Auth = () => {
     }, []);
 
     return (
-        {alreadyLoggedIn === false && (
+        <>
+        {!alreadyLoggedIn ? (
             <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
 
                 {/* --- FOND ANIMÉ (Background FX) --- */}
@@ -115,7 +116,8 @@ const Auth = () => {
                     />
                 </div>
             </div>
-        )}
+        ) : null}
+        </>
     );
 };
 
