@@ -9,6 +9,8 @@ interface LeaderboardProps {
 }
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ players, scoreToWin }) => {
+    console.log("players in leaderboard", players);
+
     return (
         <aside className="flex-none order-1 md:order-none w-full md:w-64 bg-black/20 md:bg-[#0a0a12]/50 border-b md:border-b-0 md:border-r border-white/5 flex flex-row md:flex-col backdrop-blur-sm z-20 overflow-hidden">
 
@@ -47,9 +49,15 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players, scoreToWin }) => {
                         <span className={`hidden md:block font-mono text-sm w-4 text-center ${idx < 3 ? 'text-yellow-400 font-bold' : 'text-slate-500'}`}>{idx + 1}</span>
 
                         <div className="relative">
-                            <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${player.avatar} flex items-center justify-center text-[10px] md:text-xs font-bold shadow-lg ring-2 ${player.hasGuessed ? 'ring-green-400' : 'ring-transparent'}`}>
-                                {player.username.substring(0, 1)}
-                            </div>
+                            {player.imageUrl ? (
+                                <div className={`w-8 h-8 rounded-full bg-gradient-to-tr flex items-center justify-center text-[10px] md:text-xs font-bold shadow-lg ring-2 ${player.hasGuessed ? 'ring-green-400' : 'ring-transparent'}`}>
+                                    <img src={player.imageUrl} alt={player.username} className="w-full h-full object-cover rounded-full" />
+                                </div>
+                            ) : (
+                                <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${player.avatar} flex items-center justify-center text-[10px] md:text-xs font-bold shadow-lg ring-2 ${player.hasGuessed ? 'ring-green-400' : 'ring-transparent'}`}>
+                                    {player.username.substring(0, 1)}
+                                </div>
+                            )}
                             {/* {player.hasGuessed && <div className="hidden md:block absolute -bottom-1 -right-1 bg-orange-500 rounded-full p-0.5 border border-black"><Flame className="w-2 h-2 text-white" /></div>} */}
                         </div>
 

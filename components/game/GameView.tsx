@@ -23,6 +23,7 @@ import Lobby from './Lobby';
 import LoadingPage from '../loadingPage';
 import UserService from "@/services/userService";
 import RoomService from "@/services/roomService";
+import {User} from "@/types/User";
 
 interface GameViewProps {
     roomId: string;
@@ -286,7 +287,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             score: roomPlayer.score,
                             hasGuessed: roomPlayer.hasGuessed,
                             avatar: roomPlayer.avatar || existingPlayer.avatar,
-                            jokers: roomPlayer.jokers
+                            jokers: roomPlayer.jokers,
+                            imageUrl: roomPlayer.imageUrl || existingPlayer.imageUrl
                         };
                     } else {
                         return {
@@ -296,7 +298,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             hasGuessed: roomPlayer.hasGuessed,
                             answer: "",
                             avatar: roomPlayer.avatar,
-                            jokers: roomPlayer.jokers
+                            jokers: roomPlayer.jokers,
+                            imageUrl: roomPlayer.imageUrl
                         };
                     }
                 });
@@ -366,7 +369,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     // --- HANDLERS ---
 
     const handleCancelStartGame = () => {
-        console.log("handleCancelStartGame");
         if (socket && isConnected && (creator.toLowerCase() === userName.toLowerCase())) {
             socket?.emit('cancel_start', roomId);
             setIsGameRunning(false);
@@ -374,11 +376,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     }
 
     const handleJoinRoom = () => {
-        console.log("handleJoinRoom");
         if (socket && isConnected && userName && roomFound) {
             console.log("Tentative de rejoindre la room:", roomId, "avec", userName);
+            const user: User = cookies.get('user')
+            const imageUrl = user?.imageUrl || '';
             const avatar = cookies.get('userAvatar') || 'red';
-            socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar });
+            socket.emit('join_room', roomId.toUpperCase(), { username: userName, avatar, imageUrl });
         }
     }
 
@@ -400,7 +403,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     }
 
     const handleGameGuess = async (text: string) => {
-        // Mock Game Logic check
         const guess = text.toUpperCase().trim();
         socket?.emit('verify_response', roomId.toUpperCase(), guess, userName, roomData?.language);
     };

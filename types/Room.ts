@@ -5,6 +5,7 @@ export interface Player {
     hasGuessed: boolean;
     answer: string;
     responseTime?: number;
+    imageUrl?: string;
     avatar?: string;
     jokers: { name: string; useLeft: number }[];
 }
