@@ -28,7 +28,8 @@ const Home = () => {
   useEffect(() => {
     const cookies = new Cookies();
     const username = cookies.get('userName');
-    if (username) {
+    const user = cookies.get('user');
+    if (user) {
       setIsLoggedIn(true);
 
       const fetchUser = async () => {

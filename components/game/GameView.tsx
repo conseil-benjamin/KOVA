@@ -24,6 +24,7 @@ import LoadingPage from '../loadingPage';
 import UserService from "@/services/userService";
 import RoomService from "@/services/roomService";
 import {User} from "@/types/User";
+import DisplayResponse from "@/components/game/DisplayResponse";
 
 interface GameViewProps {
     roomId: string;
@@ -306,6 +307,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             });
         });
 
+        newSocket.on("joker_type_already_use", (data: { message: string }) => {
+            toast.error(data.message);
+        });
+
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
             console.log("game_finished");
             console.log("oldPlayers", data.players);
@@ -518,7 +523,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             <Leaderboard players={players} scoreToWin={scoreToWin} />
 
                             {response ? <div className="flex-1 flex flex-col relative z-10 mask-gradient-top h-[calc(100vh-100px)]">
-                                <p className="text-2xl font-bold text-white text-center h-full flex items-center justify-center">{response}</p>
+                                <DisplayResponse response={response} question={question}/>
                             </div> :
                                 <GameArea
                                     hasGuessed={hasGuessed}

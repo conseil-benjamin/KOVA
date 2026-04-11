@@ -54,6 +54,7 @@ const Auth = () => {
             if (res.status === 200) {
                 toast.success('Connexion reussie');
                 cookies.set('userName', formData.username);
+                cookies.set('user', {});
                 redirect('/');
             } else {
                 toast.error('Une erreur est survenue');

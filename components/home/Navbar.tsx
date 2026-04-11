@@ -52,7 +52,11 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <div className="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-1 rounded-full pr-4 transition border border-transparent hover:border-white/10">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 ring-2 ring-white/20"></div>
+                                    {user?.imageUrl != '' ? (
+                                        <img src={user?.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                                    ) : (
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-500 to-gray-700 ring-2 ring-white/20"></div>
+                                    )}
                                     <div className="hidden md:block text-right">
                                         <div className="text-xs font-bold text-white">{user?.username}</div>
                                         <div className="text-[10px] text-purple-400">Niveau {user?.stats?.level}</div>
