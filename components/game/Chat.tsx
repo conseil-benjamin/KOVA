@@ -39,7 +39,7 @@ const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage 
         <aside className="hidden md:flex w-80 bg-[#0a0a12]/50 border-l border-white/5 flex-col backdrop-blur-sm z-20">
             <div className="p-4 border-b border-white/5 flex items-center justify-between">
                 <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <MessageSquare className="w-3 h-3" /> Chat du Room
+                    <MessageSquare className="w-3 h-3" /> Chat
                 </h2>
                 <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full border border-green-500/20">En ligne: {players?.length}</span>
             </div>

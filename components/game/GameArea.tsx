@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Eye, Lock, Loader, BadgeQuestionMark, ArrowRightLeft, Timer } from 'lucide-react';
+import { Music, Eye, Lock, Loader, BadgeQuestionMark, ArrowRightLeft, Timer, Blocks } from 'lucide-react';
 import LoadingPage from '../loadingPage';
 
 interface GameAreaProps {
@@ -8,6 +8,7 @@ interface GameAreaProps {
     timeLeft: number;
     imageUrl: string;
     question: string;
+    theme: string;
     gameStartingSoonTimer: number;
     activesItems: { id: string; maxUses: number }[];
     jokersLeft: { name: string; useLeft: number }[];
@@ -15,7 +16,7 @@ interface GameAreaProps {
     hint: string;
 }
 
-const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint }) => {
+const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, theme, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint }) => {
     console.log("activesItems" + JSON.stringify(activesItems));
     console.log("jokersLeft" + JSON.stringify(jokersLeft));
     return (
@@ -51,13 +52,13 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                                         <img
                                             src={imageUrl}
                                             alt="Devinette"
-                                            className="w-full h-full object-cover transition-all duration-300 ease-out"
-                                            style={{ transform: hasGuessed ? 'scale(1)' : 'scale(1.1)' }}
+                                            className="w-full h-full object-contain transition-all duration-300 ease-out"
+                                            style={{transform: hasGuessed ? 'scale(1)' : 'scale(1.1)'}}
                                         />
                                     </div>
                                 </div> :
                                 <div className="w-full h-full bg-gray-900 flex items-center justify-center">
-                                    <p className="text-white text-2xl font-bold">{question}</p>
+                                <p className="text-white text-2xl font-bold text-center">{question}</p>
                                 </div>
                             }
 
@@ -67,8 +68,8 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             {/* Tags Catégorie */}
                             <div className="absolute top-4 left-4 flex gap-2">
                                 <div className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
-                                    <Music className="w-3 h-3 text-pink-400" />
-                                    <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">Culture Internet</span>
+                                    <Blocks className="w-3 h-3 text-pink-400" />
+                                    <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">{theme}</span>
                                 </div>
                             </div>
 

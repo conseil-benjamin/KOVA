@@ -6,9 +6,10 @@ import { Player } from '@/types/Room';
 interface LeaderboardProps {
     players: Player[];
     scoreToWin: number;
+    username: string;
 }
 
-const Leaderboard: React.FC<LeaderboardProps> = ({ players, scoreToWin }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ players, scoreToWin, username }) => {
     console.log("players in leaderboard", players);
 
     return (
@@ -63,7 +64,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players, scoreToWin }) => {
 
                         <div className="flex-1 min-w-0 flex flex-col items-center md:items-start w-full">
                             <div className="flex justify-between w-full">
-                                <span className={`text-[9px] md:text-sm font-medium truncate max-w-full md:max-w-[100px] ${player.hasGuessed ? 'text-green-400' : 'text-slate-200'} text-center md:text-left`}>{player.username}</span>
+                                <span className={`text-[9px] md:text-sm font-medium truncate max-w-full md:max-w-[100px] ${player.hasGuessed ? 'text-green-400' : player.username.toLowerCase() === username.toLowerCase() ? 'text-yellow-600' : 'text-slate-200'} text-center md:text-left`}>{player.username}</span>
                                 <span className="text-[9px] md:text-sm font-medium truncate max-w-full md:max-w-[100px] text-slate-200 text-center md:text-left">{player.score} {player.responseTime != 0 && player.responseTime != undefined ? `(${player.responseTime}s)` : ''}</span>
                             </div>
 

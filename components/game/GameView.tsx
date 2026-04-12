@@ -39,6 +39,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [messages, setMessages] = useState<any[]>([]); // Adjust type as needed
     const cookies = new Cookies();
     const [userName, setUserName] = useState(cookies.get('userName') || '');
+    const [userObject, setUserObject] = useState<User>(cookies.get('user') ? cookies.get('user') : null);
     const [guestNameInput, setGuestNameInput] = useState('');
     const [roomFound, setRoomFound] = useState(true);
     const [isGameEnded, setIsGameEnded] = useState(false);
@@ -64,6 +65,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     // --- GAME STATE ---
     const [question, setQuestion] = useState('');
+    const [questionTheme, setQuestionTheme] = useState('');
+    const [questionStory, setQuestionStory] = useState('');
     const [hint, setHint] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [startTimer, setStartTimer] = useState(false);
@@ -186,14 +189,17 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.error('Game cancelled');
         });
 
-        newSocket.on('new_question', (data: { question: string, imageUrl: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
+        newSocket.on('new_question', (data: { question: string, imageUrl: string, theme: string, story: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
             setHint('');
+            setQuestionTheme(data.theme);
             setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
             if (data.language === "fr") {
                 setQuestion(data.question['fr']);
+                setQuestionStory(data.story['fr']);
             } else {
                 setQuestion(data.question['en']);
+                setQuestionStory(data.story['en']);
             }
             setImageUrl(data.imageUrl);
             setResponse('');
@@ -516,19 +522,21 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     {/* CONTAINER DE L'APPLICATION */}
                     <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer}
+                        <GameHeader timeLeft={timeLeft} currentUser={userName} userObject={userObject} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer}
                         />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-                            <Leaderboard players={players} scoreToWin={scoreToWin} />
+                            <Leaderboard players={players} scoreToWin={scoreToWin} username={userName}/>
 
                             {response ? <div className="flex-1 flex flex-col relative z-10 mask-gradient-top h-[calc(100vh-100px)]">
-                                <DisplayResponse response={response} question={question}/>
+                                <DisplayResponse response={response} question={question} story={questionStory}
+                                />
                             </div> :
                                 <GameArea
                                     hasGuessed={hasGuessed}
                                     timeLeft={timeLeft}
                                     question={question}
+                                    theme={questionTheme}
                                     imageUrl={imageUrl}
                                     gameStartingSoonTimer={gameStartingSoonTimer}
                                     activesItems={activesItems}

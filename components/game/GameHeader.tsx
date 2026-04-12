@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Hexagon, Clock, Menu, X, Play, Settings, BookOpen, LogOut } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { Player } from '@/types/Room';
+import {User} from "@/types/User";
 
 interface GameHeaderProps {
     timeLeft: number;
     currentUser?: string;
+    userObject?: User;
     creator?: string;
     handleStartGame?: () => void;
     setIsEditingRoom: (value: boolean) => void;
@@ -24,7 +26,7 @@ interface GameHeaderProps {
     startTimer: boolean
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame, setStartTimer, setTimeLeft, startTimer }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObject, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame, setStartTimer, setTimeLeft, startTimer }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const userInGame = players?.find((player) => player.username.toLowerCase() === currentUser?.toLowerCase());
 
@@ -129,9 +131,13 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
                 <div className="hidden md:flex items-center gap-3">
                     <div className="flex flex-col text-right">
                         <span className="text-xs font-bold text-white">{currentUser}</span>
-                        <span className="text-[10px] text-purple-400 font-mono">Niveau 12</span>
+                        <span className="text-[10px] text-purple-400 font-mono">Niveau {userObject?.stats?.level}</span>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 ring-2 ring-white/20"></div>
+                    {userObject?.imageUrl ? (
+                        <img src={userObject?.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                    ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-500 to-gray-700 ring-2 ring-white/20"></div>
+                    )}
                 </div>
             </div>
 
@@ -141,10 +147,14 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, creator,
 
                     {/* User Info in Mobile Menu */}
                     <div className="flex items-center gap-3 pb-4 border-b border-white/10">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 ring-2 ring-white/20"></div>
+                        {userObject?.imageUrl != '' ? (
+                            <img src={userObject?.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-500 to-gray-700 ring-2 ring-white/20"></div>
+                        )}
                         <div className="flex flex-col">
                             <span className="text-sm font-bold text-white">{currentUser || 'Invité'}</span>
-                            <span className="text-xs text-purple-400 font-mono">Niveau 12</span>
+                            <span className="text-xs text-purple-400 font-mono">Niveau {userObject?.stats?.level}</span>
                         </div>
                     </div>
 

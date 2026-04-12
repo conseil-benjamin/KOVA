@@ -3,9 +3,10 @@ import React from "react";
 interface DisplayResponseProps {
     response: string;
     question: string;
+    story: string;
 }
 
-const DisplayResponse: React.FC<DisplayResponseProps>  = ({ response, question }: { response: string, question: string }) => {
+const DisplayResponse: React.FC<DisplayResponseProps>  = ({ response, question, story }: { response: string, question: string, story: string }) => {
 
         return (
             <div className="flex-1 flex flex-col items-center justify-center relative z-10">
@@ -24,7 +25,7 @@ const DisplayResponse: React.FC<DisplayResponseProps>  = ({ response, question }
                     <div className="h-px bg-white/10 my-5 mx-auto w-0"
                          style={{ animation: "expandLine 0.6s 0.5s forwards" }} />
                     <p className="text-[13px] text-white/30 leading-relaxed">
-                        {question}
+                        {story}
                     </p>
                 </div>
 
