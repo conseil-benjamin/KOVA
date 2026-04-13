@@ -32,7 +32,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
     useEffect(() => {
         if (!rooms || !Array.isArray(rooms)) return;
-        
+
         if (searchQuery === '') {
             setFilteredRooms(rooms);
             return;
@@ -45,7 +45,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
     useEffect(() => {
         if (!rooms || !Array.isArray(rooms)) return;
-        
+
         if (activeTab === 'Tout') {
             setFilteredRooms(rooms);
             return;
@@ -140,6 +140,9 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
                             <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center">
                                 <div className="flex -space-x-2">
+                                    <span className="absolute bottom-4 left-4 text-xs font-bold text-white bg-black/50 px-2 py-1 rounded shadow-md">
+                                        {room.language === 'fr' ? 'Francais' : room.language === 'en' ? 'English' : room.language.toUpperCase()}
+                                    </span>
                                     {/* [...Array(3)].map((_, i) => (
                                         <div key={i} className="w-6 h-6 rounded-full bg-slate-700 border border-[#1a1a24] text-[8px] flex items-center justify-center text-white">
                                             {String.fromCharCode(65 + i)}

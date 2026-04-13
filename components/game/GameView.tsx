@@ -460,7 +460,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     return (
         <>
             {!userName && !isLoading ? (
-                <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                <div
+                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
                     <AlertDialog open={true}>
                         <AlertDialogContent className="bg-neutral-900 border border-white/10 text-white">
                             <AlertDialogHeader>
@@ -482,7 +483,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             </div>
 
                             <AlertDialogFooter>
-                                <AlertDialogCancel className="bg-white/5 hover:bg-white/10 border-white/10 text-white hover:text-white">Annuler</AlertDialogCancel>
+                                <AlertDialogCancel
+                                    className="bg-white/5 hover:bg-white/10 border-white/10 text-white hover:text-white"
+                                    onClick={() => redirect('/')}>Annuler</AlertDialogCancel>
                                 <AlertDialogAction
                                     onClick={handleGuestLogin}
                                     disabled={!guestNameInput.trim()}
@@ -495,7 +498,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     </AlertDialog>
                 </div>
             ) : !roomFound ? (
-                <RoomNotFound />
+                <RoomNotFound/>
             ) : isConsultRules ? (
                 <CreateRoomView
                     setIsConsult={setIsConsultRules}
@@ -519,22 +522,27 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     creator={creator}
                 />
             ) : isLoading ? (
-                <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                <div
+                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
                     <div className="flex items-center justify-center h-full w-full">
-                        <LoadingPage />
+                        <LoadingPage/>
                     </div>
                 </div>
             ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
-                <Lobby players={players} />
+                <Lobby players={players}/>
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
-                <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame} handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} />
+                <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
+                         isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
+                         handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame}/>
             ) : (
-                <div className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                <div
+                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
 
                     {/* CONTAINER DE L'APPLICATION */}
-                    <div className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
+                    <div
+                        className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                        <GameHeader timeLeft={timeLeft} currentUser={userName} userObject={userObject} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer}
+                    <GameHeader timeLeft={timeLeft} currentUser={userName} userObject={userObject} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer}
                         />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
