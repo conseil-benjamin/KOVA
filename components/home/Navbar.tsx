@@ -78,7 +78,7 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                 ) : (
                     <div className="flex gap-2">
                         <button onClick={() => redirect('/auth')} className="hidden md:block px-4 py-2 text-sm font-bold text-slate-300 hover:text-white transition">Connexion</button>
-                        <button onClick={() => redirect('/auth')} className="px-4 py-2 text-sm font-bold bg-white text-black rounded-full hover:bg-purple-100 transition flex items-center gap-2">
+                        <button onClick={() => redirect('/auth?mode=register')} className="px-4 py-2 text-sm font-bold bg-white text-black rounded-full hover:bg-purple-100 transition flex items-center gap-2">
                             <LogIn className="w-4 h-4" />
                             <span className="hidden md:inline">S'inscrire</span>
                         </button>

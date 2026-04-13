@@ -1,20 +1,23 @@
 "use client";
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Zap, Gamepad2, Users, ArrowLeft} from 'lucide-react';
 import {InputFile} from "@/components/ui/fileInput";
-import { useRouter } from 'next/navigation'
+import {useRouter, useSearchParams} from 'next/navigation'
 
 interface AuthVisualsProps {
     isLogin: boolean;
+    setIsLogin: (value: boolean) => void;
     username: string;
     selectedAvatar: string;
     avatars: { id: string, gradient: string }[];
     handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars, handleImageUpload }: AuthVisualsProps) {
+export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAvatar, avatars, handleImageUpload }: AuthVisualsProps) {
     const router = useRouter()
+    const searchParams = useSearchParams();
+    const mode = searchParams.get('mode');
 
     const handleBack = () => {
         // Si l'historique est vide (longueur 1 ou 2 selon les navigateurs),
@@ -24,6 +27,13 @@ export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars
             window.history.back();
         }
     };
+
+    useEffect(() => {
+        // Si "mode=register" est présent, on affiche le formulaire d'inscription
+        if (mode === 'register') {
+            setIsLogin(false);
+        }
+    }, [mode]);
 
     return (
         <div className="hidden md:flex w-2/5 bg-gradient-to-br from-[#1a1a24] to-[#0f0f18] p-8 flex-col justify-between relative overflow-hidden border-r border-white/5">
@@ -77,7 +87,7 @@ export default function AuthVisuals({ isLogin, username, selectedAvatar, avatars
 
             {/* Footer Left */}
             <div className="z-10 text-[10px] text-slate-500 text-center">
-                © 2024 PopSauce Max. Tous droits réservés.
+                © 2026 KOVA. Tous droits réservés.
             </div>
 
             {/* Background Pattern */}

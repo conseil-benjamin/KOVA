@@ -100,6 +100,7 @@ const Auth = () => {
                 <div className="w-full max-w-4xl bg-[#13131f]/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
                     <AuthVisuals
                         isLogin={isLogin}
+                        setIsLogin={setIsLogin}
                         username={formData.username}
                         selectedAvatar={selectedAvatar}
                         avatars={avatars}

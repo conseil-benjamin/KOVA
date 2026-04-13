@@ -1,6 +1,8 @@
 import React from 'react';
 import { Music, Eye, Lock, Loader, BadgeQuestionMark, ArrowRightLeft, Timer, Blocks } from 'lucide-react';
 import LoadingPage from '../loadingPage';
+import WaitingForHost from "@/components/game/WaitingForHost";
+import CountDown from "@/components/game/CountDown";
 
 interface GameAreaProps {
     isMobileMode?: boolean;
@@ -26,20 +28,17 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
 
                 {/* Game Starting Soon */}
                 {gameStartingSoonTimer > 0 ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-20">
-                        <div className="bg-black/80 text-white px-6 py-3 rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.2)] backdrop-xl transform rotate-[-2deg]">
-                            <span className={`font-black italic tracking-tighter ${isMobileMode ? 'text-2xl' : 'text-4xl'}`}>Game Starting Soon !</span>
-                            <span className={`font-black italic tracking-tighter ${isMobileMode ? 'text-2xl' : 'text-4xl'}`}> {gameStartingSoonTimer} seconds left</span>
-                        </div>
-                    </div>
+                    <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } />
                 ) : (gameStartingSoonTimer < 0 || gameStartingSoonTimer === 0) && !question ? (
-                    <Loader />
+                    <WaitingForHost/>
                 ) : (
                     <>
-                        < div className={`relative w-full aspect-[4/3] bg-black/50 rounded-2xl border border-white/10 shadow-2xl overflow-hidden group hover:border-white/20 transition-all ${isMobileMode ? 'max-w-full rounded-2xl' : 'max-w-3xl aspect-video rounded-3xl'}`}>
+                        < div
+                            className={`relative w-full aspect-[4/3] bg-black/50 rounded-2xl border border-white/10 shadow-2xl overflow-hidden group hover:border-white/20 transition-all ${isMobileMode ? 'max-w-full rounded-2xl' : 'max-w-3xl aspect-video rounded-3xl'}`}>
 
                             {imageUrl != '' && imageUrl != null ?
-                                <div className="w-full h-full flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
+                                <div
+                                    className="w-full h-full flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
                                     {/* Section Question : Prend 1/5 de la hauteur */}
                                     <div className="h-1/5 w-full flex items-center justify-center p-4">
                                         <p className="text-white text-xl md:text-2xl font-bold text-center">

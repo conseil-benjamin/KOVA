@@ -2,6 +2,7 @@ import { User } from '@/types/User';
 import { Users, Plus, Play, Flame } from 'lucide-react';
 import { Progress } from "@/components/ui/progress"
 import { redirect } from 'next/navigation';
+import React from "react";
 
 interface SidebarLeftProps {
     isLoggedIn: boolean;
@@ -24,7 +25,11 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
                 {isLoggedIn ? (
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 shadow-lg ring-4 ring-[#0a0a0f] flex items-center justify-center text-2xl font-bold">{user?.username.charAt(0).toUpperCase()}</div>
+                            {user?.imageUrl ? (
+                                <img src={user?.imageUrl} alt="Avatar" className="w-16 h-16 rounded-full object-cover"/>
+                            ) : (
+                                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 shadow-lg ring-4 ring-[#0a0a0f] flex items-center justify-center text-2xl font-bold">{user?.username.charAt(0).toUpperCase()}</div>
+                            )}
                             <div className="text-right">
                                 <div className="text-2xl font-black text-white">Niveau {level}</div>
                                 <div className="text-xs text-purple-400 font-mono">{xp} XP / {xpToNextLevel} XP</div>
