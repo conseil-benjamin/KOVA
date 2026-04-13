@@ -109,14 +109,26 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
                 const endTime = new Date(data.timerEnd).getTime();
                 const secondsRemaining = Math.floor((endTime - Date.now()));
+                console.log("getRoomData", data);
+                data.answers[data.language][0]
 
-                if (data.status === "FINISHED") {
-                    setIsGameEnded(true);
-                } else if (data.status === "TIMER_START") {
-                    gameStartingSoon(data.timerEnd);
-                } else if (data.status === "LOBBY") {
-                    // TODO : Gérer l'afficghage du lobby avant le début d'une partie
-                    setIsGameNotStarted(true);
+                switch (data.status) {
+                    case "FINISHED":
+                        setIsGameEnded(true);
+                        break;
+                    case "TIMER_START":
+                        gameStartingSoon(data.timerEnd);
+                        break;
+                    case "LOBBY":
+                        // TODO : Gérer l'afficghage du lobby avant le début d'une partie
+                        setIsGameNotStarted(true);
+                        break;
+                    case "DISPLAY_RESPONSE":
+                        setResponse(data.answers[data.language][0]);
+                        setQuestionStory(data.questionStory[data.language]);
+                        break;
+                    default:
+                        break;
                 }
 
                 if (data.players && data.players.length > 0) {

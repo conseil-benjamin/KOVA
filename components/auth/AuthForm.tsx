@@ -88,7 +88,7 @@ export default function AuthForm({
                 <div className="space-y-1">
                     <div className="flex justify-between items-center ml-1">
                         <label className="text-xs font-bold text-slate-300 uppercase">Mot de passe</label>
-                        {isLogin && <button className="text-xs text-slate-500 hover:text-slate-300">Oublié ?</button>}
+                        {isLogin && <span className="text-xs text-slate-500 hover:text-slate-300 cursor-pointer">Oublié ?</span>}
                     </div>
                     <div className="relative group">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-purple-500 transition" />
