@@ -49,9 +49,9 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [itemsEnabled, setItemsEnabled] = useState(true);
     const [activeItems, setActiveItems] = useState<{ [key: string]: number }>({
         hint: 1,
-        freeze: 1,
+        multiplicated: 1,
         ink: 1,
-        swap: 0
+        swap: 1
     });
     const [status, setStatus] = useState("LOBBY"); // LOBBY, TIMER_START, FINISHED
     const [backgroundImageUrl, setBackgroundImageUrl] = useState("")

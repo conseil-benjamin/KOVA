@@ -110,7 +110,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 const endTime = new Date(data.timerEnd).getTime();
                 const secondsRemaining = Math.floor((endTime - Date.now()));
                 console.log("getRoomData", data);
-                data.answers[data.language][0]
 
                 switch (data.status) {
                     case "FINISHED":
@@ -145,8 +144,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }
         } catch (error) {
             console.error('Error fetching room data:', error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -350,6 +347,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         console.log("oldPlayers", oldPlayers);
         console.log("oldPlayers.length", oldPlayers?.length);
 
+        setIsLoading(false)
+
         return () => {
             newSocket.disconnect();
             newSocket.off('room_joined');
@@ -442,7 +441,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const handleUseJoker = (item: string) => {
         console.log("handleUseJoker", item);
         if (socket && isConnected) {
-            console.log("Sending joker use:", userName);
+            console.log("Sending joker use:", userName + " " + item);
             socket.emit('use_joker', roomId.toUpperCase(), item, userName);
         }
     }
@@ -528,8 +527,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <LoadingPage/>
                     </div>
                 </div>
-            ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
-                <Lobby players={players}/>
+            ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0 && !isLoading) ? (
+                <Lobby />
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
                          isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}

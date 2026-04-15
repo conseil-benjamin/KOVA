@@ -37,7 +37,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
 
             <div className={`grid grid-cols-2 gap-3 transition-opacity duration-300 ${itemsEnabled ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
 
-                {/* Item: Freeze */}
+                {/* Item: Freeze
                 <div className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition ${activeItems.freeze > 0 ? 'bg-blue-500/10 border-blue-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
                     <div
                         className="flex items-center gap-3 cursor-pointer flex-1"
@@ -56,6 +56,30 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                             <button onClick={() => updateItemUses('freeze', Math.max(0, activeItems.freeze - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
                             <span className="text-sm font-bold w-4 text-center">{activeItems.freeze}</span>
                             <button onClick={() => updateItemUses('freeze', activeItems.freeze + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
+                        </div>
+                    )}
+                </div>
+                */}
+
+                {/* Item: Points x2 */}
+                <div className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition ${activeItems.multiplicated > 0 ? 'bg-blue-500/10 border-blue-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
+                    <div
+                        className="flex items-center gap-3 cursor-pointer flex-1"
+                        onClick={() => !isConsult && updateItemUses('multiplicated', activeItems.multiplicated > 0 ? 0 : 1)}
+                    >
+                        <div className={`p-2 rounded-lg ${activeItems.multiplicated > 0 ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
+                            <Clock className="w-4 h-4" />
+                        </div>
+                        <div>
+                            <div className={`text-sm font-bold ${activeItems.multiplicated > 0 ? 'text-white' : 'text-slate-400'}`}>Points x2</div>
+                            <div className="text-[10px] text-slate-500">Double vos points de réponse</div>
+                        </div>
+                    </div>
+                    {!isConsult && (
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => updateItemUses('multiplicated', Math.max(0, activeItems.multiplicated - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
+                            <span className="text-sm font-bold w-4 text-center">{activeItems.multiplicated}</span>
+                            <button onClick={() => updateItemUses('multiplicated', activeItems.multiplicated + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
                         </div>
                     )}
                 </div>
