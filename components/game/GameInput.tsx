@@ -22,13 +22,14 @@ interface GameInputProps {
     focusInputResponse: boolean;
     setFocusInputResponse: (val: boolean) => void;
     timerVisible: boolean;
+    guessVal: string;
+    setGuessVal: (val: string) => void;
 }
 
 const GameInput: React.FC<GameInputProps> = ({
-    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username, focusInputResponse, setFocusInputResponse, timerVisible
+    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username, focusInputResponse, setFocusInputResponse, timerVisible, guessVal, setGuessVal
 }) => {
     // Game Answer State
-    const [guessVal, setGuessVal] = useState('');
     // Chat Message State
     const [chatVal, setChatVal] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);

@@ -44,6 +44,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [roomFound, setRoomFound] = useState(true);
     const [isGameEnded, setIsGameEnded] = useState(false);
     const [isGameNotStarted, setIsGameNotStarted] = useState(false);
+    const [guessVal, setGuessVal] = useState('');
 
     const [roomData, setRoomData] = useState<Room>();
 
@@ -240,6 +241,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('game_starting_soon', (data: { timerEnd: Date }) => {
+            console.log("game_starting_soon", data);
+            setResponse('');
             gameStartingSoon(data.timerEnd);
             setIsGameEnded(false);
             setIsGameNotStarted(false);
@@ -279,6 +282,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             resetAnswersPlayers();
             setTimerVisible(false);
             setTimeLeft(0);
+            setGuessVal('');
         });
 
         newSocket.on('hint_used', (data: { hint: string, username: string }) => {
@@ -528,7 +532,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     </div>
                 </div>
             ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0 && !isLoading) ? (
-                <Lobby />
+                <Lobby players={players}/>
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
                          isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
@@ -547,7 +551,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} username={userName}/>
 
-                            {response ? <div className="flex-1 flex flex-col relative z-10 mask-gradient-top h-[calc(100vh-100px)]">
+                            {response != '' ? <div className="flex-1 flex flex-col relative z-10 mask-gradient-top h-[calc(100vh-100px)]">
                                 <DisplayResponse response={response} question={question} story={questionStory}
                                 />
                             </div> :
@@ -584,6 +588,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             focusInputResponse={focusInputResponse}
                             setFocusInputResponse={setFocusInputResponse}
                             timerVisible={timerVisible}
+                            guessVal={guessVal}
+                            setGuessVal={setGuessVal}
                         />
 
                     </div>

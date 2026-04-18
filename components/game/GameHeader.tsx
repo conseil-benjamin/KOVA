@@ -131,7 +131,11 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
                 <div className="hidden md:flex items-center gap-3">
                     <div className="flex flex-col text-right">
                         <span className="text-xs font-bold text-white">{currentUser}</span>
-                        <span className="text-[10px] text-purple-400 font-mono">Niveau {userObject?.stats?.level}</span>
+                        {userObject?.stats?.level && (
+                            <span
+                                className="text-[10px] text-purple-400 font-mono">Niveau {userObject?.stats?.level}
+                            </span>
+                        )}
                     </div>
                     {userObject?.imageUrl ? (
                         <img src={userObject?.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
