@@ -49,7 +49,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [itemsEnabled, setItemsEnabled] = useState(true);
     const [activeItems, setActiveItems] = useState<{ [key: string]: number }>({
         hint: 1,
-        multiplicated: 1,
+        double: 1,
         ink: 1,
         swap: 1
     });

@@ -62,24 +62,24 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                 */}
 
                 {/* Item: Points x2 */}
-                <div className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition ${activeItems.multiplicated > 0 ? 'bg-blue-500/10 border-blue-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
+                <div className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition ${activeItems.double > 0 ? 'bg-blue-500/10 border-blue-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
                     <div
                         className="flex items-center gap-3 cursor-pointer flex-1"
-                        onClick={() => !isConsult && updateItemUses('multiplicated', activeItems.multiplicated > 0 ? 0 : 1)}
+                        onClick={() => !isConsult && updateItemUses('double', activeItems.double > 0 ? 0 : 1)}
                     >
-                        <div className={`p-2 rounded-lg ${activeItems.multiplicated > 0 ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
+                        <div className={`p-2 rounded-lg ${activeItems.double > 0 ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>
                             <Clock className="w-4 h-4" />
                         </div>
                         <div>
-                            <div className={`text-sm font-bold ${activeItems.multiplicated > 0 ? 'text-white' : 'text-slate-400'}`}>Points x2</div>
+                            <div className={`text-sm font-bold ${activeItems.double > 0 ? 'text-white' : 'text-slate-400'}`}>Points x2</div>
                             <div className="text-[10px] text-slate-500">Double vos points de réponse</div>
                         </div>
                     </div>
                     {!isConsult && (
                         <div className="flex items-center gap-2">
-                            <button onClick={() => updateItemUses('multiplicated', Math.max(0, activeItems.multiplicated - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
-                            <span className="text-sm font-bold w-4 text-center">{activeItems.multiplicated}</span>
-                            <button onClick={() => updateItemUses('multiplicated', activeItems.multiplicated + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
+                            <button onClick={() => updateItemUses('double', Math.max(0, activeItems.double - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
+                            <span className="text-sm font-bold w-4 text-center">{activeItems.double}</span>
+                            <button onClick={() => updateItemUses('double', activeItems.double + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
                         </div>
                     )}
                 </div>
