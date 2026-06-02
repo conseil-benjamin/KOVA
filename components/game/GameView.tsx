@@ -295,11 +295,15 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setActivesItems(room.activeItems);
             setScoreToWin(room.scoreToWin);
 
+            const localPlayer = room.players.find(p => p.username.toLowerCase() === userName.toLowerCase());
+            if (localPlayer) {
+                setJokersLeft(localPlayer.jokers);
+            }
+
             setPlayers(prev => {
                 return room.players.map(roomPlayer => {
+                    console.log("salu111111111" + room)
                     const existingPlayer = prev.find(p => p.username.toLowerCase() === roomPlayer.username.toLowerCase());
-
-                    setJokersLeft(roomPlayer.jokers);
 
                     if (existingPlayer) {
                         return {
@@ -328,6 +332,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on("joker_type_already_use", (data: { message: string }) => {
             toast.error(data.message);
+        });
+
+        newSocket.on("swap_used", (data: { message: string }) => {
+            toast.success(data.message);
         });
 
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
