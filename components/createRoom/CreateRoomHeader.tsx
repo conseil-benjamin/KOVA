@@ -17,9 +17,6 @@ const CreateRoomHeader: React.FC<CreateRoomHeaderProps> = ({ isEditing, setIsEdi
                 </button>
                 <h1 className="text-lg font-bold text-white">{isEditing ? 'Modifier la partie' : isConsult ? 'Consultation des règles' : 'Créer une partie'}</h1>
             </div>
-            <div className="text-xs font-mono text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20 hidden md:block">
-                Serveur: Europe (Paris)
-            </div>
         </header>
     );
 };

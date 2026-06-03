@@ -78,30 +78,30 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
                 <div className="hidden md:flex flex-col items-center">
                     {creator?.toLowerCase().trim() === currentUser?.toLowerCase().trim() && !isGameRunning && (
                         <div className='flex gap-2'>
-                            <button className='px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition border border-white/10 text-sm font-medium' onClick={() => setIsEditingRoom(!isEditingRoom)}>Modifier</button>
+                            <button className='px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white transition-all duration-300 ease-out border border-white/10 hover:border-white/20 text-sm font-semibold tracking-wide active:scale-95' onClick={() => setIsEditingRoom(!isEditingRoom)}>Modifier</button>
                             {players && players.length > 0 && gameStartingSoonTimer != 0 ? (
-                                <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleCancelStartGame}>Annuler</button>
+                                <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-500 hover:to-rose-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] text-sm font-bold tracking-wide active:scale-95" onClick={handleCancelStartGame}>Annuler</button>
                             ) : players && players.length > 0 &&(
-                                <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleStartGame}>Lancer</button>
+                                <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] text-sm font-bold tracking-wide active:scale-95" onClick={handleStartGame}>Lancer</button>
                             )}
                             {!userInGame ? (
-                                <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleJoinRoom}>Rejoindre</button>
+                                <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] text-sm font-bold tracking-wide active:scale-95" onClick={handleJoinRoom}>Rejoindre</button>
                             ) : (
-                                <button className="px-4 py-2 rounded-full bg-red-600 text-white hover:bg-red-500 transition shadow-[0_0_15px_rgba(239,68,68,0.4)] text-sm font-bold" onClick={handleLeaveGame}>Quitter</button>
+                                <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-500 hover:to-rose-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] text-sm font-bold tracking-wide active:scale-95" onClick={handleLeaveGame}>Quitter</button>
                             )}
                         </div>
                     )}
                     {!isGameRunning && creator?.toLowerCase() !== currentUser?.toLowerCase() && (
                         <div className='flex gap-2'>
-                            <button className='px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-white transition border border-white/10 text-sm font-medium' onClick={() => setIsConsult(!isConsult)}>Règles</button>
+                            <button className='px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white transition-all duration-300 ease-out border border-white/10 hover:border-white/20 text-sm font-semibold tracking-wide active:scale-95' onClick={() => setIsConsult(!isConsult)}>Règles</button>
                         </div>
                     )}
                     {creator?.toLowerCase() !== currentUser?.toLowerCase() && (
-                        <div className='flex gap-2'>
+                        <div className='flex gap-2 mt-2'>
                             {!userInGame ? (
-                                <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm font-bold" onClick={handleJoinRoom}>Rejoindre</button>
+                                <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] text-sm font-bold tracking-wide active:scale-95" onClick={handleJoinRoom}>Rejoindre</button>
                             ) : (
-                                <button className="px-4 py-2 rounded-full bg-red-600 text-white hover:bg-red-500 transition shadow-[0_0_15px_rgba(239,68,68,0.4)] text-sm font-bold" onClick={handleLeaveGame}>Quitter</button>
+                                <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-500 hover:to-rose-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] text-sm font-bold tracking-wide active:scale-95" onClick={handleLeaveGame}>Quitter</button>
                             )}
                         </div>
                     )}

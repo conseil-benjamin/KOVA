@@ -76,6 +76,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [points, setPoints] = useState(0);
     const [response, setResponse] = useState('');
     const [scoreToWin, setScoreToWin] = useState(0);
+    const [xpEarned, setXpEarned] = useState(0);
 
     const handleGuestLogin = async () => {
         const result = await userService.getUserDataByUsername(guestNameInput.trim());
@@ -339,6 +340,15 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
+
+            console.log("game_finished", data);
+            players.forEach(player => {
+                console.log("dzdqdqz" + player)
+                if (player.username.toLowerCase() === userName.toLowerCase()) {
+                    setXpEarned(player.score)
+                }
+            });
+
             console.log("game_finished");
             console.log("oldPlayers", data.players);
             setPlayers([]);
@@ -544,7 +554,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
                          isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
-                         handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame}/>
+                         handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned}/>
             ) : (
                 <div
                     className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
