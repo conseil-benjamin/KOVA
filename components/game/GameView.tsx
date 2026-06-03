@@ -76,7 +76,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [points, setPoints] = useState(0);
     const [response, setResponse] = useState('');
     const [scoreToWin, setScoreToWin] = useState(0);
-    const [xpEarned, setXpEarned] = useState(0);
+    const [xpEarned, setXpEarned] = useState(null);
 
     const handleGuestLogin = async () => {
         const result = await userService.getUserDataByUsername(guestNameInput.trim());
@@ -340,16 +340,15 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
-
             console.log("game_finished", data);
-            players.forEach(player => {
+
+            data.players.forEach(player => {
                 console.log("dzdqdqz" + player)
                 if (player.username.toLowerCase() === userName.toLowerCase()) {
                     setXpEarned(player.score)
                 }
             });
 
-            console.log("game_finished");
             console.log("oldPlayers", data.players);
             setPlayers([]);
             setIsGameRunning(false);
@@ -551,7 +550,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 </div>
             ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0 && !isLoading) ? (
                 <Lobby players={players}/>
-            ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
+            ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0 && xpEarned) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
                          isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
                          handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned}/>
