@@ -9,7 +9,7 @@ interface DisplayResponseProps {
 const DisplayResponse: React.FC<DisplayResponseProps>  = ({ response, question, story }: { response: string, question: string, story: string }) => {
 
         return (
-            <div className="flex-1 flex flex-col items-center justify-center relative z-10">
+            <div className="flex flex-col items-center justify-center relative z-10">
 
                 <p className="text-[11px] tracking-[0.12em] uppercase text-white/30 mb-5"
                    style={{ animation: "fadeUp 0.4s 0.1s both" }}>
