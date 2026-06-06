@@ -14,6 +14,7 @@ interface EndGameProps {
     handleJoinRoom: () => void;
     oldPlayers: Player[];
     handleLeaveGame: () => void;
+    xpEarned: number;
 }
 
 const MEDAL_COLORS = [
