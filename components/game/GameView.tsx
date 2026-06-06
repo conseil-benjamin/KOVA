@@ -111,8 +111,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setOldPlayers(data.oldPlayers);
                 setActivesItems(data.activeItems);
 
-                const endTime = new Date(data.timerEnd).getTime();
-                const secondsRemaining = Math.floor((endTime - Date.now()));
+                const endTime = new Date(data.timerEnd).getTime() / 1000;
+                const secondsRemaining = Math.floor((endTime - Date.now() / 1000));
                 console.log("getRoomData", data);
 
                 switch (data.status) {
@@ -128,7 +128,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         break;
                     case "DISPLAY_RESPONSE":
                         setResponse(data.answers[data.language][0]);
-                        setQuestionStory(data.questionStory[data.language]);
                         break;
                     default:
                         break;
@@ -145,6 +144,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 }
                 setTimeLeft(Math.max(0, secondsRemaining));
                 setTimerVisible(true);
+                setQuestionStory(data.questionStory[data.language]);
             }
         } catch (error) {
             console.error('Error fetching room data:', error);
@@ -185,6 +185,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         newSocket.on('connection', () => {
             setIsConnected(true);
             toast.success('Connected to server');
+            setIsLoading(false)
         });
 
         newSocket.on('chat:new', (data: { message: string, timestamp: Date, user: string, type: string }) => {
@@ -348,7 +349,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             console.log("winnerUsername", winnerUsername);
 
             data.players.forEach(player => {
-                console.log("dzdqdqz" + player)
                 if (player.username.toLowerCase() === userName.toLowerCase()) {
                     if (winnerUsername === userName.toLowerCase()) {
                         setXpEarned(player.score * 1.5)
@@ -376,8 +376,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         console.log("isEditingRoom", isEditingRoom);
         console.log("oldPlayers", oldPlayers);
         console.log("oldPlayers.length", oldPlayers?.length);
-
-        setIsLoading(false)
 
         return () => {
             newSocket.disconnect();
