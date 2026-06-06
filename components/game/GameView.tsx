@@ -341,11 +341,18 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
             console.log("game_finished", data);
+            // todo : ne marche pas le winnerUsername est nul
+            const winnerUsername = data.roomData.winnerUsername;
+            console.log("winnerUsername", winnerUsername);
 
             data.players.forEach(player => {
                 console.log("dzdqdqz" + player)
                 if (player.username.toLowerCase() === userName.toLowerCase()) {
-                    setXpEarned(player.score)
+                    if (winnerUsername === userName.toLowerCase()) {
+                        setXpEarned(player.score * 1.5)
+                    } else {
+                        setXpEarned(player.score)
+                    }
                 }
             });
 
