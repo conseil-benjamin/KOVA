@@ -25,6 +25,7 @@ import UserService from "@/services/userService";
 import RoomService from "@/services/roomService";
 import {User} from "@/types/User";
 import DisplayResponse from "@/components/game/DisplayResponse";
+import Jokers from "@/components/game/Jokers";
 
 interface GameViewProps {
     roomId: string;
@@ -575,10 +576,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} username={userName}/>
 
-                            {response != '' ? <div className="flex-1 flex flex-col relative z-10 mask-gradient-top h-[calc(100vh-100px)]">
-                                <DisplayResponse response={response} question={question} story={questionStory}
-                                />
-                            </div> :
+                            {response != '' ?
+                                <div className="flex-1 justify-center flex flex-col relative z-10 mask-gradient-top">
+                                    <DisplayResponse response={response} question={question} story={questionStory}/>
+                                    <Jokers jokers={jokersLeft} handleUseJoker={handleUseJoker} activesItems={activesItems}/>
+                                </div> :
                                 <GameArea
                                     hasGuessed={hasGuessed}
                                     timeLeft={timeLeft}
