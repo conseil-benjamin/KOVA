@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Zap, Gamepad2, Users, ArrowLeft} from 'lucide-react';
 import {InputFile} from "@/components/ui/fileInput";
 import {useRouter, useSearchParams} from 'next/navigation'
@@ -18,6 +18,7 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
     const router = useRouter()
     const searchParams = useSearchParams();
     const mode = searchParams.get('mode');
+    const [preview, setPreview] = useState<string | null>(null)
 
     const handleBack = () => {
         // Si l'historique est vide (longueur 1 ou 2 selon les navigateurs),
@@ -69,7 +70,13 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
                         {/* Preview de l'avatar choisi */}
                         <div className="relative group">
                             <div className={`w-32 h-32 rounded-full bg-gradient-to-tr ${avatars.find(a => a.id === selectedAvatar)?.gradient || 'from-gray-700 to-gray-900'} shadow-[0_0_40px_rgba(0,0,0,0.5)] flex items-center justify-center text-4xl font-bold text-white ring-4 ring-[#13131f] transition-all duration-500`}>
-                                {username ? username[0].toUpperCase() : '?'}
+                                {preview ? (
+                                    <img
+                                        src={preview}
+                                        alt="Preview"
+                                        className="h-full w-full object-cover rounded-full"
+                                    />
+                                ) : username ? username[0].toUpperCase() : '?'}
                             </div>
                             <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#13131f] px-3 py-1 rounded-full border border-white/10 text-xs font-mono text-purple-400 shadow-lg">
                                 NIVEAU 1
@@ -80,7 +87,7 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
                             <p className="text-sm text-slate-400">Crée ton profil, personnalise ton avatar et commence ton ascension.</p>
                         </div>
 
-                    <InputFile handleImageUpload={handleImageUpload}/>
+                    <InputFile handleImageUpload={handleImageUpload} preview={preview} setPreview={setPreview}/>
                     </>
                 )}
             </div>
