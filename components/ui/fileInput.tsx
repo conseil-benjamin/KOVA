@@ -23,7 +23,7 @@ export function InputFile({ handleImageUpload, preview, setPreview }) {
         e.preventDefault()
         e.stopPropagation()
         setDragActive(false)
-        
+
         const files = e.dataTransfer.files
         if (files && files[0]) {
             handleFile(files[0])
@@ -37,7 +37,7 @@ export function InputFile({ handleImageUpload, preview, setPreview }) {
         }
 
         setFileName(file.name)
-        
+
         // Créer un preview
         const reader = new FileReader()
         reader.onload = (e) => {
@@ -77,7 +77,6 @@ export function InputFile({ handleImageUpload, preview, setPreview }) {
 
     return (
         <Field>
-            <FieldLabel>Image</FieldLabel>
             <div
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -125,7 +124,7 @@ export function InputFile({ handleImageUpload, preview, setPreview }) {
                                 )}
                             </div>
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-400 dark:text-gray-100 mb-2">
                             Glissez votre image ici
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">

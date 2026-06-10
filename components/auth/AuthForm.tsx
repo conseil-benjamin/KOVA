@@ -54,7 +54,7 @@ export default function AuthForm({
                 {/* Avatar Selection (Register Only) */}
                 <div className={`space-y-2 transition-all duration-300 overflow-hidden ${isLogin ? 'h-0 opacity-0' : 'h-24 opacity-100'}`}>
                     <label className="text-xs font-bold text-slate-300 uppercase ml-1">Choisis ta couleur</label>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 mt-2">
                         {avatars.map((avatar) => (
                             <button
                                 type="button"

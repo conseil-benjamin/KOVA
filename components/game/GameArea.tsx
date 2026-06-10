@@ -3,6 +3,7 @@ import { Music, Eye, Lock, Loader, BadgeQuestionMark, ArrowRightLeft, Timer, Blo
 import LoadingPage from '../loadingPage';
 import WaitingForHost from "@/components/game/WaitingForHost";
 import CountDown from "@/components/game/CountDown";
+import InkDisplay from "@/components/InkDisplay";
 
 interface GameAreaProps {
     isMobileMode?: boolean;
@@ -33,9 +34,7 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                 ) : (gameStartingSoonTimer < 0 || gameStartingSoonTimer === 0) && !question && !activeInk ? (
                     <WaitingForHost/>
                 ) : activeInk ? (
-                    <div>
-                        <h1>INKKKKKKKKKKK</h1>
-                    </div>
+                    <InkDisplay />
                 ) : (
                     <>
                         < div

@@ -1,7 +1,7 @@
 "use client";
 
 import React, {useEffect, useState} from 'react';
-import {Zap, Gamepad2, Users, ArrowLeft} from 'lucide-react';
+import {Gamepad2, ArrowLeft} from 'lucide-react';
 import {InputFile} from "@/components/ui/fileInput";
 import {useRouter, useSearchParams} from 'next/navigation'
 
