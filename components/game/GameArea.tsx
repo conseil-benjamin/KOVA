@@ -16,7 +16,7 @@ interface GameAreaProps {
     jokersLeft: { name: string; useLeft: number }[];
     handleUseJoker: (item: string) => void;
     hint: string;
-    activeInk;
+    activeInk: boolean;
 }
 
 const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, theme, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint, activeInk }) => {
@@ -30,7 +30,7 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                 {/* Game Starting Soon */}
                 {gameStartingSoonTimer > 0 ? (
                     <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } />
-                ) : (gameStartingSoonTimer < 0 || gameStartingSoonTimer === 0) && !question ? (
+                ) : (gameStartingSoonTimer < 0 || gameStartingSoonTimer === 0) && !question && !activeInk ? (
                     <WaitingForHost/>
                 ) : activeInk ? (
                     <div>

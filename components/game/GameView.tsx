@@ -95,7 +95,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const getRoomData = async () => {
         try {
-            setIsLoading(true);
             const res = await roomService.getRoom(roomId);
             const data = await res.data;
             console.log(res.status)
@@ -142,7 +141,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             setHasGuessed(true);
                         }
 
-                        if (player.activeInk === true){
+                        if ((player.username.toLowerCase() === userName.toLowerCase()) && player.activeInk === true) {
                             setActiveInk(true)
                         }
                     }
@@ -153,6 +152,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }
         } catch (error) {
             console.error('Error fetching room data:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -306,13 +307,13 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
             const localPlayer = room.players.find(p => p.username.toLowerCase() === userName.toLowerCase());
             if (localPlayer) {
-                setActiveInk(localPlayer.activeInk);
+                console.log("Local player data updated:", localPlayer);
                 setJokersLeft(localPlayer.jokers);
+                setActiveInk(localPlayer.activeInk);
             }
 
             setPlayers(prev => {
                 return room.players.map(roomPlayer => {
-                    console.log("salu111111111" + room)
                     const existingPlayer = prev.find(p => p.username.toLowerCase() === roomPlayer.username.toLowerCase());
 
                     if (existingPlayer) {
@@ -322,7 +323,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             hasGuessed: roomPlayer.hasGuessed,
                             avatar: roomPlayer.avatar || existingPlayer.avatar,
                             jokers: roomPlayer.jokers,
-                            imageUrl: roomPlayer.imageUrl || existingPlayer.imageUrl
+                            imageUrl: roomPlayer.imageUrl || existingPlayer.imageUrl,
+                            inkActive: roomPlayer.activeInk || existingPlayer.activeInk
                         };
                     } else {
                         return {
@@ -333,7 +335,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             answer: "",
                             avatar: roomPlayer.avatar,
                             jokers: roomPlayer.jokers,
-                            imageUrl: roomPlayer.imageUrl
+                            imageUrl: roomPlayer.imageUrl,
+                            inkActive: roomPlayer.activeInk
                         };
                     }
                 });

@@ -8,6 +8,7 @@ export interface Player {
     imageUrl?: string;
     avatar?: string;
     jokers: { name: string; useLeft: number }[];
+    activeInk: boolean;
 }
 
 export interface Room {
