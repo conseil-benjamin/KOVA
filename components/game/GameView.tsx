@@ -79,6 +79,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [response, setResponse] = useState('');
     const [scoreToWin, setScoreToWin] = useState(0);
     const [xpEarned, setXpEarned] = useState(null);
+    const [activeInk, setActiveInk] = useState(false);
 
     const handleGuestLogin = async () => {
         const result = await userService.getUserDataByUsername(guestNameInput.trim());
@@ -139,6 +140,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         setJokersLeft(player.jokers);
                         if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
                             setHasGuessed(true);
+                        }
+
+                        if (player.activeInk === true){
+                            setActiveInk(true)
                         }
                     }
                 }
@@ -301,6 +306,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
             const localPlayer = room.players.find(p => p.username.toLowerCase() === userName.toLowerCase());
             if (localPlayer) {
+                setActiveInk(localPlayer.activeInk);
                 setJokersLeft(localPlayer.jokers);
             }
 
@@ -558,6 +564,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                     jokersLeft={jokersLeft}
                                     handleUseJoker={handleUseJoker}
                                     hint={hint}
+                                    activeInk={activeInk}
                                 />
                             }
                             <Chat

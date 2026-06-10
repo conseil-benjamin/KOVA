@@ -16,9 +16,10 @@ interface GameAreaProps {
     jokersLeft: { name: string; useLeft: number }[];
     handleUseJoker: (item: string) => void;
     hint: string;
+    activeInk;
 }
 
-const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, theme, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint }) => {
+const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, theme, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint, activeInk }) => {
     console.log("activesItems" + JSON.stringify(activesItems));
     console.log("jokersLeft" + JSON.stringify(jokersLeft));
     return (
@@ -31,6 +32,10 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                     <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } />
                 ) : (gameStartingSoonTimer < 0 || gameStartingSoonTimer === 0) && !question ? (
                     <WaitingForHost/>
+                ) : activeInk ? (
+                    <div>
+                        <h1>INKKKKKKKKKKK</h1>
+                    </div>
                 ) : (
                     <>
                         < div
@@ -82,14 +87,6 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             )}
                         </div>
 
-                        {/* Hint */}
-                        {hint && (
-                            <div className="flex items-center justify-center align-center gap-2 absolute bottom-4 right-4 bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 shadow-lg">
-                                <Eye className="w-3 h-3 text-pink-400" />
-                                <span>{hint}</span>
-                            </div>
-                        )}
-
                         {/* Jokers Left */}
                         <div className="flex gap-3 z-20 absolute bottom-4 left-4 flex-col md:static md:flex-row md:mt-8 md:gap-6">
                             {jokersLeft && jokersLeft.map((item, index) => {
@@ -107,6 +104,14 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                                 )
                             })}
                         </div>
+
+                        {/* Hint */}
+                        {hint && (
+                            <div className="flex items-center justify-center mt-5 align-center bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 shadow-lg">
+                                <Eye className="w-3 h-3 text-pink-400" />
+                                <span>{hint}</span>
+                            </div>
+                        )}
 
                     </>
                 )}

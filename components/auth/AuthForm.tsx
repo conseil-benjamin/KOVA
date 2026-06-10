@@ -31,7 +31,7 @@ export default function AuthForm({
             {/* Toggle Mobile (Logo visible only on mobile) */}
             <div className="md:hidden flex items-center justify-center gap-2 mb-8">
                 <Zap className="w-6 h-6 text-purple-500 fill-purple-500" />
-                <h1 className="text-2xl font-black italic text-white">POPSAUCE</h1>
+                <h1 className="text-2xl font-black italic text-white">KOVA</h1>
             </div>
 
             {/* Header Form */}
@@ -41,7 +41,7 @@ export default function AuthForm({
                     <span className="text-slate-400">{isLogin ? 'Pas encore de compte ?' : 'Déjà inscrit ?'}</span>
                     <button
                         onClick={() => setIsLogin(!isLogin)}
-                        className="text-purple-400 hover:text-purple-300 font-bold hover:underline transition"
+                        className="text-purple-400 hover:text-purple-300 font-bold hover:underline transition cursor-pointer"
                     >
                         {isLogin ? "S'inscrire gratuitement" : 'Se connecter'}
                     </button>
@@ -111,7 +111,7 @@ export default function AuthForm({
                 </div>
 
                 {/* Submit Button */}
-                <button onClick={handleSubmit} className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.01] active:scale-[0.99] py-4 rounded-xl text-white font-bold text-lg shadow-lg shadow-purple-900/20 transition-all flex items-center justify-center gap-2 group mt-6">
+                <button onClick={handleSubmit} className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.01] active:scale-[0.99] py-4 rounded-xl text-white font-bold text-lg shadow-lg shadow-purple-900/20 transition-all flex items-center justify-center gap-2 group mt-6 cursor-pointer">
                     {isLogin ? 'Se connecter' : "C'est parti !"}
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
                 </button>

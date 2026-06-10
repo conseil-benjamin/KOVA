@@ -45,7 +45,7 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
                     <ArrowLeft className={'cursor-pointer'} onClick={() => handleBack()}/>
                 </div>
                 <h1 className="text-xl font-black tracking-tighter text-white italic">
-                    POPSAUCE <span className="text-xs not-italic font-mono text-purple-400">MAX</span>
+                    KOVA
                 </h1>
             </div>
 
