@@ -347,8 +347,32 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.error(data.message);
         });
 
-        newSocket.on("swap_used", (data: { message: string }) => {
-            toast.success(data.message);
+        newSocket.on("joker_use", (data: { message: string, jokerType: string }) => {
+            // todo: ajouter une icone et une couleur spécifique pour chaque type de joker utilisé
+            // todo :a voir si on affiche pas à côté du nom de l'user plutot
+            switch (data.jokerType) {
+                case "hint":
+                    toast(data.message, {
+                        style: {
+                            background: "orange"
+                        },
+                        position: "top-left",
+                        icon: "fas fa-check",
+                    });
+                    break;
+                case "ink":
+                    toast(data.message, {
+                        style: {
+                            background: "orange"
+                        },
+                        position: "top-left",
+                        icon: "",
+                    });
+                    break;
+                case "double":
+                    toast.success(data.message);
+                    break;
+            }
         });
 
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
