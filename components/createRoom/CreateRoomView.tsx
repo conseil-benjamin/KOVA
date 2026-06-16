@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { packs } from './constants';
+// import { packs } from './constants';
 import CreateRoomHeader from './CreateRoomHeader';
 import CreateRoomFooter from './CreateRoomFooter';
 import RoomNameSection from './RoomNameSection';
@@ -29,6 +29,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     // --- ÉTAT DU FORMULAIRE ---
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
     const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1");
+    const [packs, setPacks] = useState<[]>([]);
     const [isPrivate, setIsPrivate] = useState(false);
     const [guestNameInput, setGuestNameInput] = useState('');
     const [userName, setUserName] = useState(cookies.get('userName') || guestNameInput || '');
@@ -61,6 +62,18 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [tags, setTags] = useState<string[]>([])
 
     useEffect(() => {
+        const fetchAllPacks = async () => {
+            const result = await roomService.getAllPacks();
+            if (result.status === 200) {
+                const packsData = await result.data;
+                setPacks(packsData);
+                console.log("Fetched packs:", packsData);
+            } else {
+                toast.error('Failed to fetch packs');
+            }
+        }
+        fetchAllPacks()
+
         if (isEditing || isConsult) {
             console.log("dataRoom?.activeItems", dataRoom?.activeItems);
 
@@ -130,7 +143,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             backgroundImageUrl,
             isGameRunning,
             tags,
-            _id: "",
+            _id: packs.find(p => p.name[language] === selectedPack)?.id || "",
             createdAt: new Date().toISOString(),
             timerEnd: new Date(Date.now() + timePerRound * 1000),
         };
@@ -202,7 +215,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                             />
 
                             {/* 2. Sélection du Pack */}
-                            <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} isConsult={isConsult} setShowModalMorePacks={setShowModalMorePacks} />
+                            <PacksSection selectedPack={selectedPack} setSelectedPack={setSelectedPack} isConsult={isConsult} setShowModalMorePacks={setShowModalMorePacks} packs={packs} language={language}/>
 
                             {/* 3. Options de Contenu */}
                             <ContentOptionsSection
@@ -247,7 +260,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                             onClickOutside={() => setShowModalMorePacks(false)}
                         >
                             <div className="p-6 overflow-y-auto flex-1">
-                                <SearchForMorePacks selectedPack={selectedPack} setSelectedPack={setSelectedPack} />
+                                <SearchForMorePacks selectedPack={selectedPack} setSelectedPack={setSelectedPack} packs={packs} language={language}/>
                             </div>
                             <AlertDialogFooter className="p-6 pt-0 border-t border-white/10 mt-auto">
                                 <AlertDialogAction

@@ -23,6 +23,16 @@ class RoomService {
         }
     }
 
+    getAllPacks = async (): Promise<AxiosResponse<any>> => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/packs`);
+            console.log("response", response);
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     editRoom = async (dataRoom: Room) => {
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/room/${dataRoom?.idUrl}`, dataRoom);
