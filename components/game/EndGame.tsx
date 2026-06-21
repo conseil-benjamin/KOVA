@@ -3,6 +3,13 @@ import { Trophy, Medal, Home, RotateCcw, Edit, LogOut, Star } from 'lucide-react
 import { Player } from "./Leaderboard";
 import Lobby from './Lobby';
 import { redirect } from 'next/navigation';
+import {toast} from "sonner";
+import userService from "@/services/userService";
+import {User} from "@/types/User";
+import Cookies from "universal-cookie";
+import ProgressBarXpUser from "@/components/ProgressBarXpUser";
+import UserService from "@/services/userService";
+import LoadingPage from "@/components/loadingPage";
 
 interface EndGameProps {
     players: Player[];
@@ -15,6 +22,8 @@ interface EndGameProps {
     oldPlayers: Player[];
     handleLeaveGame: () => void;
     xpEarned: number;
+    setXpEarned: (xp: number) => void;
+    winner: string;
 }
 
 const MEDAL_COLORS = [
@@ -45,12 +54,51 @@ const Particle = ({ index }: { index: number }) => {
 
 const EndGame: React.FC<EndGameProps> = ({
                                              players, creator, username, setIsEditingRoom, isEditingRoom,
-                                             handleRestartGame, handleJoinRoom, oldPlayers, handleLeaveGame, xpEarned
+                                             handleRestartGame, handleJoinRoom, oldPlayers, handleLeaveGame, xpEarned, setXpEarned, winner
                                          }) => {
     const [revealed, setRevealed] = useState(false);
+    const [user, setUser] = useState<User>(null);
+    const [loading, setLoading] = useState(true);
+    const cookies = new Cookies();
+    const userService = new UserService();
 
     useEffect(() => {
         const t = setTimeout(() => setRevealed(true), 100);
+
+        for (let i = 0; i < oldPlayers.length; i++) {
+            const player = oldPlayers[i];
+            if (player.username.toLowerCase() === username.toLowerCase()) {
+                if (winner && winner.toLowerCase() === username.toLowerCase()) {
+                    setXpEarned(player.score * 1.5);
+                } else {
+                    setXpEarned(player.score);
+                }
+            }
+        }
+
+        const fetchUserData = async () => {
+            try {
+                const res = await userService.getUserDataByUsername(username);
+                if (res.status === 200) {
+                    const userData = await res.data;
+                    console.log("userData fetch", userData);
+                    setUser(userData);
+                    cookies.set('user', JSON.stringify(userData));
+                    cookies.set('userName', userData.username);
+                    cookies.set('userAvatar', userData.avatar);
+                    console.log("userData", userData);
+                } else {
+                    console.error('Erreur fetch user');
+                    toast.error('Impossible de charger le profil');
+                }
+            } catch (e) {
+                console.log(e)
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchUserData();
+
         return () => clearTimeout(t);
     }, []);
 
@@ -256,187 +304,195 @@ const EndGame: React.FC<EndGameProps> = ({
                 }
             `}</style>
 
-            <div className="endgame-root relative">
-
-                {/* Confetti particles */}
-                <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-                    {Array.from({ length: 28 }, (_, i) => <Particle key={i} index={i} />)}
+            {loading ? (
+                <div className="flex items-center justify-center h-[100dvh] bg-[#0a0a0f] w-full">
+                    <LoadingPage/>
                 </div>
+            ) : (
+                <div className="endgame-root relative">
 
-                {/* Grid background */}
-                <div className="fixed inset-0 grid-bg opacity-60 z-0" />
-
-                {/* Ambient glow */}
-                <div className="fixed inset-0 z-0 pointer-events-none">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full"
-                         style={{ background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)' }} />
-                    <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] rounded-full"
-                         style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 70%)' }} />
-                </div>
-
-                <div className="relative z-10 min-h-screen flex flex-col items-center px-4 py-12 pb-28">
-
-                    {/* Header */}
-                    <div className="rise-delay-1 text-center mb-12">
-                        <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-xs font-medium text-white/50 uppercase tracking-widest mb-4">
-                            <Star size={12} className="text-yellow-400" />
-                            Partie terminée
-                        </div>
-                        <h1 className="display-font text-5xl sm:text-6xl font-extrabold text-white leading-none tracking-tight">
-                            CLASSEMENT{' '}
-                            <span className="shimmer-text">FINAL</span>
-                        </h1>
+                    {/* Confetti particles */}
+                    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+                        {Array.from({ length: 28 }, (_, i) => <Particle key={i} index={i} />)}
                     </div>
 
-                    {/* Podium */}
-                    <div className="rise-delay-2 w-full max-w-2xl mb-10">
-                        <div className="flex items-end justify-center gap-3 sm:gap-5">
-                            {orderedPodium.map((player, visualIdx) => {
-                                if (!player) return <div key={visualIdx} className="flex-1 max-w-[180px]" />;
-                                const medal = MEDAL_COLORS[visualIdx];
-                                const isGold = visualIdx === 1;
-                                const rankNumber = visualIdx === 0 ? 2 : visualIdx === 1 ? 1 : 3;
+                    {/* Grid background */}
+                    <div className="fixed inset-0 grid-bg opacity-60 z-0" />
 
-                                const initials = player.username.slice(0, 2).toUpperCase();
-                                const avatarRing = isGold ? 'avatar-ring-gold' : visualIdx === 0 ? 'avatar-ring-silver' : '';
+                    {/* Ambient glow */}
+                    <div className="fixed inset-0 z-0 pointer-events-none">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full"
+                             style={{ background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)' }} />
+                        <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] rounded-full"
+                             style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 70%)' }} />
+                    </div>
 
-                                return (
-                                    <div key={player.id} className="podium-block flex flex-col items-center flex-1 max-w-[180px]">
+                    <div className="relative z-10 min-h-screen flex flex-col items-center px-4 py-12 pb-28">
 
-                                        {/* Crown / Icon */}
-                                        {isGold && (
-                                            <div style={{ animation: 'crown-bounce 2s ease-in-out infinite' }} className="text-2xl mb-1">
-                                                👑
+                        {/* Header */}
+                        <div className="rise-delay-1 text-center mb-12">
+                            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-xs font-medium text-white/50 uppercase tracking-widest mb-4">
+                                <Star size={12} className="text-yellow-400" />
+                                Partie terminée
+                            </div>
+                            <h1 className="display-font text-5xl sm:text-6xl font-extrabold text-white leading-none tracking-tight">
+                                CLASSEMENT{' '}
+                                <span className="shimmer-text">FINAL</span>
+                            </h1>
+                        </div>
+
+                        {/* Podium */}
+                        <div className="rise-delay-2 w-full max-w-2xl mb-10">
+                            <div className="flex items-end justify-center gap-3 sm:gap-5">
+                                {orderedPodium.map((player, visualIdx) => {
+                                    if (!player) return <div key={visualIdx} className="flex-1 max-w-[180px]" />;
+                                    const medal = MEDAL_COLORS[visualIdx];
+                                    const isGold = visualIdx === 1;
+                                    const rankNumber = visualIdx === 0 ? 2 : visualIdx === 1 ? 1 : 3;
+
+                                    const initials = player.username.slice(0, 2).toUpperCase();
+                                    const avatarRing = isGold ? 'avatar-ring-gold' : visualIdx === 0 ? 'avatar-ring-silver' : '';
+
+                                    return (
+                                        <div key={player.id} className="podium-block flex flex-col items-center flex-1 max-w-[180px]">
+
+                                            {/* Crown / Icon */}
+                                            {isGold && (
+                                                <div style={{ animation: 'crown-bounce 2s ease-in-out infinite' }} className="text-2xl mb-1">
+                                                    👑
+                                                </div>
+                                            )}
+
+                                            {/* Avatar */}
+                                            <div
+                                                className={`w-14 h-14 rounded-2xl mb-2 flex items-center justify-center text-sm font-bold ${avatarRing}`}
+                                                style={{
+                                                    background: `linear-gradient(135deg, ${isGold ? '#f59e0b, #d97706' : visualIdx === 0 ? '#94a3b8, #64748b' : '#b45309, #92400e'})`,
+                                                }}
+                                            >
+                                                {initials}
                                             </div>
-                                        )}
 
-                                        {/* Avatar */}
-                                        <div
-                                            className={`w-14 h-14 rounded-2xl mb-2 flex items-center justify-center text-sm font-bold ${avatarRing}`}
-                                            style={{
-                                                background: `linear-gradient(135deg, ${isGold ? '#f59e0b, #d97706' : visualIdx === 0 ? '#94a3b8, #64748b' : '#b45309, #92400e'})`,
-                                            }}
-                                        >
-                                            {initials}
-                                        </div>
+                                            {/* Name + score */}
+                                            <p className={`font-semibold text-sm truncate w-full text-center mb-0.5 ${isGold ? 'text-white' : 'text-white/80'}`}>
+                                                {player.username}
+                                            </p>
+                                            <p className={`text-xs font-mono font-bold mb-3 ${isGold ? 'text-yellow-400' : 'text-white/50'}`}>
+                                                {player.score.toLocaleString()} pts
+                                            </p>
 
-                                        {/* Name + score */}
-                                        <p className={`font-semibold text-sm truncate w-full text-center mb-0.5 ${isGold ? 'text-white' : 'text-white/80'}`}>
-                                            {player.username}
-                                        </p>
-                                        <p className={`text-xs font-mono font-bold mb-3 ${isGold ? 'text-yellow-400' : 'text-white/50'}`}>
-                                            {player.score.toLocaleString()} pts
-                                        </p>
-
-                                        {/* Podium block */}
-                                        <div
-                                            className={`w-full rounded-t-xl flex flex-col items-center justify-center gap-1 relative overflow-hidden
+                                            {/* Podium block */}
+                                            <div
+                                                className={`w-full rounded-t-xl flex flex-col items-center justify-center gap-1 relative overflow-hidden
                                                 ${medal.height}
                                             `}
-                                            style={{
-                                                background: isGold
-                                                    ? 'linear-gradient(180deg, rgba(245,158,11,0.25) 0%, rgba(245,158,11,0.1) 100%)'
-                                                    : visualIdx === 0
-                                                        ? 'linear-gradient(180deg, rgba(148,163,184,0.18) 0%, rgba(148,163,184,0.07) 100%)'
-                                                        : 'linear-gradient(180deg, rgba(180,83,9,0.2) 0%, rgba(180,83,9,0.07) 100%)',
-                                                borderTop: `2px solid ${isGold ? 'rgba(245,158,11,0.6)' : visualIdx === 0 ? 'rgba(148,163,184,0.4)' : 'rgba(180,83,9,0.5)'}`,
-                                                borderLeft: '1px solid rgba(255,255,255,0.06)',
-                                                borderRight: '1px solid rgba(255,255,255,0.06)',
-                                            }}
-                                        >
-                                            {isGold && (
-                                                <div className="absolute inset-0 opacity-20"
-                                                     style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.6), transparent 60%)' }} />
-                                            )}
-                                            <span
-                                                className="display-font font-black text-4xl"
-                                                style={{ color: isGold ? 'rgba(245,158,11,0.5)' : 'rgba(255,255,255,0.15)' }}
+                                                style={{
+                                                    background: isGold
+                                                        ? 'linear-gradient(180deg, rgba(245,158,11,0.25) 0%, rgba(245,158,11,0.1) 100%)'
+                                                        : visualIdx === 0
+                                                            ? 'linear-gradient(180deg, rgba(148,163,184,0.18) 0%, rgba(148,163,184,0.07) 100%)'
+                                                            : 'linear-gradient(180deg, rgba(180,83,9,0.2) 0%, rgba(180,83,9,0.07) 100%)',
+                                                    borderTop: `2px solid ${isGold ? 'rgba(245,158,11,0.6)' : visualIdx === 0 ? 'rgba(148,163,184,0.4)' : 'rgba(180,83,9,0.5)'}`,
+                                                    borderLeft: '1px solid rgba(255,255,255,0.06)',
+                                                    borderRight: '1px solid rgba(255,255,255,0.06)',
+                                                }}
                                             >
+                                                {isGold && (
+                                                    <div className="absolute inset-0 opacity-20"
+                                                         style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.6), transparent 60%)' }} />
+                                                )}
+                                                <span
+                                                    className="display-font font-black text-4xl"
+                                                    style={{ color: isGold ? 'rgba(245,158,11,0.5)' : 'rgba(255,255,255,0.15)' }}
+                                                >
                                                 {rankNumber}
                                             </span>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    <p className={'text-gray-200'}>XP Gagnées : {xpEarned}</p>
-
-                    {/* Remaining rankings */}
-                    {restPlayers.length > 0 && (
-                        <div className="rise-delay-3 w-full max-w-xl mb-8">
-                            <div className="glass-card rounded-2xl overflow-hidden">
-                                {restPlayers.map((player, idx) => {
-                                    const rank = idx + 4;
-                                    const maxScore = oldPlayers[0]?.score || 1;
-                                    const pct = Math.round((player.score / maxScore) * 100);
-                                    return (
-                                        <div key={player.id} className="rank-row flex items-center gap-3 px-5 py-3 border-b border-white/5 last:border-0">
-                                            <span className="display-font text-white/25 font-bold text-sm w-6 text-center flex-shrink-0">
-                                                {rank}
-                                            </span>
-                                            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white/60 flex-shrink-0"
-                                                 style={{ background: 'rgba(255,255,255,0.06)' }}>
-                                                {player.username.slice(0, 2).toUpperCase()}
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <span className="text-sm text-white/70 truncate">{player.username}</span>
-                                                    <span className="text-xs font-mono text-white/40 ml-2 flex-shrink-0">{player.score.toLocaleString()}</span>
-                                                </div>
-                                                <div className="h-0.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                                    <div className="score-bar h-full" style={{ width: `${pct}%` }} />
-                                                </div>
                                             </div>
                                         </div>
                                     );
                                 })}
                             </div>
                         </div>
-                    )}
 
-                    {/* Lobby / Players still in room */}
-                    <div className="rise-delay-4 w-full max-w-xl mb-8">
-                        <Lobby players={players} />
+                        {user && <ProgressBarXpUser currentLevel={user.stats.level} xpToNextLevel={user.stats.xpToNextLevel} currentXp={user.stats.xp} xpEarned={xpEarned}/>}
+
+                        {/* Remaining rankings */}
+                        {restPlayers.length > 0 && (
+                            <div className="rise-delay-3 w-full max-w-xl mb-8">
+                                <div className="glass-card rounded-2xl overflow-hidden">
+                                    {restPlayers.map((player, idx) => {
+                                        const rank = idx + 4;
+                                        const maxScore = oldPlayers[0]?.score || 1;
+                                        const pct = Math.round((player.score / maxScore) * 100);
+                                        return (
+                                            <div key={player.id} className="rank-row flex items-center gap-3 px-5 py-3 border-b border-white/5 last:border-0">
+                                            <span className="display-font text-white/25 font-bold text-sm w-6 text-center flex-shrink-0">
+                                                {rank}
+                                            </span>
+                                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white/60 flex-shrink-0"
+                                                     style={{ background: 'rgba(255,255,255,0.06)' }}>
+                                                    {player.username.slice(0, 2).toUpperCase()}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span className="text-sm text-white/70 truncate">{player.username}</span>
+                                                        <span className="text-xs font-mono text-white/40 ml-2 flex-shrink-0">{player.score.toLocaleString()}</span>
+                                                    </div>
+                                                    <div className="h-0.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                                        <div className="score-bar h-full" style={{ width: `${pct}%` }} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Lobby / Players still in room */}
+                        <div className="rise-delay-4 w-full max-w-xl mb-8">
+                            <Lobby players={players} />
+                        </div>
+
                     </div>
 
-                </div>
-
-                {/* Fixed action bar */}
-                <div className="action-bar rise-delay-5">
-                    <button className="btn-ghost" onClick={() => redirect('/')}>
-                        <Home size={16} /> Accueil
-                    </button>
-
-                    {isInGame ? (
-                        <button onClick={handleLeaveGame} className="btn-danger">
-                            <LogOut size={16} /> Quitter
+                    {/* Fixed action bar */}
+                    <div className="action-bar rise-delay-5">
+                        <button className="btn-ghost" onClick={() => redirect('/')}>
+                            <Home size={16} /> Accueil
                         </button>
-                    ) : (
-                        <button onClick={handleJoinRoom} className="btn-primary">
-                            <RotateCcw size={16} /> Rejouer
-                        </button>
-                    )}
 
-                    {isCreator && (
-                        <>
-                            <button
-                                className="btn-ghost"
-                                onClick={() => setIsEditingRoom(!isEditingRoom)}
-                            >
-                                <Edit size={16} /> Modifier règles
+                        {isInGame ? (
+                            <button onClick={handleLeaveGame} className="btn-danger">
+                                <LogOut size={16} /> Quitter
                             </button>
+                        ) : (
+                            <button onClick={handleJoinRoom} className="btn-primary">
+                                <RotateCcw size={16} /> Rejouer
+                            </button>
+                        )}
 
-                            {players.length > 0 && isInGame && (
-                                <button onClick={handleRestartGame} className="btn-success">
-                                    <RotateCcw size={16} /> Nouvelle partie
+                        {isCreator && (
+                            <>
+                                <button
+                                    className="btn-ghost"
+                                    onClick={() => setIsEditingRoom(!isEditingRoom)}
+                                >
+                                    <Edit size={16} /> Modifier règles
                                 </button>
-                            )}
-                        </>
-                    )}
+
+                                {players.length > 0 && isInGame && (
+                                    <button onClick={handleRestartGame} className="btn-success">
+                                        <RotateCcw size={16} /> Nouvelle partie
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
                 </div>
-            </div>
+            )
+            }
+
         </>
     );
 };

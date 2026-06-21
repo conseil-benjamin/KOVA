@@ -78,8 +78,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [points, setPoints] = useState(0);
     const [response, setResponse] = useState('');
     const [scoreToWin, setScoreToWin] = useState(0);
-    const [xpEarned, setXpEarned] = useState(null);
+    const [xpEarned, setXpEarned] = useState(0);
     const [activeInk, setActiveInk] = useState(false);
+    const [winner, setWinner] = useState('');
 
     const handleGuestLogin = async () => {
         const result = await userService.getUserDataByUsername(guestNameInput.trim());
@@ -110,6 +111,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setScoreToWin(data.scoreToWin);
                 setOldPlayers(data.oldPlayers);
                 setActivesItems(data.activeItems);
+                setWinner(data.winner);
 
                 const endTime = new Date(data.timerEnd).getTime() / 1000;
                 const secondsRemaining = Math.floor((endTime - Date.now() / 1000));
@@ -123,7 +125,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         gameStartingSoon(data.timerEnd);
                         break;
                     case "LOBBY":
-                        // TODO : Gérer l'afficghage du lobby avant le début d'une partie
                         setIsGameNotStarted(true);
                         break;
                     case "DISPLAY_RESPONSE":
@@ -370,7 +371,22 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     });
                     break;
                 case "double":
-                    toast.success(data.message);
+                    toast(data.message, {
+                        style: {
+                            background: "orange"
+                        },
+                        position: "top-left",
+                        icon: "",
+                    });
+                    break;
+                case "swap":
+                    toast(data.message, {
+                        style: {
+                            background: "orange"
+                        },
+                        position: "top-left",
+                        icon: "",
+                    });
                     break;
             }
         });
@@ -378,7 +394,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
             console.log("game_finished", data);
             // todo : ne marche pas le winnerUsername est nul
-            const winnerUsername = data.roomData.winnerUsername;
+            const winnerUsername = data.roomData.winner;
             console.log("winnerUsername", winnerUsername);
 
             data.players.forEach(player => {
@@ -560,7 +576,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
                          isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
-                         handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned}/>
+                         handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned} setXpEarned={setXpEarned} winner={winner}/>
             ) : (
                 <div
                     className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">

@@ -122,6 +122,7 @@ const GameInput: React.FC<GameInputProps> = ({
                     ref={inputRef}
                     type="text"
                     value={guessVal}
+                    onPaste={(e) => e.preventDefault()}
                     onFocus={() => setFocusInputResponse(false)}
                     onChange={(e) => setGuessVal(e.target.value)}
                     placeholder={hasGuessed ? "Attente des autres..." : !isInGame ? "Rejoindre pour jouer" : "Ta réponse..."}

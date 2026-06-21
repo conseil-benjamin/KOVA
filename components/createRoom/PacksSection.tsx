@@ -35,9 +35,8 @@ const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPa
                         {selectedPack === pack.name[language] && <div className={`absolute inset-0 bg-gradient-to-br ${pack.color} opacity-10`}></div>}
 
                         <div className="flex items-start gap-4 relative z-10">
-                            <div className={`p-3 rounded-lg bg-gradient-to-br ${pack.color} shadow-lg text-white`}>
+                            <img className={'p-3 rounded-lg bg-gradient-to-br shadow-lg text-white'} width={75} height={75} src={pack.imageUrl} />
 
-                            </div>
                             <div className="flex-1">
                                 <h3 className="font-bold text-white flex items-center gap-2">
                                     {pack.name[language]}
@@ -45,7 +44,7 @@ const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPa
                                 </h3>
                                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">{pack.description[language]}</p>
                                 <div className="mt-2 text-[10px] font-mono text-slate-500 bg-black/20 w-fit px-2 py-0.5 rounded">
-                                    {pack.questions.length} questions
+                                    {pack.questionsCount} questions
                                 </div>
                             </div>
                             {selectedPack === pack.name[language] && (

@@ -43,7 +43,7 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language }: 
                                 </h3>
                                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">{pack.desc}</p>
                                 <div className="mt-2 text-[10px] font-mono text-slate-500 bg-black/20 w-fit px-2 py-0.5 rounded">
-                                    {pack.questions.length} questions
+                                    {pack.questionsCount} questions
                                 </div>
                             </div>
                             {selectedPack === pack.name[language] && (
