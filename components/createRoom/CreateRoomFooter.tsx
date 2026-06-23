@@ -3,7 +3,6 @@ import { Play, Pencil } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 interface CreateRoomFooterProps {
-    selectedPackName: string | undefined;
     launchRoom: () => void;
     isEditing: boolean;
     setIsEditing: (isEditing: boolean) => void;
@@ -11,13 +10,13 @@ interface CreateRoomFooterProps {
     isConsult: boolean;
 }
 
-const CreateRoomFooter: React.FC<CreateRoomFooterProps> = ({ selectedPackName, launchRoom, isEditing, setIsEditing, setIsConsult, isConsult }) => {
+const CreateRoomFooter: React.FC<CreateRoomFooterProps> = ({ launchRoom, isEditing, setIsEditing, setIsConsult, isConsult }) => {
     return (
         <footer className="sticky bottom-0 bg-[#0a0a0f]/80 backdrop-blur-xl border-t border-white/10 p-4 z-50">
             <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
                 <div className="hidden md:flex flex-col">
                     <span className="text-xs text-slate-400">Total estimé</span>
-                    <span className="text-sm font-bold text-white">~25 min • {selectedPackName}</span>
+                    <span className="text-sm font-bold text-white">~25 min</span>
                 </div>
 
                 <div className="flex items-center gap-3 flex-1 md:flex-none justify-end">

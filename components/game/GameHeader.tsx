@@ -107,7 +107,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
                     {creator?.toLowerCase().trim() === currentUser?.toLowerCase().trim() && !isGameRunning && (
                         <div className='flex gap-2'>
                             <button className='px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white transition-all duration-300 ease-out border border-white/10 hover:border-white/20 text-sm font-semibold tracking-wide active:scale-95 cursor-pointer' onClick={() => setIsEditingRoom(!isEditingRoom)}>Modifier</button>
-                            {players && players.length > 0 && gameStartingSoonTimer != -1 ? (
+                            {players && players.length > 0 && gameStartingSoonTimer !== -1 ? (
                                 <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-500 hover:to-rose-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] text-sm font-bold tracking-wide active:scale-95 cursor-pointer" onClick={handleCancelStartGame}>Annuler</button>
                             ) : players && players.length > 0 &&(
                                 <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] text-sm font-bold tracking-wide active:scale-95 cursor-pointer" onClick={handleStartGame}>Lancer</button>
@@ -137,7 +137,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
 
                 {/* Timer Display */}
                 {
-                    (isGameRunning && timerVisible && gameStartingSoonTimer === -1 && timeLeft >= 0) &&
+                    (isGameRunning && timerVisible && (gameStartingSoonTimer === -1 || gameStartingSoonTimer === 0) && timeLeft >= 0) &&
                     <div className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-300 ${timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700'} `}>
                         <Clock className={`w-3 h-3 md:w-4 md:h-4 ${timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400'} `} />
                         <span className={`font-mono font-nums ${timeLeft < 5 ? 'text-red-400' : 'text-cyan-400'} text-lg md:text-xl`}>

@@ -153,7 +153,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 }
                 setTimeLeft(Math.max(0, secondsRemaining));
                 setTimerVisible(true);
-                setQuestionStory(data.questionStory[data.language]);
+                setQuestionStory(data?.questionStory?.[data.language]);
             }
         } catch (error) {
             console.error('Error fetching room data:', error);
@@ -209,7 +209,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('cancel_start', () => {
-            setGameStartingSoonTimer(0);
+            setGameStartingSoonTimer(-1);
             toast.error('Game cancelled');
         });
 
@@ -473,7 +473,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const handleCancelStartGame = () => {
         if (socket && isConnected && (creator.toLowerCase() === userName.toLowerCase())) {
             socket?.emit('cancel_start', roomId);
-            setIsGameRunning(false);
+            setIsGameRunning(false)
         }
     }
 

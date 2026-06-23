@@ -22,16 +22,16 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language }: 
                 {packs.filter(pack => pack.name[language].toLowerCase().includes(search.toLowerCase())).map(pack => (
                     <div
                         key={pack.id}
-                        onClick={() => setSelectedPack(pack.name[language])}
+                        onClick={() => setSelectedPack(pack.id)}
                         className={`
                                 relative p-4 rounded-xl border cursor-pointer transition-all duration-200 group overflow-hidden
-                                ${selectedPack === pack.name[language]
+                                ${selectedPack === pack.id
                                 ? 'bg-[#1a1a24] border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.2)]'
                                 : 'bg-[#13131f] border-white/5 hover:border-white/20 hover:bg-[#1a1a24]'}
                             `}
                     >
                         {/* Fond Gradient subtil si sélectionné */}
-                        {selectedPack === pack.name[language] && <div className={`absolute inset-0 bg-gradient-to-br ${pack.color} opacity-10`}></div>}
+                        {selectedPack === pack.id && <div className={`absolute inset-0 bg-gradient-to-br ${pack.color} opacity-10`}></div>}
 
                         <div className="flex items-start gap-4 relative z-10">
                             <div className={`p-3 rounded-lg bg-gradient-to-br ${pack.color} shadow-lg text-white`}>
@@ -46,7 +46,7 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language }: 
                                     {pack.questionsCount} questions
                                 </div>
                             </div>
-                            {selectedPack === pack.name[language] && (
+                            {selectedPack === pack.id && (
                                 <div className="bg-purple-500 rounded-full p-1 shadow-lg animate-in zoom-in duration-200">
                                     <Check className="w-3 h-3 text-white" />
                                 </div>

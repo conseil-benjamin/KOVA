@@ -28,8 +28,8 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     // --- ÉTAT DU FORMULAIRE ---
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
-    const [selectedPack, setSelectedPack] = useState("Le Grand Mix KOVA #1");
     const [packs, setPacks] = useState<[]>([]);
+    const [selectedPack, setSelectedPack] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
     const [guestNameInput, setGuestNameInput] = useState('');
     const [userName, setUserName] = useState(cookies.get('userName') || guestNameInput || '');
@@ -66,6 +66,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             const result = await roomService.getAllPacks();
             if (result.status === 200) {
                 const packsData = await result.data;
+                setSelectedPack(packsData[0].id)
                 setPacks(packsData);
                 console.log("Fetched packs:", packsData);
             } else {
@@ -143,7 +144,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             backgroundImageUrl,
             isGameRunning,
             tags,
-            _id: packs.find(p => p.name[language] === selectedPack)?.id || "",
+            _id: selectedPack,
             createdAt: new Date().toISOString(),
             timerEnd: new Date(Date.now() + timePerRound * 1000),
         };
@@ -252,7 +253,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                     </main>
 
                     {/* --- STICKY FOOTER (Action) --- */}
-                    <CreateRoomFooter selectedPackName={currentPack?.name} launchRoom={launchRoom} isEditing={isEditing} setIsEditing={setIsEditing} setIsConsult={setIsConsult} isConsult={isConsult} />
+                    <CreateRoomFooter launchRoom={launchRoom} isEditing={isEditing} setIsEditing={setIsEditing} setIsConsult={setIsConsult} isConsult={isConsult} />
 
                     <AlertDialog open={showModalMorePacks} onOpenChange={setShowModalMorePacks}>
                         <AlertDialogContent

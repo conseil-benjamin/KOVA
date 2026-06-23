@@ -24,12 +24,13 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
         <nav className="fixed top-0 w-full h-16 bg-black/40 backdrop-blur-xl border-b border-white/5 z-50 flex items-center justify-between px-4 md:px-8">
             {/* Logo */}
             <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => redirect('/')}>
-                <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-1.5 md:p-2 rounded-lg shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-                    <Zap className="w-5 h-5 text-white fill-white" />
-                </div>
-                <h1 className="text-xl md:text-2xl font-black tracking-tighter bg-gradient-to-r from-white via-purple-200 to-indigo-400 bg-clip-text text-transparent italic">
-                    KOVA <span className="text-xs not-italic font-mono text-purple-400 bg-purple-400/10 px-1 rounded border border-purple-400/20"></span>
-                </h1>
+                <img
+                    src="/logo.svg"
+                    alt="Logo"
+                    width={125}
+                    height={125}
+                    className="h-12 w-auto sm:h-6 md:h-10 lg:h-14"
+                />
             </div>
 
             {/* Menu Droite */}
