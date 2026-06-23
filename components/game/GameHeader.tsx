@@ -23,18 +23,15 @@ interface GameHeaderProps {
     handleCancelStartGame?: () => void;
     setStartTimer: (value: boolean) => void;
     setTimeLeft: React.Dispatch<React.SetStateAction<number>>;
-    startTimer: boolean
+    startTimer: boolean,
+    endsAt: number | null,
 }
 
-const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObject, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame, setStartTimer, setTimeLeft, startTimer }) => {
+const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObject, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame, setStartTimer, setTimeLeft, startTimer, endsAt }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const userInGame = players?.find((player) => player.username.toLowerCase() === currentUser?.toLowerCase());
 
-    console.log("creator:", creator, "currentUser:", currentUser);
-    console.log("creator (trimmed):", creator?.trim(), "currentUser (trimmed):", currentUser?.trim());
-    console.log("Equality check:", creator?.trim().toLowerCase() === currentUser?.trim().toLowerCase());
-
-    // --- LOGIQUE TIMER ---
+    /*
     useEffect(() => {
         if (timeLeft <= 0) return;
 
@@ -46,12 +43,43 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
                     setStartTimer(false);
                     return 0;
                 }
-                return prev - 1;
+                return Math.max(prev - 1);
             });
         }, 1000);
 
         return () => clearInterval(timer);
     }, [timeLeft]);
+*/
+    useEffect(() => {
+        console.log(`GameHeader: useEffect - endsAt: ${endsAt}, timeLeft: ${timeLeft}, startTimer: ${startTimer}`);
+        console.log(`GameHeader ${isGameRunning}, ${timerVisible} ${gameStartingSoonTimer === 0} ${timeLeft >= 0}`)
+        console.log(`GameHeader ${gameStartingSoonTimer}`)
+        if (!endsAt) return;
+
+        let timer;
+        const tick = () => {
+            const remaining = Math.max(0, Math.floor(endsAt - Date.now() / 1000));
+            console.log(`GameHeader: tick - remaining: ${remaining}`);
+            setTimeLeft(remaining);
+            if (remaining <= 0) {
+                clearInterval(timer);
+                setStartTimer(false);
+            }
+        };
+
+        tick();
+        timer = setInterval(tick, 1000);
+
+        const onVisible = () => {
+            if (document.visibilityState === "visible") tick();
+        };
+        document.addEventListener("visibilitychange", onVisible);
+
+        return () => {
+            clearInterval(timer);
+            document.removeEventListener("visibilitychange", onVisible);
+        };
+    }, [endsAt, setTimeLeft, setStartTimer]);
 
     return (
         <header className="relative flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-50 shadow-lg h-14 md:h-16 pt-2 md:pt-0">
@@ -79,7 +107,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
                     {creator?.toLowerCase().trim() === currentUser?.toLowerCase().trim() && !isGameRunning && (
                         <div className='flex gap-2'>
                             <button className='px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white transition-all duration-300 ease-out border border-white/10 hover:border-white/20 text-sm font-semibold tracking-wide active:scale-95 cursor-pointer' onClick={() => setIsEditingRoom(!isEditingRoom)}>Modifier</button>
-                            {players && players.length > 0 && gameStartingSoonTimer != 0 ? (
+                            {players && players.length > 0 && gameStartingSoonTimer != -1 ? (
                                 <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-500 hover:to-rose-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.6)] text-sm font-bold tracking-wide active:scale-95 cursor-pointer" onClick={handleCancelStartGame}>Annuler</button>
                             ) : players && players.length > 0 &&(
                                 <button className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 ease-out shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] text-sm font-bold tracking-wide active:scale-95 cursor-pointer" onClick={handleStartGame}>Lancer</button>
@@ -109,7 +137,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
 
                 {/* Timer Display */}
                 {
-                    (isGameRunning && timerVisible && gameStartingSoonTimer === 0 && timeLeft > 0) &&
+                    (isGameRunning && timerVisible && gameStartingSoonTimer === -1 && timeLeft >= 0) &&
                     <div className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-300 ${timeLeft < 5 ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-slate-800/40 border-slate-700'} `}>
                         <Clock className={`w-3 h-3 md:w-4 md:h-4 ${timeLeft < 5 ? 'text-red-400 animate-pulse' : 'text-cyan-400'} `} />
                         <span className={`font-mono font-nums ${timeLeft < 5 ? 'text-red-400' : 'text-cyan-400'} text-lg md:text-xl`}>

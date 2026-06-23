@@ -57,6 +57,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [isConsultRules, setIsConsultRules] = useState(false);
 
     const [timeLeft, setTimeLeft] = useState(0);
+    const [endsAt, setEndsAt] = useState<number | null>(null);
     const [timerVisible, setTimerVisible] = useState(false);
     const [hasGuessed, setHasGuessed] = useState(false);
     const [focusInputResponse, setFocusInputResponse] = useState(false);
@@ -64,6 +65,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [oldPlayers, setOldPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
     const [activesItems, setActivesItems] = useState<{ [key: string]: number }>();
+    const [itemsEnabled, setItemsEnabled] = useState(false);
     const [jokersLeft, setJokersLeft] = useState<{ name: string; useLeft: number }[]>([]);
 
     // --- GAME STATE ---
@@ -73,7 +75,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [hint, setHint] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [startTimer, setStartTimer] = useState(false);
-    const [gameStartingSoonTimer, setGameStartingSoonTimer] = useState(0);
+    const [gameStartingSoonTimer, setGameStartingSoonTimer] = useState(-1);
     const [isGameRunning, setIsGameRunning] = useState(false);
     const [points, setPoints] = useState(0);
     const [response, setResponse] = useState('');
@@ -112,8 +114,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setOldPlayers(data.oldPlayers);
                 setActivesItems(data.activeItems);
                 setWinner(data.winner);
+                setItemsEnabled(data.itemsEnabled);
 
                 const endTime = new Date(data.timerEnd).getTime() / 1000;
+                setEndsAt(endTime);
                 const secondsRemaining = Math.floor((endTime - Date.now() / 1000));
                 console.log("getRoomData", data);
 
@@ -160,7 +164,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleStartGame = () => {
         if (creator.toLowerCase() === userName.toLowerCase() && players.length > 0) {
-            // mettre un timer de 5 secondes avec un chargement avant de lancer réellement
             socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
         } else if (creator.toLowerCase() === userName.toLowerCase() && players.length <= 0) {
             toast.error('Il faut au moins 2 joueurs pour lancer une partie.');
@@ -169,7 +172,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     async function gameStartingSoon(timerEnd: Date) {
         const endTime = new Date(timerEnd).getTime() / 1000;
-        const secondsRemaining = Math.max(endTime - Date.now() / 1000);
+        const secondsRemaining = Math.min(endTime - Date.now() / 1000);
 
         setGameStartingSoonTimer(secondsRemaining.toFixed(0));
 
@@ -226,10 +229,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setResponse('');
 
             const endTime = new Date(data.timerEnd).getTime() / 1000;
+            setEndsAt(endTime);
             const secondsRemaining = Math.floor(endTime - Date.now() / 1000);
 
             // todo : besoin de trouver un meilleur fix que de faire + 1
-            setTimeLeft(Math.max(0, (secondsRemaining + 1)));
+            setTimeLeft(Math.max(0, (secondsRemaining)));
             setTimerVisible(true);
             setStartTimer(true);
             setIsGameRunning(data.isGameRunning);
@@ -393,7 +397,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
             console.log("game_finished", data);
-            // todo : ne marche pas le winnerUsername est nul
             const winnerUsername = data.roomData.winner;
             console.log("winnerUsername", winnerUsername);
 
@@ -585,7 +588,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     <div
                         className="w-full h-full md:w-full md:h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1a1b26] via-[#0f0f18] to-black">
 
-                    <GameHeader timeLeft={timeLeft} currentUser={userName} userObject={userObject} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer}
+                    <GameHeader timeLeft={timeLeft} currentUser={userName} userObject={userObject} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer} endsAt={endsAt}
                         />
 
                         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
@@ -594,7 +597,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             {response != '' ?
                                 <div className="flex-1 justify-center flex flex-col relative z-10 mask-gradient-top">
                                     <DisplayResponse response={response} question={question} story={questionStory}/>
-                                    <Jokers jokers={jokersLeft} handleUseJoker={handleUseJoker} activesItems={activesItems}/>
+                                    <Jokers jokers={jokersLeft} handleUseJoker={handleUseJoker} activesItems={activesItems} itemsEnabled={itemsEnabled}/>
                                 </div> :
                                 <GameArea
                                     hasGuessed={hasGuessed}

@@ -21,18 +21,17 @@ interface GameAreaProps {
 }
 
 const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, theme, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint, activeInk }) => {
-    console.log("activesItems" + JSON.stringify(activesItems));
-    console.log("jokersLeft" + JSON.stringify(jokersLeft));
+
     return (
         <section className="flex-1 flex flex-col relative z-10">
 
             <div className={`flex-1 flex flex-col items-center justify-center relative ${isMobileMode ? 'p-4 pb-24' : 'p-8 pb-8'}`}>
 
                 {/* Game Starting Soon */}
-                {gameStartingSoonTimer > 0 ? (
-                    <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } />
-                ) : (gameStartingSoonTimer < 0 || gameStartingSoonTimer === 0) && !question && !activeInk ? (
+                {!question && !activeInk && gameStartingSoonTimer === -1 ? (
                     <WaitingForHost/>
+                ) : gameStartingSoonTimer >= 0 && !question ? (
+                    <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } />
                 ) : activeInk ? (
                     <InkDisplay />
                 ) : (
@@ -68,13 +67,14 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             {/* Overlay Vignette */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
 
-                            {/* Tags Catégorie */}
+                            {/* Tags Catégorie
                             <div className="absolute top-4 left-4 flex gap-2">
                                 <div className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
                                     <Blocks className="w-3 h-3 text-pink-400" />
                                     <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">{theme}</span>
                                 </div>
                             </div>
+                            */}
 
                             {/* Feedback Victoire */}
                             {hasGuessed && (
