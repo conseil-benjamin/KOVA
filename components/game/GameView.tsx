@@ -79,6 +79,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [isGameRunning, setIsGameRunning] = useState(false);
     const [points, setPoints] = useState(0);
     const [response, setResponse] = useState('');
+    const [firstResponsePlayer, setFirstResponsePlayer] = useState('');
     const [scoreToWin, setScoreToWin] = useState(0);
     const [xpEarned, setXpEarned] = useState(0);
     const [activeInk, setActiveInk] = useState(false);
@@ -290,9 +291,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }
         });
 
-        newSocket.on('display_response', (data: { response: string }) => {
+        newSocket.on('display_response', (data: { response: string, firstResponsePlayer: string }) => {
             setPlayers(prev => prev.map(p => ({ ...p, hasGuessed: false })));
             setResponse(data.response);
+            setFirstResponsePlayer(data.firstResponsePlayer || '');
             setHasGuessed(false);
             resetAnswersPlayers();
             setTimerVisible(false);
@@ -596,7 +598,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
                             {response != '' ?
                                 <div className="flex-1 justify-center flex flex-col relative z-10 mask-gradient-top">
-                                    <DisplayResponse response={response} question={question} story={questionStory}/>
+                                    <DisplayResponse response={response} question={question} story={questionStory} firstResponsePlayer={firstResponsePlayer}/>
                                     <Jokers jokers={jokersLeft} handleUseJoker={handleUseJoker} activesItems={activesItems} itemsEnabled={itemsEnabled}/>
                                 </div> :
                                 <GameArea
