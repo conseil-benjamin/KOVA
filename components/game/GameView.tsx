@@ -401,6 +401,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             console.log("game_finished", data);
             const winnerUsername = data.roomData.winner;
             console.log("winnerUsername", winnerUsername);
+            setQuestion('');
 
             data.players.forEach(player => {
                 if (player.username.toLowerCase() === userName.toLowerCase()) {

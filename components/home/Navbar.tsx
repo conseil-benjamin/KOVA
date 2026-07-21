@@ -1,7 +1,7 @@
-import { Zap, LogIn } from 'lucide-react';
+import { LogIn, User as UserIcon, LogOut } from 'lucide-react';
 import { redirect } from 'next/navigation'
 import { User } from '@/types/User';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Cookies from 'universal-cookie';
 import { Room } from '@/types/Room';
 
@@ -54,9 +54,9 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                             <DropdownMenuTrigger asChild>
                                 <div className="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-1 rounded-full pr-4 transition border border-transparent hover:border-white/10">
                                     {user?.imageUrl != '' ? (
-                                        <img src={user?.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+                                        <img src={user?.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover ring-2 ring-purple-500/30" />
                                     ) : (
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-500 to-gray-700 ring-2 ring-white/20"></div>
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 ring-2 ring-white/20"></div>
                                     )}
                                     <div className="hidden md:block text-right">
                                         <div className="text-xs font-bold text-white">{user?.username}</div>
@@ -64,15 +64,44 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                                     </div>
                                 </div>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="start">
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem onClick={() => redirect(`/profile/${user?.username}`)} style={{ cursor: 'pointer' }}>
-                                        Mon profile
+                            <DropdownMenuContent
+                                className="w-64 bg-black/80 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/60 rounded-xl p-0 overflow-hidden"
+                                align="end"
+                                sideOffset={10}
+                            >
+                                {/* En-tête profil */}
+                                <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/10 bg-white/5">
+                                    {user?.imageUrl != '' ? (
+                                        <img src={user?.imageUrl} alt="Avatar" className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-500/40 flex-shrink-0" />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 ring-2 ring-white/20 flex-shrink-0"></div>
+                                    )}
+                                    <div className="min-w-0">
+                                        <div className="text-sm font-bold text-white truncate">{user?.username}</div>
+                                        <div className="text-xs text-purple-400">Niveau {user?.stats?.level}</div>
+                                    </div>
+                                </div>
+
+                                {/* Items */}
+                                <div className="p-1.5 flex flex-col gap-0.5">
+                                    <DropdownMenuItem
+                                        onClick={() => redirect(`/profile/${user?.username}`)}
+                                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/10 focus:bg-white/10 focus:text-white cursor-pointer transition-colors"
+                                    >
+                                        <UserIcon className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                                        Mon profil
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={logout} style={{ cursor: 'pointer' }}>
-                                        Se deconnecter
+
+                                    <DropdownMenuSeparator className="bg-white/10 my-0.5" />
+
+                                    <DropdownMenuItem
+                                        onClick={logout}
+                                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 focus:bg-red-500/10 focus:text-red-300 cursor-pointer transition-colors"
+                                    >
+                                        <LogOut className="w-4 h-4 flex-shrink-0" />
+                                        Se déconnecter
                                     </DropdownMenuItem>
-                                </DropdownMenuGroup>
+                                </div>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </>

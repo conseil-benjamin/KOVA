@@ -40,22 +40,21 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                             className={`relative w-full aspect-[4/3] bg-black/50 rounded-2xl border border-white/10 shadow-2xl overflow-hidden group hover:border-white/20 transition-all ${isMobileMode ? 'max-w-full rounded-2xl' : 'max-w-3xl aspect-video rounded-3xl'}`}>
 
                             {imageUrl != '' && imageUrl != null ?
-                                <div
-                                    className="w-full h-full flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
-                                    {/* Section Question : Prend 1/5 de la hauteur */}
-                                    <div className="h-1/5 w-full flex items-center justify-center p-4">
-                                        <p className="text-white text-xl md:text-2xl font-bold text-center">
+                                <div className="w-full h-full flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
+                                    {/* Question : hauteur auto, max 25% du conteneur */}
+                                    <div className="flex-shrink-0 w-full flex items-center justify-center px-4 py-2 overflow-hidden" style={{ maxHeight: '25%' }}>
+                                        <p className="text-white text-base md:text-xl font-bold text-center leading-snug">
                                             {question}
                                         </p>
                                     </div>
 
-                                    {/* Section Image : */}
-                                    <div className="h-4/5 w-full overflow-hidden">
+                                    {/* Image : prend tout l'espace restant */}
+                                    <div className="flex-1 min-h-0 w-full relative overflow-hidden">
                                         <img
                                             src={imageUrl}
                                             alt="Devinette"
-                                            className="w-full h-full object-contain transition-all duration-300 ease-out"
-                                            style={{transform: hasGuessed ? 'scale(1)' : 'scale(1.1)'}}
+                                            className="absolute inset-0 w-full h-full object-contain transition-all duration-300 ease-out"
+                                            style={{ transform: hasGuessed ? 'scale(1)' : 'scale(1.04)' }}
                                         />
                                     </div>
                                 </div> :
