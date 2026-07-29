@@ -42,7 +42,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);
     const [scoreToWin, setScoreToWin] = useState(100);
-    const [timePerRound, setTimePerRound] = useState(15);
+    const [timePerRound, setTimePerRound] = useState(20);
 
     // Options de contenu
     const [enableBlindTest, setEnableBlindTest] = useState(false); // Son activé ?
@@ -97,7 +97,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             setRoomName(dataRoom?.name || `La Room de ${dataRoom?.creator}`);
             setMaxPlayers(dataRoom?.maxPlayers || 12);
             setScoreToWin(dataRoom?.scoreToWin || 10000);
-            setTimePerRound(dataRoom?.timePerRound || 15);
+            setTimePerRound(dataRoom?.timePerRound || 20);
             setEnableBlindTest(dataRoom?.enableBlindTest || false);
             setEnableNSFW(dataRoom?.enableNSFW || false);
             setEnableAbbreviations(dataRoom?.enableAbbreviations || true);
