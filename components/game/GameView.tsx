@@ -392,6 +392,14 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }
         });
 
+        newSocket.on('display_toast_message', (data: {message: string}) => {
+            toast(data.message, {
+                position: "top-right",
+                icon: <ArrowRightLeft className="w-4 h-4 text-amber-400" />,
+                className: "!bg-amber-500/10 !border !border-amber-500/20 !text-amber-200",
+            });
+        });
+
         newSocket.on('game_finished', (data: { message: string, players: Player[], roomData: Room }) => {
             console.log("game_finished", data);
             const winnerUsername = data.roomData.winner;

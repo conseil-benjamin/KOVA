@@ -92,7 +92,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             console.log("dataRoom?.activeItems", dataRoom?.activeItems);
 
             setLanguage(dataRoom?.language || 'fr');
-            setSelectedPack(dataRoom?.pack || "");
+            setSelectedPack(dataRoom?.packs || "");
             setIsPrivate(dataRoom?.isPrivate || false);
             setRoomName(dataRoom?.name || `La Room de ${dataRoom?.creator}`);
             setMaxPlayers(dataRoom?.maxPlayers || 12);
@@ -133,6 +133,11 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     };
 
     const launchRoom = async () => {
+        if (selectedPack.length < 1) {
+            toast.error('Veuillez choisir au moins pack');
+            return false;
+        }
+
         setIsLoading(true);
         const roomData = {
             idUrl: "",
@@ -144,6 +149,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             maxPlayers, // int
             players: [] as Player[], // array
             oldPlayers: [] as Player[], // array
+            banPlayers: [] as string[],
             scoreToWin, // int
             timePerRound, // int
             enableBlindTest, // boolean
