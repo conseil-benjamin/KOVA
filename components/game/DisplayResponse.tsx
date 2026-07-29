@@ -25,15 +25,10 @@ const DisplayResponse: React.FC<DisplayResponseProps>  = ({ response, question, 
                     </p>
                     <div className="h-px bg-white/10 my-5 mx-auto w-0"
                          style={{animation: "expandLine 0.6s 0.5s forwards"}}/>
-                    <p className="text-[13px] text-white/30 leading-relaxed">
+                    <p className="text-[13px] text-white leading-relaxed">
                         {story}
                     </p>
                 </div>
-
-                <p className="mt-7 text-[12px] text-white/20 tracking-wide"
-                   style={{animation: "fadeUp 0.4s 0.9s both"}}>
-                    Prochaine question dans quelques secondes…
-                </p>
 
                 {firstResponsePlayer ? (
                     <p className="mt-7 text-[12px] text-white tracking-wide"

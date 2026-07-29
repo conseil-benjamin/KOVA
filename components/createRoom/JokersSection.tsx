@@ -95,7 +95,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                         </div>
                         <div>
                             <div className={`text-sm font-bold ${activeItems.hint > 0 ? 'text-white' : 'text-slate-400'}`}>Indice</div>
-                            <div className="text-[10px] text-slate-500">Révèle 1 lettre</div>
+                            <div className="text-[10px] text-slate-500">Affichage d'un indice</div>
                         </div>
                     </div>
                     {!isConsult && (

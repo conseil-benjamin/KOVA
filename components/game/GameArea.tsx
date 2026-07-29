@@ -28,7 +28,7 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
             <div className={`flex-1 flex flex-col items-center justify-center relative ${isMobileMode ? 'p-4 pb-24' : 'p-8 pb-8'}`}>
 
                 {/* Game Starting Soon */}
-                {!question && !activeInk && gameStartingSoonTimer === -1 ? (
+                {!question && !activeInk && (gameStartingSoonTimer === -1) ? (
                     <WaitingForHost/>
                 ) : gameStartingSoonTimer >= 0 && !question ? (
                     <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } />
@@ -59,21 +59,19 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                                     </div>
                                 </div> :
                                 <div className="w-full h-full bg-gray-900 flex items-center justify-center">
-                                <p className="text-white text-2xl font-bold text-center">{question}</p>
+                                    <p className="text-white text-2xl font-bold text-center p-5">{question}</p>
                                 </div>
                             }
 
                             {/* Overlay Vignette */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
 
-                            {/* Tags Catégorie
                             <div className="absolute top-4 left-4 flex gap-2">
                                 <div className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg">
                                     <Blocks className="w-3 h-3 text-pink-400" />
                                     <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">{theme}</span>
                                 </div>
                             </div>
-                            */}
 
                             {/* Feedback Victoire */}
                             {hasGuessed && (
@@ -92,13 +90,12 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
                                     ? (activesItems.find(a => a.id === item.name)?.maxUses ?? 0) > 0
                                     : ((activesItems as any)?.[item.name] ?? 0) > 0;
                                 return isActive && (
-                                    <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg cursor-pointer">
-                                        {item.name === "hint" && <Eye className="w-3 h-3 text-pink-400" />}
-                                        {item.name === "freeze" && <Timer className="w-3 h-3 text-pink-400" />}
-                                        {item.name === "ink" && <Music className="w-3 h-3 text-pink-400" />}
-                                        {item.name === "swap" && <ArrowRightLeft className="w-3 h-3 text-pink-400" />}
-                                        <button disabled={item.useLeft == 0} onClick={() => handleUseJoker(item.name)} className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize disabled:opacity-50">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
-                                    </div>
+                                    item.name === "hint" && (
+                                        <div key={index} className="bg-black/60 backdrop-md px-3 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-lg cursor-pointer">
+                                            <Eye className="w-3 h-3 text-pink-400" />
+                                            <button disabled={item.useLeft == 0} onClick={() => handleUseJoker(item.name)} className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent capitalize disabled:opacity-50">{item.name} <span className="text-white ml-1 font-mono">{item.useLeft}</span></button>
+                                        </div>
+                                    )
                                 )
                             })}
                         </div>

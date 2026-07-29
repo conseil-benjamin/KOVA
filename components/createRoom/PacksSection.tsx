@@ -1,8 +1,8 @@
 import React from 'react';
-import { Dices, Plus, Check, Search, Volume2 } from 'lucide-react';
+import { Dices, Check, Search, Volume2 } from 'lucide-react';
 
 interface PacksSectionProps {
-    selectedPack: string;
+    selectedPack: string[];
     setSelectedPack: (id: string) => void;
     isConsult: boolean;
     setShowModalMorePacks: (show: boolean) => void;
@@ -19,48 +19,57 @@ const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPa
                 </label>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {packs.slice(0, 4).map(pack => (
-                    <div
-                        key={pack.id}
-                        onClick={() => !isConsult && setSelectedPack(pack.id)}
-                        className={`
-                            relative p-4 rounded-xl border cursor-pointer transition-all duration-200 group overflow-hidden
-                            ${selectedPack.includes(pack.id)
-                                ? 'bg-[#1a1a24] border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.2)]'
-                                : 'bg-[#13131f] border-white/5 hover:border-white/20 hover:bg-[#1a1a24]'}
-                        `}
-                    >
-                        {/* Fond Gradient subtil si sélectionné */}
-                        {selectedPack.includes(pack.id) && <div className={`absolute inset-0 bg-gradient-to-br ${pack.color} opacity-10`}></div>}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                {packs.slice(0, 4).map((pack: any) => {
+                    const isSelected = selectedPack.includes(pack.id);
+                    return (
+                        <div
+                            key={pack.id}
+                            onClick={() => !isConsult && setSelectedPack(pack.id)}
+                            className={`
+                                rounded-xl border transition-all duration-200 overflow-hidden group
+                                ${isConsult ? 'cursor-default' : 'cursor-pointer'}
+                                ${isSelected
+                                    ? 'bg-[#1a1a24] border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.2)]'
+                                    : 'bg-[#13131f] border-white/5 hover:border-white/20 hover:bg-[#1a1a24]'}
+                            `}
+                        >
+                            {/* Cover */}
+                            <div className={`relative w-full aspect-video bg-gradient-to-br ${pack.color || 'from-slate-700 to-slate-800'}`}>
+                                {pack.imageUrl && (
+                                    <img src={pack.imageUrl} alt={pack.name[language]} className="absolute inset-0 w-full h-full object-cover" />
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                        <div className="flex items-start gap-4 relative z-10">
-                            <img className={'p-3 rounded-lg bg-gradient-to-br shadow-lg text-white'} width={75} height={75} src={pack.imageUrl || null} />
+                                {isSelected && (
+                                    <div className="absolute top-2 right-2 bg-purple-500 rounded-full p-1 shadow-lg animate-in zoom-in duration-200">
+                                        <Check className="w-3 h-3 text-white" />
+                                    </div>
+                                )}
+                                {pack.isAudio && (
+                                    <div className="absolute top-2 left-2 bg-black/60 rounded-full p-1.5">
+                                        <Volume2 className="w-3 h-3 text-cyan-400" />
+                                    </div>
+                                )}
+                            </div>
 
-                            <div className="flex-1">
-                                <h3 className="font-bold text-white flex items-center gap-2">
-                                    {pack.name[language]}
-                                    {pack.isAudio && <Volume2 className="w-3 h-3 text-cyan-400" />}
-                                </h3>
-                                <p className="text-xs text-slate-400 mt-1 leading-relaxed">{pack.description[language]}</p>
-                                <div className="mt-2 text-[10px] font-mono text-slate-500 bg-black/20 w-fit px-2 py-0.5 rounded">
+                            {/* Infos */}
+                            <div className="p-3">
+                                <h3 className="font-bold text-white text-sm truncate">{pack.name[language]}</h3>
+                                <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">{pack.description?.[language]}</p>
+                                <div className="mt-2 text-[10px] font-mono text-slate-300 bg-white/10 w-fit px-2 py-0.5 rounded">
                                     {pack.questionsCount} questions
                                 </div>
                             </div>
-                            {selectedPack.includes(pack.id) && (
-                                <div className="bg-purple-500 rounded-full p-1 shadow-lg animate-in zoom-in duration-200">
-                                    <Check className="w-3 h-3 text-white" />
-                                </div>
-                            )}
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
 
                 {/* Bouton Plus de packs */}
                 {!isConsult && (
-                    <div onClick={() => setShowModalMorePacks(true)} className="p-4 rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-slate-500 hover:text-white hover:border-white/30 cursor-pointer transition h-full min-h-[100px]">
+                    <div onClick={() => setShowModalMorePacks(true)} className="rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-slate-500 hover:text-white hover:border-white/30 cursor-pointer transition min-h-[160px]">
                         <Search className="w-6 h-6" />
-                        <span className="text-sm font-medium">Découvrir plus de packs</span>
+                        <span className="text-sm font-medium text-center px-2">Découvrir plus de packs</span>
                     </div>
                 )}
             </div>

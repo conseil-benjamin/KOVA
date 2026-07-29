@@ -1,6 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MessageSquare, Trophy, Send } from 'lucide-react';
-import { Player } from './Leaderboard';
+import { MessageSquare, Trophy, Send, Users, MoreVertical, Search, Crown } from 'lucide-react';
+import { Player } from '@/types/Room';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import {Socket} from "socket.io-client";
 
 interface ChatMessage {
     id: number | string;
@@ -16,17 +27,27 @@ interface ChatProps {
     players?: Player[];
     userName?: string;
     onSendMessage: (msg: string) => void;
+    creator: string;
+    socket: Socket;
+    roomId: string;
 }
 
-const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage }) => {
+const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage, creator, socket, roomId }) => {
     const listRef = useRef<HTMLDivElement>(null);
     const [msg, setMsg] = useState("");
+    const [activeTab, setActiveTab] = useState<'chat' | 'players'>('chat');
+    const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+    const [playerSearch, setPlayerSearch] = useState("");
 
     useEffect(() => {
         if (listRef.current) {
             listRef.current.scrollTop = listRef.current.scrollHeight;
         }
     }, [messages]);
+
+    const handleAdminAction = (username: string, action: string) => {
+        socket.emit('handleActionAdmin', roomId.toUpperCase(), username, action );
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,66 +57,155 @@ const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage 
     };
 
     return (
-        <aside className="hidden md:flex w-80 bg-[#0a0a12]/50 border-l border-white/5 flex-col backdrop-blur-sm z-20">
-            <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <MessageSquare className="w-3 h-3" /> Chat
-                </h2>
-                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full border border-green-500/20">En ligne: {players?.length}</span>
-            </div>
-
-            <div ref={listRef} className="flex-1 overflow-y-auto p-4 space-y-3 mask-gradient-top">
-                {messages.map((msg, index) => {
-                    // Normalize message structure
-                    const id = msg.id || index;
-                    const type = msg.type || 'chat';
-                    const user = msg.user || 'Unknown';
-                    const text = msg.text || msg.message || '';
-
-                    return (
-                        <div key={id} className="text-sm animate-in slide-in-from-bottom-2">
-                            {type === 'system' ? (
-                                <div className="flex items-center gap-2 my-2 opacity-60">
-                                    <div className="h-px bg-white/20 flex-1"></div>
-                                    <span className="text-[10px] font-mono text-center">{text}</span>
-                                    <div className="h-px bg-white/20 flex-1"></div>
-                                </div>
-                            ) : type === 'success' ? (
-                                <div className="bg-green-500/10 border border-green-500/20 p-2 rounded-lg text-green-400 text-xs flex gap-2 items-center">
-                                    <Trophy className="w-3 h-3" />
-                                    <span><strong className="text-green-300">{user}</strong> {text}</span>
-                                </div>
-                            ) : type === 'warning' ? (
-                                <div className="text-orange-400 text-xs italic bg-orange-400/10 p-2 rounded-lg border border-orange-400/20 text-center">
-                                    {text}
-                                </div>
-                            ) : (
-                                <div className="flex flex-col">
-                                    <span className={`text-xs font-bold ${user === (userName) ? 'text-blue-400' : 'text-purple-400'}`}>{user}</span>
-                                    <span className="text-slate-300 leading-tight">{text}</span>
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-
-            {/* Desktop Message Input */}
-            <div className="p-3 border-t border-white/5 bg-black/20">
-                <form onSubmit={handleSubmit} className="flex gap-2">
-                    <input
-                        type="text"
-                        value={msg}
-                        onChange={(e) => setMsg(e.target.value)}
-                        placeholder="Ecrire un message..."
-                        className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-purple-500 focus:bg-white/10 transition-colors"
-                    />
-                    <button type="submit" className="bg-white/10 hover:bg-white/20 p-2 rounded-lg text-white transition-colors">
-                        <Send className="w-3 h-3" />
+        <>
+            <aside className="hidden md:flex w-80 bg-[#0a0a12]/50 border-l border-white/5 flex-col backdrop-blur-sm z-20">
+                <div className="p-2 border-b border-white/5 flex items-center gap-2">
+                    <button
+                        onClick={() => setActiveTab('chat')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${activeTab === 'chat' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
+                    >
+                        <MessageSquare className="w-3 h-3" /> Chat
                     </button>
-                </form>
-            </div>
-        </aside>
+                    <button
+                        onClick={() => setActiveTab('players')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${activeTab === 'players' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
+                    >
+                        <Users className="w-3 h-3" /> Salon
+                        <span className="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded-full border border-green-500/20">{players?.length ?? 0}</span>
+                    </button>
+                </div>
+
+                {activeTab === 'players' ? (
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        <div className="p-3 pb-0">
+                            <div className="relative">
+                                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                                <input
+                                    type="text"
+                                    value={playerSearch}
+                                    onChange={(e) => setPlayerSearch(e.target.value)}
+                                    placeholder="Rechercher un joueur..."
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-purple-500 focus:bg-white/10 transition-colors"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-4 space-y-2 mask-gradient-top">
+                        {players && players.filter((player) => player.username.toLowerCase().includes(playerSearch.toLowerCase())).length > 0 ? [...players].filter((player) => player.username.toLowerCase().includes(playerSearch.toLowerCase())).sort((a, b) => b.score - a.score).map((player) => (
+                            <div key={player.username} className="flex items-center gap-3 p-2 rounded-xl bg-white/5">
+                                {player.imageUrl ? (
+                                    <img src={player.imageUrl} alt={player.username} className="w-8 h-8 rounded-full object-cover" />
+                                ) : (
+                                    <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${player.avatar} flex items-center justify-center text-xs font-bold`}>
+                                        {player.username.substring(0, 1)}
+                                    </div>
+                                )}
+                                <div className="flex-1 min-w-0 flex justify-between items-center">
+                                    <span className="flex items-center gap-1.5 min-w-0">
+                                        {player.username === creator && <Crown className="w-3 h-3 text-yellow-400 shrink-0" />}
+                                        <span className={`text-xs font-medium truncate ${player.username === userName ? 'text-blue-400' : 'text-slate-200'}`}>{player.username}</span>
+                                    </span>
+                                    <span className="text-xs font-mono text-slate-400">{player.score} pts</span>
+                                </div>
+                                {(userName === creator) && (userName !== player.username) && (
+                                    <div>
+                                        <span className="cursor-pointer text-slate-400 hover:text-white transition-colors" onClick={() => setSelectedPlayer(player)}>
+                                            <MoreVertical className="w-4 h-4" />
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        )) : (
+                            <span className="text-xs text-slate-500 italic">
+                                {players && players.length > 0 ? `Aucun joueur ne correspond à "${playerSearch}".` : 'Aucun joueur pour le moment.'}
+                            </span>
+                        )}
+                        </div>
+                    </div>
+                ) : (
+                <>
+                <div ref={listRef} className="flex-1 overflow-y-auto p-4 space-y-3 mask-gradient-top">
+                    {messages.map((msg, index) => {
+                        // Normalize message structure
+                        const id = msg.id || index;
+                        const type = msg.type || 'chat';
+                        const user = msg.user || 'Unknown';
+                        const text = msg.text || msg.message || '';
+
+                        return (
+                            <div key={id} className="text-sm animate-in slide-in-from-bottom-2">
+                                {type === 'system' ? (
+                                    <div className="flex items-center gap-2 my-2 opacity-60">
+                                        <div className="h-px bg-white/20 flex-1"></div>
+                                        <span className="text-[10px] font-mono text-center">{text}</span>
+                                        <div className="h-px bg-white/20 flex-1"></div>
+                                    </div>
+                                ) : type === 'success' ? (
+                                    <div className="bg-green-500/10 border border-green-500/20 p-2 rounded-lg text-green-400 text-xs flex gap-2 items-center">
+                                        <Trophy className="w-3 h-3" />
+                                        <span><strong className="text-green-300">{user}</strong> {text}</span>
+                                    </div>
+                                ) : type === 'warning' ? (
+                                    <div className="text-orange-400 text-xs italic bg-orange-400/10 p-2 rounded-lg border border-orange-400/20 text-center">
+                                        {text}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col">
+                                        <span className={`text-xs font-bold ${user === (userName) ? 'text-blue-400' : 'text-purple-400'}`}>{user}</span>
+                                        <span className="text-slate-300 leading-tight">{text}</span>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Desktop Message Input */}
+                <div className="p-3 border-t border-white/5 bg-black/20">
+                    <form onSubmit={handleSubmit} className="flex gap-2">
+                        <input
+                            type="text"
+                            value={msg}
+                            onChange={(e) => setMsg(e.target.value)}
+                            placeholder="Ecrire un message..."
+                            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-purple-500 focus:bg-white/10 transition-colors"
+                        />
+                        <button type="submit" className="bg-white/10 hover:bg-white/20 p-2 rounded-lg text-white transition-colors">
+                            <Send className="w-3 h-3" />
+                        </button>
+                    </form>
+                </div>
+                </>
+                )}
+            </aside>
+
+            <AlertDialog open={!!selectedPlayer} onOpenChange={(open) => !open && setSelectedPlayer(null)}>
+                <AlertDialogContent className="bg-neutral-900 border border-white/10 text-white">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Actions sur {selectedPlayer?.username}</AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogDescription className="text-slate-400">
+                        Que souhaitez-vous faire avec ce joueur ?
+                    </AlertDialogDescription>
+
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-white/5 hover:bg-white/10 border-white/10 text-white hover:text-white" onClick={() => setSelectedPlayer(null)}>Annuler</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => selectedPlayer && handleAdminAction(selectedPlayer.username, "ban")}
+                            className="bg-red-600 hover:bg-red-700 text-white border-0"
+                        >
+                            Exclure
+                        </AlertDialogAction>
+                        <AlertDialogAction
+                            onClick={() => selectedPlayer && handleAdminAction(selectedPlayer.username, "chef")}
+                            className="bg-green-900 hover:bg-green-700 text-white border-0"
+                        >
+                            Nommer chef
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     );
 };
 

@@ -27,6 +27,8 @@ import {User} from "@/types/User";
 import DisplayResponse from "@/components/game/DisplayResponse";
 import Jokers from "@/components/game/Jokers";
 import ModalAskForPseudo from "@/components/ModalAskForPseudo";
+import {InfoIcon} from "lucide-react";
+import PlayerIsBan from "@/components/game/PlayerIsBan";
 
 interface GameViewProps {
     roomId: string;
@@ -64,6 +66,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [players, setPlayers] = useState<Player[]>([]);
     const [oldPlayers, setOldPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState('');
+    const [isPlayerBan, setIsPlayerBan] = useState(false);
     const [activesItems, setActivesItems] = useState<{ [key: string]: number }>();
     const [itemsEnabled, setItemsEnabled] = useState(false);
     const [jokersLeft, setJokersLeft] = useState<{ name: string; useLeft: number }[]>([]);
@@ -147,6 +150,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             setHasGuessed(true);
                         }
 
+                        if ((player.username.toLowerCase() === userName.toLowerCase()) && player.isBan) {
+                            setIsPlayerBan(true);
+                        }
+
                         if ((player.username.toLowerCase() === userName.toLowerCase()) && player.activeInk === true) {
                             setActiveInk(true)
                         }
@@ -181,7 +188,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setGameStartingSoonTimer((prev) => {
                 if (prev <= 1) {
                     clearInterval(timer);
-                    return 0;
+                    return -1;
                 }
                 return prev - 1;
             });
@@ -313,8 +320,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setScoreToWin(room.scoreToWin);
 
             const localPlayer = room.players.find(p => p.username.toLowerCase() === userName.toLowerCase());
+            if (localPlayer.isBan){
+                setIsPlayerBan(true)
+            }
+            setCreator(room.creator)
             if (localPlayer) {
-                console.log("Local player data updated:", localPlayer);
                 setJokersLeft(localPlayer.jokers);
                 setActiveInk(localPlayer.activeInk);
             }
@@ -355,7 +365,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on("joker_use", (data: { message: string, jokerType: string }) => {
-            // todo: ajouter une icone et une couleur spécifique pour chaque type de joker utilisé
             // todo :a voir si on affiche pas à côté du nom de l'user plutot
             switch (data.jokerType) {
                 case "hint":
@@ -364,7 +373,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             background: "orange"
                         },
                         position: "top-left",
-                        icon: "fas fa-check",
+                        icon: <InfoIcon/>,
                     });
                     break;
                 case "ink":
@@ -577,13 +586,20 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <LoadingPage/>
                     </div>
                 </div>
+            ) : isPlayerBan ? (
+                <div
+                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                    <div className="flex items-center justify-center h-full w-full">
+                        <PlayerIsBan/>
+                    </div>
+                </div>
             ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0 && !isLoading) ? (
                 <Lobby players={players}/>
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
                          isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
                          handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned} setXpEarned={setXpEarned} winner={winner}/>
-            ) : (
+            ) : isPlayerBan === false && (
                 <div
                     className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
 
@@ -621,6 +637,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                 messages={messages}
                                 userName={userName}
                                 onSendMessage={handleChatMessage}
+                                creator={creator}
+                                socket={socket}
+                                roomId={roomId}
                             />
                         </div>
 
