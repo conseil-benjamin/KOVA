@@ -92,7 +92,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             console.log("dataRoom?.activeItems", dataRoom?.activeItems);
 
             setLanguage(dataRoom?.language || 'fr');
-            setSelectedPack(dataRoom?.pack || "Le Grand Mix KOVA #1");
+            setSelectedPack(dataRoom?.pack || "");
             setIsPrivate(dataRoom?.isPrivate || false);
             setRoomName(dataRoom?.name || `La Room de ${dataRoom?.creator}`);
             setMaxPlayers(dataRoom?.maxPlayers || 12);

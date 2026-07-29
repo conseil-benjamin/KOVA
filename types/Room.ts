@@ -9,7 +9,6 @@ export interface Player {
     avatar?: string;
     jokers: { name: string; useLeft: number }[];
     activeInk: boolean;
-    isBan: boolean;
 }
 
 export interface Room {
@@ -23,6 +22,7 @@ export interface Room {
     maxPlayers: number;
     players: Player[];
     oldPlayers: Player[];
+    banPlayers: string[];
     scoreToWin: number;
     timePerRound: number;
     timerEnd: Date;

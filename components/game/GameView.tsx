@@ -27,7 +27,7 @@ import {User} from "@/types/User";
 import DisplayResponse from "@/components/game/DisplayResponse";
 import Jokers from "@/components/game/Jokers";
 import ModalAskForPseudo from "@/components/ModalAskForPseudo";
-import {InfoIcon} from "lucide-react";
+import {Ghost, ArrowRightLeft} from "lucide-react";
 import PlayerIsBan from "@/components/game/PlayerIsBan";
 
 interface GameViewProps {
@@ -125,6 +125,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 const secondsRemaining = Math.floor((endTime - Date.now() / 1000));
                 console.log("getRoomData", data);
 
+                // vérification si le joueur est banni de la partie
+                if (data.banPlayers?.some((u: string) => u.toLowerCase() === userName.toLowerCase())) {
+                    setIsPlayerBan(true)
+                }
+
                 switch (data.status) {
                     case "FINISHED":
                         setIsGameEnded(true);
@@ -148,10 +153,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         setJokersLeft(player.jokers);
                         if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
                             setHasGuessed(true);
-                        }
-
-                        if ((player.username.toLowerCase() === userName.toLowerCase()) && player.isBan) {
-                            setIsPlayerBan(true);
                         }
 
                         if ((player.username.toLowerCase() === userName.toLowerCase()) && player.activeInk === true) {
@@ -320,7 +321,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setScoreToWin(room.scoreToWin);
 
             const localPlayer = room.players.find(p => p.username.toLowerCase() === userName.toLowerCase());
-            if (localPlayer.isBan){
+            if (room.banPlayers?.some(u => u.toLowerCase() === userName.toLowerCase())) {
                 setIsPlayerBan(true)
             }
             setCreator(room.creator)
@@ -365,42 +366,27 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on("joker_use", (data: { message: string, jokerType: string }) => {
-            // todo :a voir si on affiche pas à côté du nom de l'user plutot
+            // Le joker "hint" n'est pas assez intéressant pour être annoncé
             switch (data.jokerType) {
-                case "hint":
-                    toast(data.message, {
-                        style: {
-                            background: "orange"
-                        },
-                        position: "top-left",
-                        icon: <InfoIcon/>,
-                    });
-                    break;
                 case "ink":
                     toast(data.message, {
-                        style: {
-                            background: "orange"
-                        },
-                        position: "top-left",
-                        icon: "",
+                        position: "bottom-left",
+                        icon: <Ghost className="w-4 h-4 text-blue-400" />,
+                        className: "!bg-blue-500/10 !border !border-blue-500/20 !text-blue-200",
                     });
                     break;
                 case "double":
                     toast(data.message, {
-                        style: {
-                            background: "orange"
-                        },
-                        position: "top-left",
-                        icon: "",
+                        position: "bottom-left",
+                        icon: <span className="font-black text-xs text-green-400">x2</span>,
+                        className: "!bg-green-500/10 !border !border-green-500/20 !text-green-200",
                     });
                     break;
                 case "swap":
                     toast(data.message, {
-                        style: {
-                            background: "orange"
-                        },
-                        position: "top-left",
-                        icon: "",
+                        position: "bottom-left",
+                        icon: <ArrowRightLeft className="w-4 h-4 text-amber-400" />,
+                        className: "!bg-amber-500/10 !border !border-amber-500/20 !text-amber-200",
                     });
                     break;
             }
@@ -503,7 +489,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         console.log("handleRestartGame");
         if (socket && isConnected && (creator.toLowerCase() === userName.toLowerCase())) {
             console.log(userName);
-            socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
+            socket?.emit('start_game', roomId, roomData?.packs, roomData?.timePerRound);
             setIsGameEnded(false);
         }
     }

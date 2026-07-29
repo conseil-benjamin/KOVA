@@ -1,5 +1,5 @@
 import React from "react";
-import {ArrowRightLeft, Eye, Ghost, Music, Timer} from "lucide-react";
+import {ArrowRightLeft, Eye, Ghost, Music, Subscript, Timer} from "lucide-react";
 
 interface JokersProps {
     jokers: { name: string; useLeft: number }[];
@@ -10,7 +10,7 @@ interface JokersProps {
 
 const getJokerIcon = (name: string) => {
     switch (name) {
-        case "double": return <ArrowRightLeft className="w-4 h-4 text-amber-400 group-hover:text-amber-300 transition-colors" />;
+        case "double": return <span className={'w-4 h-4 text-green-500 group-hover:text-green-300 transition-colors'}>x2</span>;
         case "ink": return <Ghost className="w-4 h-4 text-blue-400 group-hover:text-blue-300 transition-colors" />;
         case "swap": return <ArrowRightLeft className="w-4 h-4 text-amber-400 group-hover:text-amber-300 transition-colors" />;
         default: return <Eye className="w-4 h-4 text-pink-400" />;
