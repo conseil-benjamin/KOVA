@@ -11,7 +11,7 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, on
             {/* Header */}
             <div className="flex items-start justify-between gap-4 p-6 pb-4 border-b border-white/10">
                 <div>
-                    <h1 className="text-xl font-bold text-white">Découvrir plus de packs</h1>
+                    <h1 className="text-xl font-bold text-white">Choisissez vos packs</h1>
                     <p className="text-sm text-slate-400 mt-1">{selectedPack.length} pack{selectedPack.length > 1 ? 's' : ''} sélectionné{selectedPack.length > 1 ? 's' : ''} sur {packs.length}</p>
                 </div>
                 {onClose && (

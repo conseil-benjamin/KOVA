@@ -21,6 +21,7 @@ import RoomService from "@/services/roomService";
 import UserService from "@/services/userService";
 import ModalAskForPseudo from "@/components/ModalAskForPseudo";
 import {Loader2Icon} from "lucide-react";
+import SelectedPacksSection from "@/components/createRoom/SelectedPacksSection";
 
 const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();

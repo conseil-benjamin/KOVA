@@ -12,11 +12,6 @@ const DisplayResponse: React.FC<DisplayResponseProps>  = ({ response, question, 
         return (
             <div className="flex flex-col items-center justify-center relative z-10">
 
-                <p className="text-[11px] tracking-[0.12em] uppercase text-white/30 mb-5"
-                   style={{animation: "fadeUp 0.4s 0.1s both"}}>
-                    La réponse était
-                </p>
-
                 <div className="relative overflow-hidden rounded-[18px] border border-white/10
         bg-white/[0.03] px-12 py-10 text-center max-w-xl w-[92%]"
                      style={{animation: "fadeUp 0.5s 0.2s both"}}>
@@ -28,20 +23,19 @@ const DisplayResponse: React.FC<DisplayResponseProps>  = ({ response, question, 
                     <p className="text-[13px] text-white leading-relaxed">
                         {story}
                     </p>
+
+                    {firstResponsePlayer ? (
+                        <p className="mt-15 text-[12px] text-white tracking-wide"
+                           style={{animation: "fadeUp 0.4s 0.9s both"}}>
+                            {firstResponsePlayer} a trouvé en premier
+                        </p>
+                    ) : (
+                        <p className="mt-10 text-[12px] text-white tracking-wide"
+                           style={{animation: "fadeUp 0.4s 0.9s both"}}>
+                            Personne n'a trouvé la réponse
+                        </p>
+                    )}
                 </div>
-
-                {firstResponsePlayer ? (
-                    <p className="mt-7 text-[12px] text-white tracking-wide"
-                       style={{animation: "fadeUp 0.4s 0.9s both"}}>
-                        {firstResponsePlayer} a trouvé en premier
-                    </p>
-                ) : (
-                    <p className="mt-7 text-[12px] text-white tracking-wide"
-                       style={{animation: "fadeUp 0.4s 0.9s both"}}>
-                        Personne n'a trouvé la réponse
-                    </p>
-                )}
-
             </div>
         );
 }

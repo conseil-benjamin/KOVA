@@ -8,21 +8,22 @@ interface PacksSectionProps {
     setShowModalMorePacks: (show: boolean) => void;
     packs: any;
     language: string;
+    onlySelectedPacks?: boolean;
 }
 
-const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPack, isConsult, setShowModalMorePacks, packs, language }) => {
+const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPack, isConsult, setShowModalMorePacks, packs, language, onlySelectedPacks }) => {
     return (
         <section className="space-y-4">
             <div className="flex justify-between items-center">
                 <label className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <Dices className="w-4 h-4" /> Packs de Questions
+                    <Dices className="w-4 h-4" /> {!onlySelectedPacks ? 'Packs de Questions' : 'Packs sélectionnés'} ({selectedPack.length}/{packs.length})
                 </label>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                {packs.slice(0, 4).map((pack: any) => {
+                {packs.map((pack: any) => {
                     const isSelected = selectedPack.includes(pack.id);
-                    return (
+                    return isSelected && (
                         <div
                             key={pack.id}
                             onClick={() => !isConsult && setSelectedPack(pack.id)}
@@ -69,7 +70,7 @@ const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPa
                 {!isConsult && (
                     <div onClick={() => setShowModalMorePacks(true)} className="rounded-xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-slate-500 hover:text-white hover:border-white/30 cursor-pointer transition min-h-[160px]">
                         <Search className="w-6 h-6" />
-                        <span className="text-sm font-medium text-center px-2">Découvrir plus de packs</span>
+                        <span className="text-sm font-medium text-center px-2">Choisirs vos packs</span>
                     </div>
                 )}
             </div>

@@ -116,11 +116,9 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
                             )}
                         </div>
                     )}
-                    {!isGameRunning && creator?.toLowerCase() !== currentUser?.toLowerCase() && (
-                        <div className='flex gap-2'>
-                            <button className='px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white transition-all duration-300 ease-out border border-white/10 hover:border-white/20 text-sm font-semibold tracking-wide active:scale-95 cursor-pointer' onClick={() => setIsConsult(!isConsult)}>Règles</button>
-                        </div>
-                    )}
+                    <div className='flex gap-2'>
+                            <button className='px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white transition-all duration-300 ease-out border border-white/10 hover:border-white/20 text-sm font-semibold tracking-wide active:scale-95 cursor-pointer' onClick={() => setIsConsult(!isConsult)}>Règles</button></div>
+
                     {creator?.toLowerCase() !== currentUser?.toLowerCase() && (
                         <div className='flex gap-2 mt-2'>
                             {!userInGame ? (
@@ -215,14 +213,12 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
                             </button>
                         )}
 
-                        {!isGameRunning && creator?.toLowerCase() !== currentUser?.toLowerCase() && (
-                            <button
+                        <button
                                 className="flex items-center justify-center gap-2 p-3 w-full rounded-xl bg-slate-800 border border-white/10 text-white active:bg-slate-700 transition"
                                 onClick={() => { setIsConsult(true); setIsMobileMenuOpen(false); }}
                             >
                                 <BookOpen className="w-4 h-4" /> Règles du jeu
-                            </button>
-                        )}
+                        </button>
 
                         {handleLeaveGame && (
                             <button

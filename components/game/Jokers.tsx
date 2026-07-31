@@ -20,6 +20,7 @@ const getJokerIcon = (name: string) => {
 const Jokers: React.FC<JokersProps> = ({ jokers, handleUseJoker, activesItems, itemsEnabled }) => {
     return (
         <>
+            <p className={'flex justify-center items-center mt-10'}>Jokers à utiliser pour la prochaine question :</p>
             {itemsEnabled && (
                 <div className="flex justify-center items-center gap-3 z-20 absolute bottom-4 left-4 flex-col md:static md:flex-row md:mt-8 md:gap-4">
                     {jokers && jokers.map((item, index) => {
