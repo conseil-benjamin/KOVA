@@ -95,7 +95,8 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
             {/* Liste des Rooms */}
             <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-                {filteredRooms && filteredRooms.length > 0 && filteredRooms.map((room: Room) => (
+                {filteredRooms && filteredRooms.length > 0 ?
+                    filteredRooms.map((room: Room)=> (
                     <div key={room._id} className="group bg-[#1a1a24] hover:bg-[#20202e] border border-white/5 hover:border-purple-500/30 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer relative shadow-lg">
 
                         {/* Image Header */}
@@ -156,7 +157,8 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                             </div>
                         </div>
                     </div>
-                ))}
+                )) : <p className={'flex flex-row items-center justify-center w-full'}>Pas de parties publique pour le moment. Créer en une !</p>
+                }
             </div>
         </div>
     );
