@@ -6,6 +6,8 @@ import CreateRoomHeader from './CreateRoomHeader';
 import CreateRoomFooter from './CreateRoomFooter';
 import RoomNameSection from './RoomNameSection';
 import PacksSection from './PacksSection';
+import DifficultySection from './DifficultySection';
+import { defaultDifficulties } from './constants';
 import ContentOptionsSection from './ContentOptionsSection';
 import VictoryConditionsSection from './VictoryConditionsSection';
 import JokersSection from './JokersSection';
@@ -21,7 +23,6 @@ import RoomService from "@/services/roomService";
 import UserService from "@/services/userService";
 import ModalAskForPseudo from "@/components/ModalAskForPseudo";
 import {Loader2Icon} from "lucide-react";
-import SelectedPacksSection from "@/components/createRoom/SelectedPacksSection";
 
 const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData, setIsConsult, isConsult, creator }: { socket: any, setIsEditing: (isEditing: boolean) => void, isEditing: boolean, dataRoom?: Room, setRoomData: (dataRoom: Room) => void, setIsConsult: (isConsult: boolean) => void, isConsult: boolean, creator?: string }) => {
     const cookies = new Cookies();
@@ -32,6 +33,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
     const [packs, setPacks] = useState<[]>([]);
     const [selectedPack, setSelectedPack] = useState([]);
+    const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(defaultDifficulties);
     const [isPrivate, setIsPrivate] = useState(false);
     const [guestNameInput, setGuestNameInput] = useState('');
     const [userName, setUserName] = useState(cookies.get('userName') || guestNameInput || '');
@@ -72,6 +74,14 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
         }
     }
 
+    const toggleDifficulty = (difficultyId: string) => {
+        setSelectedDifficulties(prev =>
+            prev.includes(difficultyId)
+                ? prev.filter(id => id !== difficultyId)
+                : [...prev, difficultyId]
+        );
+    }
+
     console.log("selectedPack", selectedPack);
 
     useEffect(() => {
@@ -94,6 +104,8 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
             setLanguage(dataRoom?.language || 'fr');
             setSelectedPack(dataRoom?.packs || "");
+            // Rooms créées avant l'ajout de la difficulté : on retombe sur les 3 niveaux
+            setSelectedDifficulties(dataRoom?.difficulties?.length ? dataRoom.difficulties : defaultDifficulties);
             setIsPrivate(dataRoom?.isPrivate || false);
             setRoomName(dataRoom?.name || `La Room de ${dataRoom?.creator}`);
             setMaxPlayers(dataRoom?.maxPlayers || 12);
@@ -139,12 +151,18 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             return false;
         }
 
+        if (selectedDifficulties.length < 1) {
+            toast.error('Veuillez choisir au moins un niveau de difficulté');
+            return false;
+        }
+
         setIsLoading(true);
         const roomData = {
             idUrl: "",
             language,
             name: roomName,
             packs: selectedPack, // nom du pack
+            difficulties: selectedDifficulties, // EASY | MEDIUM | HARD
             isPrivate, // boolean
             creator: userName,
             maxPlayers, // int
@@ -235,7 +253,14 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 isConsult={isConsult}
                             />
 
-                            {/* 2. Sélection du Pack */}
+                            {/* 2. Niveaux de difficulté */}
+                            <DifficultySection
+                                selectedDifficulties={selectedDifficulties}
+                                toggleDifficulty={toggleDifficulty}
+                                isConsult={isConsult}
+                            />
+
+                            {/* 3. Sélection du Pack */}
                             {isPacksLoading ? (
                                 <div className="flex items-center justify-center bg-[#0a0a0f]">
                                     <Loader2Icon className="animate-spin size-10 text-white" />
@@ -244,7 +269,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 <PacksSection selectedPack={selectedPack} setSelectedPack={handleChangesPack} isConsult={isConsult} setShowModalMorePacks={setShowModalMorePacks} packs={packs} language={language}/>
                             )}
 
-                            {/* 3. Options de Contenu */}
+                            {/* 4. Options de Contenu */}
                             <ContentOptionsSection
                                 enableBlindTest={enableBlindTest} setEnableBlindTest={setEnableBlindTest}
                                 enableNSFW={enableNSFW} setEnableNSFW={setEnableNSFW}

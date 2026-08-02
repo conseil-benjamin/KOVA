@@ -1,4 +1,12 @@
-import { Dices, Globe, Music, Play } from 'lucide-react';
+import { Dices, Globe, Music, Play, SignalHigh, SignalLow, SignalMedium } from 'lucide-react';
+
+export const difficulties = [
+    { id: 'EASY', label: 'Facile', desc: 'Questions grand public', icon: SignalLow, color: 'emerald' },
+    { id: 'MEDIUM', label: 'Moyen', desc: 'Demande un peu de culture', icon: SignalMedium, color: 'amber' },
+    { id: 'HARD', label: 'Difficile', desc: 'Réservé aux experts', icon: SignalHigh, color: 'red' },
+];
+
+export const defaultDifficulties = difficulties.map(d => d.id);
 
 export const packs = [
     { id: 'mix', name: 'Le Grand Mix KOVA #1', count: 100, color: 'from-purple-500 to-indigo-600', icon: Dices, desc: 'Un mélange aléatoire de tous les thèmes. Idéal pour commencer !' },

@@ -222,10 +222,10 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.error('Game cancelled');
         });
 
-        newSocket.on('new_question', (data: { question: string, imageUrl: string, theme: string, story: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
+        newSocket.on('new_question', (data: { question: string, imageUrl: string, theme: string, difficulty: string, story: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
             setHint('');
-            setQuestionTheme(data.theme);
+            setQuestionTheme(data.difficulty);
             setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
             if (data.language === "fr") {
                 setQuestion(data.question['fr']);
@@ -525,7 +525,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     };
 
     const handleUseJoker = (item: string) => {
-        console.log("handleUseJoker", item);
         if (socket && isConnected) {
             console.log("Sending joker use:", userName + " " + item);
             socket.emit('use_joker', roomId.toUpperCase(), item, userName);

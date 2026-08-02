@@ -16,6 +16,8 @@ export interface Room {
     idUrl: string;
     name: string;
     pack: string;
+    packs: string[];
+    difficulties?: string[];
     tags: string[];
     isPrivate: boolean;
     creator: string;
