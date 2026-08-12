@@ -17,9 +17,9 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
     const xpPercentage = (xp / xpToNextLevel) * 100;
 
     return (
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-4 md:space-y-6">
             {/* Carte Profil / Guest */}
-            <div className="bg-[#13131f] border border-white/5 rounded-2xl p-6 relative overflow-hidden group">
+            <div className="bg-[#13131f] border border-white/5 rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-b from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
 
                 {isLoggedIn ? (
@@ -77,8 +77,8 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
                 </button>
             </div>
 
-            {/* Challenge Quotidien */}
-            <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-2xl p-5">
+            {/* Challenge Quotidien — masqué sur mobile pour ne pas repousser la liste des parties */}
+            <div className="hidden lg:block bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-2xl p-5">
                 <div className="flex items-center gap-2 text-orange-400 mb-2">
                     <Flame className="w-4 h-4 fill-orange-400" />
                     <span className="text-xs font-bold uppercase tracking-widest">Challenge du jour</span>

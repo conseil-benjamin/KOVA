@@ -76,7 +76,7 @@ export default function ProfilePage({ params }: { params: Params }) {
                 <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white pb-20 md:pb-0">
                     <Navbar isLoggedIn={isLoggedIn} user={currentUser} rooms={rooms} />
 
-                    <div className="pt-28 px-4 md:px-8 max-w-[1200px] mx-auto pb-12">
+                    <div className="pt-[calc(6rem+env(safe-area-inset-top,0px))] md:pt-[calc(7rem+env(safe-area-inset-top,0px))] px-4 md:px-8 max-w-[1200px] mx-auto pb-12">
                         {profileUser ? (
                             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                                 <ProfileHeader user={profileUser} isOwner={isOwner} />

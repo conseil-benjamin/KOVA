@@ -20,10 +20,10 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
     enableAbbreviations, setEnableAbbreviations, isConsult
 }) => {
     return (
-        <section className="bg-[#13131f] border border-white/5 rounded-2xl p-6 space-y-6">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${enableBlindTest ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-500'}`}>
+        <section className="bg-[#13131f] border border-white/5 rounded-2xl p-4 md:p-6 space-y-5 md:space-y-6">
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className={`p-2 rounded-lg shrink-0 ${enableBlindTest ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-500'}`}>
                         <Volume2 className="w-5 h-5" />
                     </div>
                     <div>
@@ -33,7 +33,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                 </div>
                 <button
                     onClick={() => !isConsult && setEnableBlindTest(!enableBlindTest)}
-                    className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableBlindTest ? 'bg-cyan-500' : 'bg-slate-700'}`}
+                    className={`w-12 h-6 shrink-0 rounded-full transition-colors duration-200 flex items-center p-1 ${enableBlindTest ? 'bg-cyan-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableBlindTest ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
@@ -41,8 +41,8 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
 
             <div className="h-px bg-white/5"></div>
 
-            <div className="flex items-center justify-between opacity-80 hover:opacity-100 transition">
-                <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-4 opacity-80 hover:opacity-100 transition">
+                <div className="flex items-center gap-3 min-w-0">
                     <div className={`p-2 rounded-lg ${enableNSFW ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
                         <Ghost className="w-5 h-5" />
                     </div>
@@ -53,7 +53,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                 </div>
                 <button
                     onClick={() => !isConsult && setEnableNSFW(!enableNSFW)}
-                    className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableNSFW ? 'bg-red-500' : 'bg-slate-700'}`}
+                    className={`w-12 h-6 shrink-0 rounded-full transition-colors duration-200 flex items-center p-1 ${enableNSFW ? 'bg-red-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableNSFW ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
@@ -61,8 +61,8 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
 
             <div className="h-px bg-white/5"></div>
 
-            <div className="flex items-center justify-between opacity-80 hover:opacity-100 transition">
-                <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-4 opacity-80 hover:opacity-100 transition">
+                <div className="flex items-center gap-3 min-w-0">
                     <div className={`p-2 rounded-lg ${enableShowWrongAnswers ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
                         <MessageSquareQuote className="w-5 h-5" />
                     </div>
@@ -73,7 +73,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                 </div>
                 <button
                     onClick={() => !isConsult && setEnableShowWrongAnswers(!enableShowWrongAnswers)}
-                    className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableShowWrongAnswers ? 'bg-red-500' : 'bg-slate-700'}`}
+                    className={`w-12 h-6 shrink-0 rounded-full transition-colors duration-200 flex items-center p-1 ${enableShowWrongAnswers ? 'bg-red-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableShowWrongAnswers ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
@@ -81,8 +81,8 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
 
             <div className="h-px bg-white/5"></div>
 
-            <div className="flex items-center justify-between opacity-80 hover:opacity-100 transition">
-                <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-4 opacity-80 hover:opacity-100 transition">
+                <div className="flex items-center gap-3 min-w-0">
                     <div className={`p-2 rounded-lg ${enableAbbreviations ? 'bg-red-500/20 text-red-400' : 'bg-slate-800 text-slate-500'}`}>
                         <Layers2 className="w-5 h-5" />
                     </div>
@@ -93,7 +93,7 @@ const ContentOptionsSection: React.FC<ContentOptionsSectionProps> = ({
                 </div>
                 <button
                     onClick={() => !isConsult && setEnableAbbreviations(!enableAbbreviations)}
-                    className={`w-12 h-6 rounded-full transition-colors duration-200 flex items-center p-1 ${enableAbbreviations ? 'bg-red-500' : 'bg-slate-700'}`}
+                    className={`w-12 h-6 shrink-0 rounded-full transition-colors duration-200 flex items-center p-1 ${enableAbbreviations ? 'bg-red-500' : 'bg-slate-700'}`}
                 >
                     <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${enableAbbreviations ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>

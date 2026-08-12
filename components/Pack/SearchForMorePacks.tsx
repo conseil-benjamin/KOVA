@@ -7,22 +7,22 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, on
     const filteredPacks = packs.filter((pack: any) => pack.name[language].toLowerCase().includes(search.toLowerCase()));
 
     return (
-        <div className="flex flex-col h-full max-h-[85vh]">
+        <div className="flex flex-col h-full min-h-0">
             {/* Header */}
-            <div className="flex items-start justify-between gap-4 p-6 pb-4 border-b border-white/10">
-                <div>
-                    <h1 className="text-xl font-bold text-white">Choisissez vos packs</h1>
-                    <p className="text-sm text-slate-400 mt-1">{selectedPack.length} pack{selectedPack.length > 1 ? 's' : ''} sélectionné{selectedPack.length > 1 ? 's' : ''} sur {packs.length}</p>
+            <div className="flex items-start justify-between gap-3 p-4 pb-3 md:p-6 md:pb-4 border-b border-white/10">
+                <div className="min-w-0">
+                    <h1 className="text-lg md:text-xl font-bold text-white">Choisissez vos packs</h1>
+                    <p className="text-xs md:text-sm text-slate-400 mt-1">{selectedPack.length} pack{selectedPack.length > 1 ? 's' : ''} sélectionné{selectedPack.length > 1 ? 's' : ''} sur {packs.length}</p>
                 </div>
                 {onClose && (
-                    <button onClick={onClose} className="text-slate-500 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors cursor-pointer">
+                    <button onClick={onClose} aria-label="Fermer" className="tap-target shrink-0 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 active:bg-white/20 rounded-lg transition-colors cursor-pointer">
                         <X className="w-5 h-5" />
                     </button>
                 )}
             </div>
 
             {/* Search bar */}
-            <div className="px-6 py-4">
+            <div className="px-4 md:px-6 py-3 md:py-4">
                 <div className="relative">
                     <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
@@ -36,9 +36,9 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, on
             </div>
 
             {/* Grid */}
-            <div className="flex-1 overflow-y-auto px-6 pb-6">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 md:px-6 pb-4 md:pb-6">
                 {filteredPacks.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                         {filteredPacks.map((pack: any) => {
                             const isSelected = selectedPack.includes(pack.id);
                             return (

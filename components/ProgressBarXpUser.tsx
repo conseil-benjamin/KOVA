@@ -18,7 +18,7 @@ const ProgressBarXpUser: React.FC<ProgressBarXpUserProps> = ({
     const progressPercentage = Math.min((currentXp / xpToNextLevel) * 100, 100);
 
     return (
-        <div className="w-full max-w-md p-5 bg-gray-900 border border-gray-800 rounded-2xl shadow-xl font-sans">
+        <div className="w-full max-w-md mb-8 p-4 md:p-5 bg-gray-900 border border-gray-800 rounded-2xl shadow-xl font-sans">
 
             {/* En-tête : Niveau à gauche, Compteur à droite */}
             <div className="flex justify-between items-end mb-3">

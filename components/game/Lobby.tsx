@@ -8,7 +8,7 @@ interface LobbyProps {
 
 const Lobby: React.FC<LobbyProps> = ({ players }) => {
     return (
-        <div className="w-full max-w-4xl mt-8 mb-4 px-4 fadeIn">
+        <div className="w-full max-w-4xl mt-6 md:mt-8 mb-4 px-1 sm:px-4 fadeIn">
             <div className="flex items-center gap-2 mb-3 text-slate-400">
                 <Users size={16} />
                 <h3 className="text-xs font-bold uppercase tracking-widest">Joueurs en attente ({players.length})</h3>

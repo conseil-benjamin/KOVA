@@ -104,11 +104,11 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
     }
 
     return (
-        <div className="lg:col-span-6 flex flex-col gap-6">
+        <div className="lg:col-span-6 flex flex-col gap-4 md:gap-6 min-w-0">
 
             {/* Barre de Recherche & Filtres */}
             <div
-                className="bg-[#13131f]/80 backdrop-blur border border-white/5 p-2 rounded-xl flex flex-col md:flex-row gap-2 sticky top-20 z-40 shadow-xl">
+                className="bg-[#13131f]/80 backdrop-blur border border-white/5 p-2 rounded-xl flex flex-col md:flex-row gap-2 sticky top-[calc(5rem+env(safe-area-inset-top,0px))] z-40 shadow-xl">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"/>
                     <input
@@ -184,10 +184,10 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
                             {/* Contenu */}
                             <div className="p-4">
-                                <div className="flex justify-between items-start mb-2">
-                                    <div>
-                                        <h3 className="font-bold text-white transition">{room.name}</h3>
-                                        <p className="text-xs text-slate-500">{room.pack}</p>
+                                <div className="flex justify-between items-start mb-2 min-w-0">
+                                    <div className="min-w-0">
+                                        <h3 className="font-bold text-white transition truncate">{room.name}</h3>
+                                        <p className="text-xs text-slate-500 truncate">{room.pack}</p>
                                     </div>
                                 </div>
 
@@ -197,10 +197,10 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                                 ))}*/}
                                 </div>
 
-                                <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center">
-                                    <div className="flex -space-x-2">
+                                <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center gap-2 flex-wrap min-w-0">
+                                    <div className="flex -space-x-2 items-center min-w-0">
                                     <span
-                                        className="absolute bottom-4 left-4 text-xs font-bold text-white bg-black/50 px-2 py-1 rounded shadow-md">
+                                        className="text-xs font-bold text-white bg-black/50 px-2 py-1 rounded shadow-md whitespace-nowrap">
                                         {room.language === 'fr' ? 'Francais' : room.language === 'en' ? 'English' : room.language.toUpperCase()}
                                     </span>
                                         {/* [...Array(3)].map((_, i) => (
@@ -210,11 +210,11 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                                     )) */}
                                         {/* {room.players > 3 && <div className="w-6 h-6 rounded-full bg-slate-800 border border-[#1a1a24] text-[8px] flex items-center justify-center text-slate-400">+{room.players - 3}</div>} */}
                                     </div>
-                                    <div className="relative"
+                                    <div className="relative min-w-0"
                                          ref={isPacksOpen ? packsPopoverRef : null}>
                                         <span
                                             onClick={() => room.packs && room.packs.length > 1 && setOpenPacksRoomId(isPacksOpen ? null : roomKey)}
-                                            className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition flex items-center gap-1  cursor-pointer">
+                                            className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 active:bg-white/25 px-3 py-2 rounded-lg transition flex items-center gap-1 cursor-pointer truncate max-w-[9rem] sm:max-w-none">
                                             {room.packs && room.packs.length > 1 ?
                                                 <div className={'flex flex-row items-center justify-center'}>
                                                     <Info className="w-3 h-3"/>
@@ -243,7 +243,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                                         )}
                                     </div>
                                     <button onClick={() => joinRoom(room)}
-                                            className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer">
+                                            className="shrink-0 text-xs font-bold text-white bg-white/10 hover:bg-white/20 active:bg-white/25 active:scale-95 px-3 py-2 rounded-lg transition flex items-center gap-1 cursor-pointer whitespace-nowrap">
                                         Rejoindre <ChevronRight className="w-3 h-3"/>
                                     </button>
                                 </div>
@@ -256,8 +256,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
             {filteredRooms && filteredRooms.length <= 0 &&
                 <>
-                    <p className={'flex flex-row items-center justify-center w-full'}>Pas de parties publique
-                    pour le moment. Créer en une !</p>
+                    <p className={'flex flex-row items-center justify-center w-full'}>Pas de parties publiques pour le moment. Créez-en une !</p>
                 </>
             }
         </div>

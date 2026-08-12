@@ -6,7 +6,10 @@ import CreateRoomHeader from './CreateRoomHeader';
 import CreateRoomFooter from './CreateRoomFooter';
 import RoomNameSection from './RoomNameSection';
 import PacksSection from './PacksSection';
-import DifficultySection from './DifficultySection';
+// TODO(benjamin) : le fichier ./DifficultySection n'existe pas encore dans le repo.
+// L'import cassait la compilation de /createRoom ET de la page de jeu (GameView importe
+// CreateRoomView). Le composant est déjà commenté plus bas : à réactiver avec le fichier.
+// import DifficultySection from './DifficultySection';
 import { defaultDifficulties } from './constants';
 import ContentOptionsSection from './ContentOptionsSection';
 import VictoryConditionsSection from './VictoryConditionsSection';
@@ -239,10 +242,10 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                     {/* --- HEADER --- */}
                     <CreateRoomHeader setIsEditing={setIsEditing} isEditing={isEditing} setIsConsult={setIsConsult} isConsult={isConsult} />
 
-                    <main className="flex-1 max-w-6xl mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <main className="flex-1 max-w-6xl mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
 
                         {/* --- COLONNE GAUCHE (Contenu & Packs) --- */}
-                        <div className="lg:col-span-7 space-y-8">
+                        <div className="lg:col-span-7 space-y-6 md:space-y-8">
 
                             {/* 1. Nom de la Room */}
                             <RoomNameSection
@@ -253,12 +256,13 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 isConsult={isConsult}
                             />
 
-                            {/* 2. Niveaux de difficulté */}
+                            {/* 2. Niveaux de difficulté
                             <DifficultySection
                                 selectedDifficulties={selectedDifficulties}
                                 toggleDifficulty={toggleDifficulty}
                                 isConsult={isConsult}
                             />
+                             */}
 
                             {/* 3. Sélection du Pack */}
                             {isPacksLoading ? (
@@ -281,7 +285,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                         </div>
 
                         {/* --- COLONNE DROITE (Règles & Jokers) --- */}
-                        <div className="lg:col-span-5 space-y-8">
+                        <div className="lg:col-span-5 space-y-6 md:space-y-8">
 
                             {/* 4. Règles du Jeu (Sliders) */}
                             <VictoryConditionsSection
@@ -308,7 +312,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
                     <AlertDialog open={showModalMorePacks} onOpenChange={setShowModalMorePacks}>
                         <AlertDialogContent
-                            className="bg-neutral-900 border border-white/10 text-white max-w-5xl w-[95vw] max-h-[88vh] p-0 flex flex-col overflow-hidden"
+                            className="bg-neutral-900 border border-white/10 text-white sm:max-w-5xl w-[95vw] max-w-[95vw] h-[88dvh] max-h-[88dvh] p-0 flex flex-col overflow-hidden"
                             onClickOutside={() => setShowModalMorePacks(false)}
                         >
                             <SearchForMorePacks selectedPack={selectedPack} setSelectedPack={handleChangesPack} packs={packs} language={language} onClose={() => setShowModalMorePacks(false)}/>

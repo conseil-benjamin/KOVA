@@ -1,10 +1,11 @@
 import axios, {AxiosInstance, AxiosResponse} from "axios";
+import { getApiUrl } from "@/utils/utils";
 
 class AuthService {
 
     login = async (formDataToSend: FormData) => {
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, formDataToSend);
+            const response = await axios.post(`${getApiUrl()}/login`, formDataToSend);
             console.log("response", response);
             return response;
         } catch (error) {
@@ -15,7 +16,7 @@ class AuthService {
 
     register = async (formDataToSend: FormData) => {
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, formDataToSend);
+            const response = await axios.post(`${getApiUrl()}/register`, formDataToSend);
             console.log(response);
             return response;
         } catch (error) {

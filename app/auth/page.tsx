@@ -88,7 +88,7 @@ const Auth = () => {
     return (
         <>
         {!alreadyLoggedIn ? (
-            <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
+            <div className="min-h-[100dvh] bg-[#0a0a0f] flex items-center justify-center p-3 sm:p-4 py-8 relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
 
                 {/* --- FOND ANIMÉ (Background FX) --- */}
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
@@ -97,7 +97,7 @@ const Auth = () => {
                 </div>
 
                 {/* --- MAIN CARD --- */}
-                <div className="w-full max-w-4xl bg-[#13131f]/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
+                <div className="w-full max-w-4xl bg-[#13131f]/80 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
                     <AuthVisuals
                         isLogin={isLogin}
                         setIsLogin={setIsLogin}

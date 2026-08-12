@@ -79,19 +79,19 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
     }, [endsAt, setTimeLeft, setStartTimer]);
 
     return (
-        <header className="relative flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 z-50 shadow-lg h-14 md:h-16 pt-2 md:pt-0">
+        <header className="relative flex-none border-b border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between gap-2 px-3 md:px-4 z-50 shadow-lg h-14 max-md:kb:h-10 md:h-16 pt-safe max-md:kb:pt-0 box-content md:box-border transition-[height] duration-200">
 
             {/* LOGO KOVA */}
-            <div className="flex items-center gap-2 md:gap-3 group cursor-pointer z-50">
-                <div className="relative">
+            <div className="flex items-center gap-2 md:gap-3 group cursor-pointer z-50 shrink-0">
+                <div className="relative shrink-0">
                     <div className="absolute inset-0 bg-purple-500 blur-lg opacity-50 group-hover:opacity-100 transition duration-500"></div>
-                    <Hexagon className="w-8 h-8 md:w-10 md:h-10 text-white fill-white/10 relative z-10 stroke-[2.5]" />
+                    <Hexagon className="w-7 h-7 max-md:kb:w-5 max-md:kb:h-5 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white fill-white/10 relative z-10 stroke-[2.5]" />
                     <div className="absolute inset-0 flex items-center justify-center z-20">
                         <span className="font-black text-[10px] md:text-xs text-purple-300">K</span>
                     </div>
                 </div>
                 <div className="flex flex-col" onClick={() => redirect('/')}>
-                    <h1 className="font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-indigo-400 italic drop-shadow-[0_0_10px_rgba(168,85,247,0.5)] text-2xl md:text-3xl" style={{ fontFamily: '"Arial Black", sans-serif' }}>
+                    <h1 className="font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-indigo-400 italic drop-shadow-[0_0_10px_rgba(168,85,247,0.5)] text-xl max-md:kb:text-sm sm:text-2xl md:text-3xl" style={{ fontFamily: '"Arial Black", sans-serif' }}>
                         KOVA
                     </h1>
                 </div>
@@ -145,7 +145,8 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
             {/* Right Side: User Profile & Mobile Menu Toggle */}
             <div className="flex items-center gap-3 z-50">
                 <button
-                    className="md:hidden p-2 text-white hover:bg-white/10 rounded-full transition relative z-50 property-safe"
+                    className="md:hidden tap-target flex items-center justify-center text-white hover:bg-white/10 active:bg-white/20 rounded-full transition relative z-50"
+                    aria-label={isMobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
                     {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -170,7 +171,7 @@ const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObje
 
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
-                <div className="absolute top-14 left-0 w-full bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/10 p-4 flex flex-col gap-4 animate-in slide-in-from-top-5 md:hidden shadow-2xl">
+                <div className="absolute top-full left-0 w-full max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/10 p-4 flex flex-col gap-4 animate-in slide-in-from-top-5 md:hidden shadow-2xl">
 
                     {/* User Info in Mobile Menu */}
                     <div className="flex items-center gap-3 pb-4 border-b border-white/10">

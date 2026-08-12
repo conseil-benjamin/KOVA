@@ -35,7 +35,7 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                 </div>
             </div>
 
-            <div className={`grid grid-cols-2 gap-3 transition-opacity duration-300 ${itemsEnabled ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 transition-opacity duration-300 ${itemsEnabled ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
 
                 {/* Item: Freeze
                 <div className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition ${activeItems.freeze > 0 ? 'bg-blue-500/10 border-blue-500/50' : 'bg-[#13131f] border-white/5 opacity-50'}`}>
@@ -53,9 +53,9 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                     </div>
                     {!isConsult && (
                         <div className="flex items-center gap-2">
-                            <button onClick={() => updateItemUses('freeze', Math.max(0, activeItems.freeze - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
-                            <span className="text-sm font-bold w-4 text-center">{activeItems.freeze}</span>
-                            <button onClick={() => updateItemUses('freeze', activeItems.freeze + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
+                            <button onClick={() => updateItemUses('freeze', Math.max(0, activeItems.freeze - 1))} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">-</button>
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.freeze}</span>
+                            <button onClick={() => updateItemUses('freeze', activeItems.freeze + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
                         </div>
                     )}
                 </div>
@@ -77,9 +77,9 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                     </div>
                     {!isConsult && (
                         <div className="flex items-center gap-2">
-                            <button onClick={() => updateItemUses('double', Math.max(0, activeItems.double - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
-                            <span className="text-sm font-bold w-4 text-center">{activeItems.double}</span>
-                            <button onClick={() => updateItemUses('double', activeItems.double + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
+                            <button onClick={() => updateItemUses('double', Math.max(0, activeItems.double - 1))} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">-</button>
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.double}</span>
+                            <button onClick={() => updateItemUses('double', activeItems.double + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
                         </div>
                     )}
                 </div>
@@ -100,9 +100,9 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                     </div>
                     {!isConsult && (
                         <div className="flex items-center gap-2">
-                            <button onClick={() => updateItemUses('hint', Math.max(0, activeItems.hint - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
-                            <span className="text-sm font-bold w-4 text-center">{activeItems.hint}</span>
-                            <button onClick={() => updateItemUses('hint', activeItems.hint + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
+                            <button onClick={() => updateItemUses('hint', Math.max(0, activeItems.hint - 1))} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">-</button>
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.hint}</span>
+                            <button onClick={() => updateItemUses('hint', activeItems.hint + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
                         </div>
                     )}
                 </div>
@@ -123,9 +123,9 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                     </div>
                     {!isConsult && (
                         <div className="flex items-center gap-2">
-                            <button onClick={() => updateItemUses('ink', Math.max(0, activeItems.ink - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
-                            <span className="text-sm font-bold w-4 text-center">{activeItems.ink}</span>
-                            <button onClick={() => updateItemUses('ink', activeItems.ink + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
+                            <button onClick={() => updateItemUses('ink', Math.max(0, activeItems.ink - 1))} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">-</button>
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.ink}</span>
+                            <button onClick={() => updateItemUses('ink', activeItems.ink + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
                         </div>
                     )}
                 </div>
@@ -146,9 +146,9 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                     </div>
                     {!isConsult && (
                         <div className="flex items-center gap-2">
-                            <button onClick={() => updateItemUses('swap', Math.max(0, activeItems.swap - 1))} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">-</button>
-                            <span className="text-sm font-bold w-4 text-center">{activeItems.swap}</span>
-                            <button onClick={() => updateItemUses('swap', activeItems.swap + 1)} className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700">+</button>
+                            <button onClick={() => updateItemUses('swap', Math.max(0, activeItems.swap - 1))} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">-</button>
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.swap}</span>
+                            <button onClick={() => updateItemUses('swap', activeItems.swap + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
                         </div>
                     )}
                 </div>

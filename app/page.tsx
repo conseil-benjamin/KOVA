@@ -93,7 +93,7 @@ const Home = () => {
           <Navbar isLoggedIn={isLoggedIn} user={user} rooms={rooms} />
 
           {/* --- CONTENT LAYOUT --- */}
-          <div className="pt-24 px-4 md:px-8 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="pt-[calc(5.5rem+env(safe-area-inset-top,0px))] md:pt-[calc(6rem+env(safe-area-inset-top,0px))] px-4 md:px-8 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
 
             <SidebarLeft isLoggedIn={isLoggedIn} user={user} />
 

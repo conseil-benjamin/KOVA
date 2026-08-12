@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { toast } from 'sonner';
 import Cookies from "universal-cookie";
@@ -12,10 +12,7 @@ import GameInput from './GameInput';
 import RoomNotFound from './RoomNotFound';
 import Leaderboard from './Leaderboard';
 import { Player } from '@/types/Room';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
-import { AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { Room } from '@/types/Room';
-import { Loader2 } from 'lucide-react';
 import EndGame from './EndGame';
 import CreateRoomView from '../createRoom/CreateRoomView';
 import { redirect } from 'next/navigation';
@@ -29,6 +26,7 @@ import Jokers from "@/components/game/Jokers";
 import ModalAskForPseudo from "@/components/ModalAskForPseudo";
 import {Ghost, ArrowRightLeft} from "lucide-react";
 import PlayerIsBan from "@/components/game/PlayerIsBan";
+import {getWsUrl} from "@/utils/utils";
 
 interface GameViewProps {
     roomId: string;
@@ -198,7 +196,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     // --- SOCKET CONNECTION ---
     useEffect(() => {
-        const newSocket = io('http://localhost:3333', { autoConnect: false });
+        const newSocket = io(getWsUrl(), { autoConnect: false });
         setSocket(newSocket);
 
         newSocket.on('connection', () => {
@@ -545,7 +543,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         <>
             {!userName && !isLoading ? (
                 <div
-                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                    className="app-shell bg-neutral-900 h-[var(--app-h)] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
                     <ModalAskForPseudo guestNameInput={guestNameInput} setGuestNameInput={setGuestNameInput} handleGuestLogin={handleGuestLogin}/>
                 </div>
             ) : !roomFound ? (
@@ -574,27 +572,29 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 />
             ) : isLoading ? (
                 <div
-                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                    className="app-shell bg-neutral-900 h-[var(--app-h)] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
                     <div className="flex items-center justify-center h-full w-full">
                         <LoadingPage/>
                     </div>
                 </div>
             ) : isPlayerBan ? (
                 <div
-                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                    className="app-shell bg-neutral-900 h-[var(--app-h)] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
                     <div className="flex items-center justify-center h-full w-full">
                         <PlayerIsBan/>
                     </div>
                 </div>
             ) : (isGameNotStarted && !isEditingRoom && oldPlayers && oldPlayers.length > 0 && !isLoading) ? (
-                <Lobby players={players}/>
+                <div className="app-shell min-h-[100dvh] bg-[#0a0a0f] text-gray-100 font-sans flex flex-col items-center justify-center px-4 py-10">
+                    <Lobby players={players}/>
+                </div>
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
                          isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
                          handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned} setXpEarned={setXpEarned} winner={winner}/>
             ) : isPlayerBan === false && (
                 <div
-                    className="bg-neutral-900 min-h-screen h-[100dvh] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
+                    className="app-shell bg-neutral-900 h-[var(--app-h)] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
 
                     {/* CONTAINER DE L'APPLICATION */}
                     <div
@@ -603,11 +603,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                     <GameHeader timeLeft={timeLeft} currentUser={userName} userObject={userObject} creator={creator} handleStartGame={handleStartGame} setIsEditingRoom={setIsEditingRoom} isEditingRoom={isEditingRoom} isGameRunning={isGameRunning} timerVisible={timerVisible} setIsConsult={setIsConsultRules} isConsult={isConsultRules} handleJoinRoom={handleJoinRoom} handleLeaveGame={handleLeaveGame} players={players} gameStartingSoonTimer={gameStartingSoonTimer} handleCancelStartGame={handleCancelStartGame} setStartTimer={setStartTimer} setTimeLeft={setTimeLeft} startTimer={startTimer} endsAt={endsAt}
                         />
 
-                        <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+                        <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} username={userName}/>
 
                             {response != '' ?
-                                <div className="flex-1 justify-center flex flex-col relative z-10 mask-gradient-top">
+                                <div className="flex-1 min-h-0 min-w-0 justify-center flex flex-col relative z-10 overflow-y-auto">
                                     <DisplayResponse response={response} question={question} story={questionStory} firstResponsePlayer={firstResponsePlayer}/>
                                     <Jokers jokers={jokersLeft} handleUseJoker={handleUseJoker} activesItems={activesItems} itemsEnabled={itemsEnabled}/>
                                 </div> :

@@ -20,9 +20,9 @@ const getJokerIcon = (name: string) => {
 const Jokers: React.FC<JokersProps> = ({ jokers, handleUseJoker, activesItems, itemsEnabled }) => {
     return (
         <>
-            <p className={'flex justify-center items-center mt-10'}>Jokers à utiliser pour la prochaine question :</p>
+            <p className={'flex justify-center items-center text-center px-4 mt-6 md:mt-10 text-sm md:text-base text-slate-300'}>Jokers à utiliser pour la prochaine question :</p>
             {itemsEnabled && (
-                <div className="flex justify-center items-center gap-3 z-20 absolute bottom-4 left-4 flex-col md:static md:flex-row md:mt-8 md:gap-4">
+                <div className="flex flex-row flex-wrap justify-center items-center gap-3 z-20 px-3 mt-4 md:mt-8 md:gap-4">
                     {jokers && jokers.map((item, index) => {
                         // Vérification si le joker est actif
                         const isActive = Array.isArray(activesItems)

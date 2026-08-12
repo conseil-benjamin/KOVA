@@ -57,19 +57,19 @@ const GameInput: React.FC<GameInputProps> = ({
     const isInGame = players.some((player) => player.username.toLowerCase() === username.toLowerCase());
     console.log(focusInputResponse);
     return (
-        <div className="flex-none bg-[#0f0f18]/80 backdrop-blur-xl border-t border-white/10 z-40 relative p-2 md:p-4">
+        <div className="flex-none bg-[#0f0f18]/80 backdrop-blur-xl border-t border-white/10 z-40 relative p-2 md:p-4 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] md:pb-4">
 
             {/* Overlay Chat Mobile (Si ouvert) - Hidden on desktop */}
             {isMobileChatOpen && (
-                <div className="md:hidden absolute bottom-full left-0 w-full h-[60vh] bg-black/90 backdrop-blur-xl border-t border-white/10 flex flex-col animate-in slide-in-from-bottom-10 rounded-t-3xl border-x border-white/10 mx-[-1px] shadow-2xl">
+                <div className="md:hidden absolute bottom-full left-0 w-full h-[55dvh] max-h-[26rem] bg-black/90 backdrop-blur-xl border-t border-white/10 flex flex-col animate-in slide-in-from-bottom-10 rounded-t-3xl border-x border-white/10 mx-[-1px] shadow-2xl">
                     <div className="flex justify-between items-center p-3 border-b border-white/10 bg-black/40">
-                        <span className="text-xs font-bold text-purpe-300 flex items-center gap-2">
+                        <span className="text-xs font-bold text-purple-300 flex items-center gap-2">
                             <MessageSquare className="w-3 h-3" /> Discussion
                         </span>
-                        <button onClick={() => setIsMobileChatOpen(false)} className="p-1 rounded-full hover:bg-white/10"><ChevronDown className="w-4 h-4 text-slate-400" /></button>
+                        <button onClick={() => setIsMobileChatOpen(false)} aria-label="Fermer le chat" className="tap-target flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/20"><ChevronDown className="w-5 h-5 text-slate-400" /></button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto space-y-2 p-3 text-sm" ref={(el) => { if (el) el.scrollTop = el.scrollHeight; }}>
+                    <div className="flex-1 overflow-y-auto overscroll-contain space-y-2 p-3 text-sm" ref={(el) => { if (el) el.scrollTop = el.scrollHeight; }}>
                         {messages.slice(-20).map((msg, index) => {
                             const text = msg.text || msg.message || '';
                             const user = msg.user || '';
@@ -104,9 +104,9 @@ const GameInput: React.FC<GameInputProps> = ({
 
             {/* Toggle Chat Mobile Button (Si fermé) - Hidden on desktop */}
             {!isMobileChatOpen && (
-                <div className="md:hidden absolute bottom-full left-4 mb-2">
-                    <button onClick={() => setIsMobileChatOpen(true)} className="bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2 shadow-lg">
-                        <MessageSquare className="w-3 h-3 text-purple-400" />
+                <div className="md:hidden kb:hidden absolute bottom-full left-3 right-3 mb-2 flex">
+                    <button onClick={() => setIsMobileChatOpen(true)} className="max-w-full bg-black/60 backdrop-blur-md text-white text-xs px-3 py-2 rounded-full border border-white/10 flex items-center gap-2 shadow-lg active:scale-95 transition">
+                        <MessageSquare className="w-3 h-3 text-purple-400 shrink-0" />
                         {messages.length > 0 ? (() => {
                             const lastMsg = messages[messages.length - 1];
                             const lastText = lastMsg.text || lastMsg.message || '...';
@@ -128,7 +128,7 @@ const GameInput: React.FC<GameInputProps> = ({
                     placeholder={hasGuessed ? "Attente des autres..." : !isInGame ? "Rejoindre pour jouer" : "Ta réponse..."}
                     disabled={hasGuessed || !isInGame || !timerVisible}
                     className={`
-                        flex-1 bg-white/5 border-2 transition-all shadow-inner outline-none
+                        flex-1 min-w-0 bg-white/5 border-2 transition-all shadow-inner outline-none
                         ${hasGuessed ? 'border-green-500/50 text-green-400 placeholder:text-green-500/50' : 'border-white/10 focus:border-purple-500 text-white placeholder:text-slate-500'}
                         rounded-xl md:rounded-2xl py-3 pl-4 pr-10 md:py-4 md:pl-6 md:pr-12 text-base md:text-lg text-center
                     `}

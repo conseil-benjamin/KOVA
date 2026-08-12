@@ -12,7 +12,7 @@ interface CreateRoomFooterProps {
 
 const CreateRoomFooter: React.FC<CreateRoomFooterProps> = ({ launchRoom, isEditing, setIsEditing, setIsConsult, isConsult }) => {
     return (
-        <footer className="sticky bottom-0 bg-[#0a0a0f]/80 backdrop-blur-xl border-t border-white/10 p-4 z-50">
+        <footer className="sticky bottom-0 bg-[#0a0a0f]/80 backdrop-blur-xl border-t border-white/10 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] z-50">
             <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
                 <div className="hidden md:flex flex-col">
                     <span className="text-xs text-slate-400">Total estimé</span>
@@ -24,9 +24,9 @@ const CreateRoomFooter: React.FC<CreateRoomFooterProps> = ({ launchRoom, isEditi
                         {isConsult ? 'Retour' : isEditing ? 'Annuler' : 'Retour'}
                     </button>
                     {!isConsult && (
-                        <button onClick={launchRoom} className="flex-1 md:flex-none px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 active:scale-95 transition shadow-lg shadow-purple-900/20 flex items-center justify-center gap-2">
-                            {isEditing ? <Pencil className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
-                            {isEditing ? 'MODIFIER LA PARTIE' : 'CRÉER LA PARTIE'}
+                        <button onClick={launchRoom} className="flex-1 md:flex-none px-4 sm:px-8 py-3.5 md:py-3 rounded-xl font-bold text-sm sm:text-base text-white bg-gradient-to-r from-purple-600 to-indigo-600 md:hover:scale-105 active:scale-95 transition shadow-lg shadow-purple-900/20 flex items-center justify-center gap-2">
+                            {isEditing ? <Pencil className="w-5 h-5 fill-current shrink-0" /> : <Play className="w-5 h-5 fill-current shrink-0" />}
+                            <span className="truncate">{isEditing ? 'MODIFIER LA PARTIE' : 'CRÉER LA PARTIE'}</span>
                         </button>
                     )}
                 </div>

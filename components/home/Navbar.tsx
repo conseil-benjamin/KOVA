@@ -21,15 +21,15 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
     }
 
     return (
-        <nav className="fixed top-0 w-full h-16 bg-black/40 backdrop-blur-xl border-b border-white/5 z-50 flex items-center justify-between px-4 md:px-8">
+        <nav className="fixed top-0 w-full h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] bg-black/40 backdrop-blur-xl border-b border-white/5 z-50 flex items-center justify-between gap-3 px-3 md:px-8">
             {/* Logo */}
-            <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => redirect('/')}>
+            <div className="flex items-center gap-2 md:gap-3 cursor-pointer min-w-0 shrink" onClick={() => redirect('/')}>
                 <img
                     src="/logo.svg"
                     alt="Logo"
                     width={125}
                     height={125}
-                    className="h-12 w-auto sm:h-6 md:h-10 lg:h-14"
+                    className="h-9 w-auto sm:h-10 md:h-11 lg:h-14"
                 />
             </div>
 
@@ -52,7 +52,7 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                     <>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <div className="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-1 rounded-full pr-4 transition border border-transparent hover:border-white/10">
+                                <div className="flex items-center gap-3 cursor-pointer hover:bg-white/5 active:bg-white/10 p-1 rounded-full pr-1 md:pr-4 transition border border-transparent hover:border-white/10 shrink-0">
                                     {user?.imageUrl != '' ? (
                                         <img src={user?.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover ring-2 ring-purple-500/30" />
                                     ) : (
@@ -106,11 +106,11 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                         </DropdownMenu>
                     </>
                 ) : (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 shrink-0">
                         <button onClick={() => redirect('/auth')} className="hidden md:block px-4 py-2 text-sm font-bold text-slate-300 hover:text-white transition">Connexion</button>
-                        <button onClick={() => redirect('/auth?mode=register')} className="px-4 py-2 text-sm font-bold bg-white text-black rounded-full hover:bg-purple-100 transition flex items-center gap-2">
-                            <LogIn className="w-4 h-4" />
-                            <span className="hidden md:inline">S'inscrire</span>
+                        <button onClick={() => redirect('/auth?mode=register')} className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-bold bg-white text-black rounded-full hover:bg-purple-100 active:scale-95 transition flex items-center gap-2 whitespace-nowrap">
+                            <LogIn className="w-4 h-4 shrink-0" />
+                            <span>S&apos;inscrire</span>
                         </button>
                     </div>
                 )}

@@ -24,15 +24,15 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ icon: Icon, label, value, colorClass, highlight }) => (
-    <div className={`p-5 rounded-2xl border bg-slate-800/30 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl ${highlight ? 'border-indigo-500/30 shadow-indigo-500/10' : 'border-white/5 hover:border-white/10'
+    <div className={`p-4 md:p-5 rounded-2xl border bg-slate-800/30 backdrop-blur-sm transition-all md:hover:-translate-y-1 md:hover:shadow-xl ${highlight ? 'border-indigo-500/30 shadow-indigo-500/10' : 'border-white/5 hover:border-white/10'
         }`}>
-        <div className="flex items-center gap-4 mb-3">
-            <div className={`p-3 rounded-xl ${colorClass}`}>
+        <div className="flex items-center gap-3 md:gap-4 mb-3 min-w-0">
+            <div className={`p-2.5 md:p-3 rounded-xl shrink-0 ${colorClass}`}>
                 <Icon size={20} />
             </div>
-            <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">{label}</h3>
+            <h3 className="text-xs md:text-sm font-semibold text-slate-400 uppercase tracking-wider min-w-0">{label}</h3>
         </div>
-        <div className="text-3xl font-black text-white font-mono tracking-tight">
+        <div className="text-2xl md:text-3xl font-black text-white font-mono tracking-tight">
             {value}
         </div>
     </div>
@@ -47,11 +47,11 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
         <div className="space-y-6">
 
             {/* Primary Highlights Section */}
-            <h2 className="text-xl font-black text-white flex items-center gap-2 mb-4">
-                <Trophy className="text-yellow-500" />
+            <h2 className="text-lg md:text-xl font-black text-white flex items-center gap-2 mb-4">
+                <Trophy className="text-yellow-500 shrink-0" />
                 Performances Globales
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 <StatCard
                     icon={Gamepad2}
                     label="Parties Jouées"
@@ -74,15 +74,15 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
             </div>
 
             {/* Advanced Stats Section */}
-            <h2 className="text-xl font-black text-white flex items-center gap-2 mt-10 mb-4">
-                <Zap className="text-indigo-500" />
+            <h2 className="text-lg md:text-xl font-black text-white flex items-center gap-2 mt-8 md:mt-10 mb-4">
+                <Zap className="text-indigo-500 shrink-0" />
                 Statistiques Détaillées
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
-                    <div className="flex items-center gap-3 mb-2 text-slate-400">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <div className="p-4 md:p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
+                    <div className="flex items-center gap-2 md:gap-3 mb-2 text-slate-400 min-w-0">
                         <Flame size={18} className="text-orange-500" />
-                        <span className="text-sm font-semibold uppercase">Win Streak Actuelle</span>
+                        <span className="text-[11px] md:text-sm font-semibold uppercase leading-tight">Win Streak Actuelle</span>
                     </div>
                     <p className="text-2xl font-black text-white mt-1">{stats.winsStreak || 0}</p>
                     <div className="text-xs text-orange-400/80 mt-2 bg-orange-500/10 inline-block px-2 py-1 rounded w-max">
@@ -90,10 +90,10 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
                     </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
-                    <div className="flex items-center gap-3 mb-2 text-slate-400">
+                <div className="p-4 md:p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
+                    <div className="flex items-center gap-2 md:gap-3 mb-2 text-slate-400 min-w-0">
                         <TimerIcon size={18} className="text-cyan-500" />
-                        <span className="text-sm font-semibold uppercase">Tps de rép. min</span>
+                        <span className="text-[11px] md:text-sm font-semibold uppercase leading-tight">Tps de rép. min</span>
                     </div>
                     <p className="text-2xl font-black text-white mt-1">
                         {stats.bestResponseTime ? `${stats.bestResponseTime.toFixed(2)}s` : '-'}
@@ -103,10 +103,10 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
                     </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
-                    <div className="flex items-center gap-3 mb-2 text-slate-400">
+                <div className="p-4 md:p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
+                    <div className="flex items-center gap-2 md:gap-3 mb-2 text-slate-400 min-w-0">
                         <Medal size={18} className="text-yellow-500" />
-                        <span className="text-sm font-semibold uppercase">Podiums</span>
+                        <span className="text-[11px] md:text-sm font-semibold uppercase leading-tight">Podiums</span>
                     </div>
                     <p className="text-2xl font-black text-white mt-1">{stats.gamesPodium || 0}</p>
                     <div className="text-xs text-slate-500 mt-2">
@@ -114,10 +114,10 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
                     </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
-                    <div className="flex items-center gap-3 mb-2 text-slate-400">
+                <div className="p-4 md:p-5 rounded-2xl border border-white/5 bg-slate-800/30 flex flex-col justify-between">
+                    <div className="flex items-center gap-2 md:gap-3 mb-2 text-slate-400 min-w-0">
                         <Clock size={18} className="text-purple-500" />
-                        <span className="text-sm font-semibold uppercase">Total Joué</span>
+                        <span className="text-[11px] md:text-sm font-semibold uppercase leading-tight">Total Joué</span>
                     </div>
                     <p className="text-2xl font-black text-white mt-1">{stats.totalPlayTime || 0}h</p>
                     <div className="text-xs text-slate-500 mt-2">
@@ -127,13 +127,13 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
             </div>
 
             {/* Knowledge Section */}
-            <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-indigo-900/40 to-slate-900 border border-indigo-500/20">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h3 className="text-lg font-bold text-white mb-1">Total de bonnes réponses</h3>
-                        <p className="text-indigo-200/70 text-sm">Votre base de connaissance en action</p>
+            <div className="mt-6 p-5 md:p-6 rounded-2xl bg-gradient-to-br from-indigo-900/40 to-slate-900 border border-indigo-500/20">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="min-w-0">
+                        <h3 className="text-base md:text-lg font-bold text-white mb-1">Total de bonnes réponses</h3>
+                        <p className="text-indigo-200/70 text-xs md:text-sm">Votre base de connaissance en action</p>
                     </div>
-                    <div className="text-4xl font-black text-indigo-400 flex items-baseline gap-1">
+                    <div className="text-3xl md:text-4xl font-black text-indigo-400 flex items-baseline gap-1 shrink-0">
                         {stats.totalCorrectAnswers.toLocaleString()}
                         <span className="text-sm text-indigo-500/50">pts</span>
                     </div>

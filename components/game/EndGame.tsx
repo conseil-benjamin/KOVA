@@ -27,9 +27,9 @@ interface EndGameProps {
 }
 
 const MEDAL_COLORS = [
-    { bg: 'from-slate-400 to-slate-500', glow: 'shadow-slate-400/40', ring: 'ring-slate-400', label: 'text-slate-300', height: 'h-40', rank: '2' },
-    { bg: 'from-yellow-400 to-amber-500', glow: 'shadow-yellow-400/60', ring: 'ring-yellow-400', label: 'text-yellow-300', height: 'h-56', rank: '1' },
-    { bg: 'from-amber-600 to-amber-800', glow: 'shadow-amber-700/40', ring: 'ring-amber-600', label: 'text-amber-400', height: 'h-28', rank: '3' },
+    { bg: 'from-slate-400 to-slate-500', glow: 'shadow-slate-400/40', ring: 'ring-slate-400', label: 'text-slate-300', height: 'h-24 sm:h-40', rank: '2' },
+    { bg: 'from-yellow-400 to-amber-500', glow: 'shadow-yellow-400/60', ring: 'ring-yellow-400', label: 'text-yellow-300', height: 'h-36 sm:h-56', rank: '1' },
+    { bg: 'from-amber-600 to-amber-800', glow: 'shadow-amber-700/40', ring: 'ring-amber-600', label: 'text-amber-400', height: 'h-20 sm:h-28', rank: '3' },
 ];
 
 const Particle = ({ index }: { index: number }) => {
@@ -117,7 +117,7 @@ const EndGame: React.FC<EndGameProps> = ({
                 .endgame-root {
                     font-family: 'DM Sans', sans-serif;
                     background: #080b14;
-                    min-height: 100vh;
+                    min-height: 100dvh;
                     overflow-x: hidden;
                 }
 
@@ -183,14 +183,21 @@ const EndGame: React.FC<EndGameProps> = ({
                     right: 0;
                     z-index: 50;
                     background: linear-gradient(to top, rgba(8,11,20,0.98) 60%, transparent 100%);
-                    padding: 1rem 1.5rem 1.5rem;
+                    padding: 0.75rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     flex-wrap: wrap;
-                    gap: 0.625rem;
+                    gap: 0.5rem;
                     border-top: 1px solid rgba(255,255,255,0.06);
                     backdrop-filter: blur(12px);
+                }
+
+                @media (min-width: 640px) {
+                    .action-bar {
+                        padding: 1rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+                        gap: 0.625rem;
+                    }
                 }
 
                 .btn-primary {
@@ -275,6 +282,32 @@ const EndGame: React.FC<EndGameProps> = ({
                     transform: translateY(-1px);
                 }
 
+                /* --- MOBILE : la barre d'actions tient sur 2 lignes lisibles --- */
+                @media (max-width: 639px) {
+                    .action-bar .btn-primary,
+                    .action-bar .btn-success,
+                    .action-bar .btn-danger,
+                    .action-bar .btn-ghost {
+                        padding: 0.625rem 0.875rem;
+                        font-size: 0.8125rem;
+                        flex: 1 1 calc(50% - 0.25rem);
+                        min-width: 0;
+                        justify-content: center;
+                        white-space: nowrap;
+                    }
+                    /* Pas d'effet de survol au doigt : on garde un retour au tap */
+                    .action-bar button:active {
+                        transform: scale(0.97);
+                    }
+                    .btn-primary:hover,
+                    .btn-success:hover,
+                    .btn-danger:hover,
+                    .btn-ghost:hover {
+                        transform: none;
+                        box-shadow: none;
+                    }
+                }
+
                 .score-bar {
                     height: 3px;
                     border-radius: 2px;
@@ -327,23 +360,23 @@ const EndGame: React.FC<EndGameProps> = ({
                              style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 70%)' }} />
                     </div>
 
-                    <div className="relative z-10 min-h-screen flex flex-col items-center px-4 py-12 pb-28">
+                    <div className="relative z-10 min-h-[100dvh] flex flex-col items-center px-4 py-8 sm:py-12 pb-40 sm:pb-28">
 
                         {/* Header */}
-                        <div className="rise-delay-1 text-center mb-12">
-                            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-xs font-medium text-white/50 uppercase tracking-widest mb-4">
+                        <div className="rise-delay-1 text-center mb-8 sm:mb-12">
+                            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-[10px] sm:text-xs font-medium text-white/50 uppercase tracking-widest mb-3 sm:mb-4">
                                 <Star size={12} className="text-yellow-400" />
                                 Partie terminée
                             </div>
-                            <h1 className="display-font text-5xl sm:text-6xl font-extrabold text-white leading-none tracking-tight">
+                            <h1 className="display-font text-3xl sm:text-5xl md:text-6xl font-extrabold text-white leading-none tracking-tight">
                                 CLASSEMENT{' '}
                                 <span className="shimmer-text">FINAL</span>
                             </h1>
                         </div>
 
                         {/* Podium */}
-                        <div className="rise-delay-2 w-full max-w-2xl mb-10">
-                            <div className="flex items-end justify-center gap-3 sm:gap-5">
+                        <div className="rise-delay-2 w-full max-w-2xl mb-8 sm:mb-10">
+                            <div className="flex items-end justify-center gap-2 sm:gap-5">
                                 {orderedPodium.map((player, visualIdx) => {
                                     if (!player) return <div key={visualIdx} className="flex-1 max-w-[180px]" />;
                                     const medal = MEDAL_COLORS[visualIdx];
@@ -365,7 +398,7 @@ const EndGame: React.FC<EndGameProps> = ({
 
                                             {/* Avatar */}
                                             <div
-                                                className={`w-14 h-14 rounded-2xl mb-2 flex items-center justify-center text-sm font-bold ${avatarRing}`}
+                                                className={`w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl mb-2 flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 ${avatarRing}`}
                                                 style={{
                                                     background: `linear-gradient(135deg, ${isGold ? '#f59e0b, #d97706' : visualIdx === 0 ? '#94a3b8, #64748b' : '#b45309, #92400e'})`,
                                                 }}
@@ -374,10 +407,10 @@ const EndGame: React.FC<EndGameProps> = ({
                                             </div>
 
                                             {/* Name + score */}
-                                            <p className={`font-semibold text-sm truncate w-full text-center mb-0.5 ${isGold ? 'text-white' : 'text-white/80'}`}>
+                                            <p className={`font-semibold text-xs sm:text-sm truncate w-full text-center mb-0.5 ${isGold ? 'text-white' : 'text-white/80'}`}>
                                                 {player.username}
                                             </p>
-                                            <p className={`text-xs font-mono font-bold mb-3 ${isGold ? 'text-yellow-400' : 'text-white/50'}`}>
+                                            <p className={`text-[10px] sm:text-xs font-mono font-bold mb-2 sm:mb-3 whitespace-nowrap ${isGold ? 'text-yellow-400' : 'text-white/50'}`}>
                                                 {player.score.toLocaleString()} pts
                                             </p>
 
@@ -402,7 +435,7 @@ const EndGame: React.FC<EndGameProps> = ({
                                                          style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.6), transparent 60%)' }} />
                                                 )}
                                                 <span
-                                                    className="display-font font-black text-4xl"
+                                                    className="display-font font-black text-2xl sm:text-4xl"
                                                     style={{ color: isGold ? 'rgba(245,158,11,0.5)' : 'rgba(255,255,255,0.15)' }}
                                                 >
                                                 {rankNumber}

@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Variante `kb:` — active quand le clavier virtuel est ouvert.
+   L'attribut data-kb est posé sur <html> par <ViewportHeightSync/>.
+   À combiner avec max-md: pour ne cibler que le mobile.
+   Exemple : max-md:kb:hidden  → masqué uniquement pendant la saisie sur mobile. */
+@custom-variant kb (&:is(html[data-kb="open"] *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -47,6 +53,11 @@
 }
 
 :root {
+  /* Hauteur utile de l'application.
+     Repli : 100dvh. Surchargée en pixels par <ViewportHeightSync/> pour suivre
+     le clavier virtuel sur iOS (voir components/ViewportHeightSync.tsx). */
+  --app-h: 100dvh;
+
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -121,5 +132,162 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* --- MOBILE : comportement de base --- */
+  html {
+    /* Empêche le zoom horizontal involontaire et les débordements sur petit écran */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    /* Évite les scrolls horizontaux parasites causés par les éléments décoratifs (blurs, glows) */
+    overflow-x: hidden;
+    /* Supprime le flash gris/bleu au tap sur mobile */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Les zones de jeu en plein écran ne doivent pas déclencher le "pull-to-refresh" */
+  body:has(.app-shell) {
+    overscroll-behavior-y: none;
+  }
+}
+
+/* =====================================================================
+   UTILITAIRES PERSONNALISÉS
+   Ces classes étaient déjà utilisées dans les composants mais n'avaient
+   jamais été définies : elles n'avaient donc aucun effet.
+   ===================================================================== */
+
+/* Masque la scrollbar tout en gardant le scroll (listes horizontales mobile) */
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Fondu en haut d'une liste scrollable (chat, classement) */
+@utility mask-gradient-top {
+  mask-image: linear-gradient(to bottom, transparent 0, black 2rem);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 2rem);
+}
+
+/* Fondu à droite d'une liste horizontale : indique qu'on peut scroller */
+@utility mask-gradient-right {
+  mask-image: linear-gradient(to right, black 82%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 82%, transparent 100%);
+}
+
+/* --- Safe areas iOS (encoche + barre d'accueil) --- */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+/* Cible de tap confortable (min. recommandé : 44px) */
+@utility tap-target {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+@layer utilities {
+  /* Animations référencées par les composants mais jamais déclarées */
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .fadeIn {
+    animation: fadeIn 0.5s ease-out both;
+  }
+
+  /* --- iOS : empêche le zoom automatique au focus d'un champ ---
+     Safari zoome dès que la police d'un champ est < 16px, ce qui casse
+     la mise en page en pleine partie. On force 16px sur mobile uniquement. */
+  @media (max-width: 767px) {
+    input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+
+  /* --- Sliders : poignée plus grosse au doigt --- */
+  @media (pointer: coarse) {
+    input[type="range"] {
+      height: 1.75rem;
+      background: transparent;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 0.5rem;
+      border-radius: 9999px;
+      background: var(--color-slate-800, #1e293b);
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-top: -0.5rem;
+      border-radius: 9999px;
+      background: currentColor;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+    input[type="range"]::-moz-range-track {
+      height: 0.5rem;
+      border-radius: 9999px;
+      background: var(--color-slate-800, #1e293b);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 9999px;
+      background: currentColor;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Utilisées en style inline par DisplayResponse */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expandLine {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
   }
 }

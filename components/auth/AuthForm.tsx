@@ -26,17 +26,17 @@ export default function AuthForm({
     };
 
     return (
-        <div className="flex-1 p-8 md:p-12 flex flex-col justify-center bg-[#13131f]/50">
+        <div className="flex-1 min-w-0 p-5 sm:p-8 md:p-12 flex flex-col justify-center bg-[#13131f]/50">
 
             {/* Toggle Mobile (Logo visible only on mobile) */}
-            <div className="md:hidden flex items-center justify-center gap-2 mb-8">
+            <div className="md:hidden flex items-center justify-center gap-2 mb-6">
                 <Zap className="w-6 h-6 text-purple-500 fill-purple-500" />
                 <h1 className="text-2xl font-black italic text-white">KOVA</h1>
             </div>
 
             {/* Header Form */}
-            <div className="mb-8">
-                <h2 className="text-3xl font-bold text-white mb-2">{isLogin ? 'Connexion' : 'Créer un compte'}</h2>
+            <div className="mb-6 sm:mb-8">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{isLogin ? 'Connexion' : 'Créer un compte'}</h2>
                 <div className="flex gap-2 text-sm">
                     <span className="text-slate-400">{isLogin ? 'Pas encore de compte ?' : 'Déjà inscrit ?'}</span>
                     <button
@@ -60,7 +60,7 @@ export default function AuthForm({
                                 type="button"
                                 key={avatar.id}
                                 onClick={() => setSelectedAvatar(avatar.id)}
-                                className={`w-10 h-10 rounded-full bg-gradient-to-tr ${avatar.gradient} relative transition-transform hover:scale-110 ${selectedAvatar === avatar.id ? 'ring-2 ring-white ring-offset-2 ring-offset-[#13131f] scale-110' : 'opacity-60 hover:opacity-100'}`}
+                                className={`w-11 h-11 sm:w-10 sm:h-10 shrink-0 rounded-full bg-gradient-to-tr ${avatar.gradient} relative transition-transform hover:scale-110 active:scale-95 ${selectedAvatar === avatar.id ? 'ring-2 ring-white ring-offset-2 ring-offset-[#13131f] scale-110' : 'opacity-60 hover:opacity-100'}`}
                             >
                                 {selectedAvatar === avatar.id && <Check className="w-5 h-5 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
                             </button>
@@ -119,13 +119,13 @@ export default function AuthForm({
             </form>
 
             {/* Divider */}
-            <div className="relative my-8">
+            <div className="relative my-6 sm:my-8">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
                 <div className="relative flex justify-center text-xs uppercase"><span className="bg-[#13131f] px-4 text-slate-500">Ou continuer avec</span></div>
             </div>
 
             {/* Social Login */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <button className="flex items-center justify-center gap-2 py-3 bg-[#0a0a0f] border border-white/10 rounded-xl hover:bg-white/5 hover:border-white/20 transition text-white font-medium text-sm">
                     <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord" className="w-5 h-5" />
                     Discord

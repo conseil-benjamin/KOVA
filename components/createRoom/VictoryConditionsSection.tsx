@@ -17,8 +17,8 @@ const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
     maxPlayers, setMaxPlayers, isConsult
 }) => {
     return (
-        <section className="bg-[#13131f] border border-white/5 rounded-2xl p-6 space-y-8">
-            <label className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 mb-6">
+        <section className="bg-[#13131f] border border-white/5 rounded-2xl p-4 md:p-6 space-y-6 md:space-y-8">
+            <label className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 mb-4 md:mb-6">
                 <Trophy className="w-4 h-4" /> Conditions de Victoire
             </label>
 
