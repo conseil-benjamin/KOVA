@@ -18,15 +18,18 @@ const getJokerIcon = (name: string) => {
 };
 
 const Jokers: React.FC<JokersProps> = ({ jokers, handleUseJoker, activesItems, itemsEnabled }) => {
-    // Les jokers désactivés dans la configuration de la salle ne sont pas
-    // proposés, et `hint` s'utilise pendant la question (voir GameArea).
-    const visibleJokers = (jokers ?? []).filter((item) => {
-        if (item.name === "hint") return false;
+    // Jokers activés dans la configuration de la salle. `hint` est exclu : il
+    // s'utilise pendant la question (voir GameArea), pas depuis ce panneau.
+    const enabledInRoom: string[] = Array.isArray(activesItems)
+        ? activesItems
+            .filter((item) => item?.id !== "hint" && (item?.maxUses ?? 0) > 0)
+            .map((item) => item.id)
+        : Object.entries(activesItems ?? {})
+            .filter(([name, uses]) => name !== "hint" && Number(uses) > 0)
+            .map(([name]) => name);
 
-        return Array.isArray(activesItems)
-            ? (activesItems.find(a => a.id === item.name)?.maxUses ?? 0) > 0
-            : (activesItems?.[item.name] ?? 0) > 0;
-    });
+    // Ce que le joueur possède réellement, parmi ce que la salle autorise.
+    const visibleJokers = (jokers ?? []).filter((item) => enabledInRoom.includes(item.name));
 
     // Jokers coupés pour la partie : pas de titre orphelin.
     if (!itemsEnabled) return null;
@@ -81,7 +84,9 @@ const Jokers: React.FC<JokersProps> = ({ jokers, handleUseJoker, activesItems, i
                 </div>
             ) : (
                 <p className="mt-3 px-4 text-center text-xs text-slate-500 italic">
-                    Aucun joker disponible pour cette partie.
+                    {enabledInRoom.length === 0
+                        ? "Aucun joker n'est activé pour cette partie."
+                        : "Tu n'as aucun joker à utiliser."}
                 </p>
             )}
         </>

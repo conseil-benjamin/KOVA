@@ -28,7 +28,7 @@ import {Ghost, ArrowRightLeft} from "lucide-react";
 import PlayerIsBan from "@/components/game/PlayerIsBan";
 import GameActions from "@/components/game/GameActions";
 import RoomPanel from "@/components/game/RoomPanel";
-import {getWsUrl} from "@/utils/utils";
+import {getWsUrl, sameUser} from "@/utils/utils";
 
 interface GameViewProps {
     roomId: string;
@@ -159,7 +159,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 // de la liste qui gagnait, d'où un panneau vide dès qu'un autre
                 // joueur fermait la marche (ou n'avait aucun joker).
                 const localPlayer = data.players?.find(
-                    (p: Player) => p.username.toLowerCase() === userName.toLowerCase()
+                    (p: Player) => sameUser(p.username, userName)
                 );
                 if (localPlayer) {
                     setJokersLeft(localPlayer.jokers ?? []);
@@ -232,18 +232,16 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.error('Game cancelled');
         });
 
-        newSocket.on('new_question', (data: { question: string, imageUrl: string, theme: string, difficulty: string, story: string, timerEnd: Date, isGameRunning: boolean, language: string }) => {
+        newSocket.on('new_question', (data: { question: Record<string, string>, imageUrl: string, theme: string, difficulty: string, story: Record<string, string>, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
             setHint('');
             setQuestionTheme(data.difficulty);
             setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
-            if (data.language === "fr") {
-                setQuestion(data.question[0]);
-                setQuestionStory(data.story[0]);
-            } else {
-                setQuestion(data.question[1]);
-                setQuestionStory(data.story[1]);
-            }
+            // `question` et `story` sont indexés par LANGUE côté serveur
+            // ({ fr, en }), pas par position : un index numérique renvoie
+            // undefined, et l'écran d'attente reste affiché en boucle.
+            setQuestion(data.question?.[data.language] ?? data.question?.fr ?? '');
+            setQuestionStory(data.story?.[data.language] ?? data.story?.fr ?? '');
             setImageUrl(data.imageUrl);
             setResponse('');
 
@@ -336,7 +334,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             // serveur omet le champ.
             if (typeof room.itemsEnabled === 'boolean') setItemsEnabled(room.itemsEnabled);
 
-            const localPlayer = room.players.find(p => p.username.toLowerCase() === userName.toLowerCase());
+            const localPlayer = room.players.find(p => sameUser(p.username, userName));
             if (room.banPlayers?.some(u => u.toLowerCase() === userName.toLowerCase())) {
                 setIsPlayerBan(true)
             }
