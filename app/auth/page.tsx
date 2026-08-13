@@ -43,6 +43,7 @@ const Auth = () => {
     const handleSubmit = async () => {
         const formDataToSend = new FormData();
 
+        // @ts-ignore
         formDataToSend.append('image', formData.image);
         formDataToSend.append('username', formData.username.toLowerCase());
         formDataToSend.append('password', formData.password);

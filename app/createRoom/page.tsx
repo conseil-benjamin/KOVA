@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 const CreateRoomPage = () => {
+    // @ts-ignore
     return <CreateRoomView />;
 };
 

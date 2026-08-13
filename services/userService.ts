@@ -1,17 +1,11 @@
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import { getApiUrl } from "@/utils/utils";
+import {User} from "@/types/User";
 
 class UserService {
 
-    getUserDataByUsername = async (guestNameInput: string) => {
-        try {
-            const response = await axios.get(`${getApiUrl()}/users/username/${guestNameInput.trim()}`);
-            console.log("response", response);
-            return response;
-        } catch (error) {
-            console.log(error);
-            return error;
-        }
+    getUserDataByUsername = async (guestNameInput: string): Promise<AxiosResponse<User>> => {
+        return await axios.get(`${getApiUrl()}/users/username/${guestNameInput.trim()}`);
     }
 
 }

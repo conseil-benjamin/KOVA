@@ -7,7 +7,7 @@ import React from "react";
 interface SidebarLeftProps {
     isLoggedIn: boolean;
     setIsLoggedIn: (value: boolean) => void;
-    user: User | null;
+    user: User | null | undefined;
 }
 
 export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: SidebarLeftProps) {

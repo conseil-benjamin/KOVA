@@ -7,7 +7,7 @@ import { Room } from '@/types/Room';
 
 interface NavbarProps {
     isLoggedIn: boolean;
-    user: User | null;
+    user: User | undefined | null;
     rooms: Room[];
     nbUsers: number;
 }
