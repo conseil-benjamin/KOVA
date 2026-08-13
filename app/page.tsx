@@ -41,7 +41,7 @@ const Home = () => {
             console.log("userData fetch", userData);
             setUser(userData);
             cookies.set('user', JSON.stringify(userData));
-            cookies.set('userName', userData.username);
+            cookies.set('userName', userData.username.toLowerCase());
             cookies.set('userAvatar', userData.avatar);
             console.log("userData", userData);
           } else {

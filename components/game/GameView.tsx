@@ -91,7 +91,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const handleGuestLogin = async () => {
         const result = await userService.getUserDataByUsername(guestNameInput.trim());
         if (result.status !== 200) {
-            cookies.set('userName', guestNameInput.trim(), { path: '/' });
+            cookies.set('userName', guestNameInput.trim().toLowerCase(), { path: '/' });
             setUserName(guestNameInput.trim());
         } else {
             toast.error('Username already exists');

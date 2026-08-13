@@ -150,7 +150,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
         setIsLoading(true);
         const result = await userService.getUserDataByUsername(guestNameInput);
         if (result.status !== 200) {
-            cookies.set('userName', guestNameInput.trim(), { path: '/' });
+            cookies.set('userName', guestNameInput.trim().toLowerCase(), { path: '/' });
             setUserName(guestNameInput.trim());
         } else {
             toast.error('Username already exists');

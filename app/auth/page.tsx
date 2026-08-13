@@ -44,7 +44,7 @@ const Auth = () => {
         const formDataToSend = new FormData();
 
         formDataToSend.append('image', formData.image);
-        formDataToSend.append('username', formData.username);
+        formDataToSend.append('username', formData.username.toLowerCase());
         formDataToSend.append('password', formData.password);
         formDataToSend.append('avatar', formData.avatar);
 
@@ -53,7 +53,7 @@ const Auth = () => {
             console.log(res);
             if (res.status === 200) {
                 toast.success('Connexion reussie');
-                cookies.set('userName', formData.username);
+                cookies.set('userName', formData.username.toLowerCase());
                 cookies.set('user', {});
                 redirect('/');
             } else {
