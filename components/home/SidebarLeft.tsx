@@ -71,10 +71,6 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
                     <div className="bg-white/20 p-1.5 rounded-full group-hover:rotate-90 transition duration-300"><Plus className="w-5 h-5" /></div>
                     Créer une Room
                 </button>
-                <button className="w-full h-12 bg-[#1a1a24] hover:bg-[#20202e] border border-white/5 rounded-xl flex items-center justify-center gap-3 font-medium text-slate-300 transition-all hover:text-white group">
-                    <div className="bg-green-500/20 p-1.5 rounded-full text-green-400"><Play className="w-4 h-4 fill-current" /></div>
-                    Rejoindre Rapidement
-                </button>
             </div>
 
             {/* Challenge Quotidien — masqué sur mobile pour ne pas repousser la liste des parties */}

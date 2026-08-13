@@ -6,10 +6,7 @@ import CreateRoomHeader from './CreateRoomHeader';
 import CreateRoomFooter from './CreateRoomFooter';
 import RoomNameSection from './RoomNameSection';
 import PacksSection from './PacksSection';
-// TODO(benjamin) : le fichier ./DifficultySection n'existe pas encore dans le repo.
-// L'import cassait la compilation de /createRoom ET de la page de jeu (GameView importe
-// CreateRoomView). Le composant est déjà commenté plus bas : à réactiver avec le fichier.
-// import DifficultySection from './DifficultySection';
+import DifficultySection from './DifficultySection';
 import { defaultDifficulties } from './constants';
 import ContentOptionsSection from './ContentOptionsSection';
 import VictoryConditionsSection from './VictoryConditionsSection';
@@ -256,13 +253,12 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                                 isConsult={isConsult}
                             />
 
-                            {/* 2. Niveaux de difficulté
+                            {/* 2. Niveaux de difficulté*/}
                             <DifficultySection
                                 selectedDifficulties={selectedDifficulties}
                                 toggleDifficulty={toggleDifficulty}
                                 isConsult={isConsult}
                             />
-                             */}
 
                             {/* 3. Sélection du Pack */}
                             {isPacksLoading ? (
