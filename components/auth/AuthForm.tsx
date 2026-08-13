@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import {
     Mail, Lock, User, ArrowLeft, ArrowRight, Zap, Eye, EyeOff, Check
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import {redirect, useRouter} from 'next/navigation';
 import { goBack } from '@/utils/utils';
 
 interface AuthFormProps {
@@ -37,7 +37,7 @@ export default function AuthForm({
             <div className="md:hidden flex items-center gap-2 mb-6">
                 <button
                     type="button"
-                    onClick={() => goBack(router)}
+                    onClick={() => redirect('/')}
                     aria-label="Revenir en arrière"
                     className="tap-target -ml-2 shrink-0 flex items-center justify-center rounded-full text-slate-300 hover:text-white active:bg-white/10 transition cursor-pointer"
                 >

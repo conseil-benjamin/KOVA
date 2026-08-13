@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import {Gamepad2, ArrowLeft} from 'lucide-react';
 import {InputFile} from "@/components/ui/fileInput";
-import {useRouter, useSearchParams} from 'next/navigation'
+import {redirect, useRouter, useSearchParams} from 'next/navigation'
 import {goBack} from "@/utils/utils";
 
 interface AuthVisualsProps {
@@ -34,7 +34,7 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
             {/* Logo */}
             <div className="flex items-center gap-2 z-10">
                 <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-1.5 rounded-lg shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-                    <ArrowLeft className={'cursor-pointer'} onClick={() => goBack(router)}/>
+                    <ArrowLeft className={'cursor-pointer'} onClick={() => redirect('/')}/>
                 </div>
                 <h1 className="text-xl font-black tracking-tighter text-white italic">
                     KOVA
