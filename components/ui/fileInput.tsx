@@ -4,7 +4,7 @@ import { useState, useRef } from "react"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Upload, Image as ImageIcon, X } from "lucide-react"
 
-export function InputFile({ handleImageUpload, preview, setPreview }) {
+export function InputFile({ handleImageUpload, preview, setPreview }: {handleImageUpload?: (e: React.ChangeEvent<HTMLInputElement>) => void, preview: string | null, setPreview: (preview: string | null) => void}) {
     const [dragActive, setDragActive] = useState(false)
     const [fileName, setFileName] = useState<string>("")
     const inputRef = useRef<HTMLInputElement>(null)

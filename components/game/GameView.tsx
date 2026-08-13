@@ -89,21 +89,28 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [winner, setWinner] = useState('');
 
     const handleGuestLogin = async () => {
-        const result = await userService.getUserDataByUsername(guestNameInput.trim());
-        if (result.status !== 200) {
-            cookies.set('userName', guestNameInput.trim().toLowerCase(), { path: '/' });
-            setUserName(guestNameInput.trim());
-        } else {
-            toast.error('Username already exists');
-            setUserName("");
-            return;
+        try {
+            // null = pseudo libre ; un utilisateur = pseudo déjà pris.
+            const result = await userService.getUserDataByUsername(guestNameInput.trim());
+            if (!result) {
+                cookies.set('userName', guestNameInput.trim().toLowerCase(), { path: '/' });
+                setUserName(guestNameInput.trim());
+                console.log("User logged in as:", guestNameInput.trim());
+            } else {
+                toast.error('Username already exists');
+                setUserName("");
+            }
+        } catch (error) {
+            // Une panne réseau ne doit pas laisser l'écran de pseudo sans réponse.
+            console.error("Erreur connexion API:", error);
+            toast.error('Impossible de vérifier ce pseudo');
         }
     };
 
     const getRoomData = async () => {
         try {
             const res = await roomService.getRoom(roomId);
-            const data = await res.data;
+            const data = JSON.parse(res.data);
             console.log(res.status)
             if (data === null || data === undefined || res.status === 404) {
                 setRoomFound(false);
@@ -147,18 +154,17 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         break;
                 }
 
-                if (data.players && data.players.length > 0) {
-                    for (let i = 0; i < data.players.length; i++) {
-                        const player = data.players[i];
-                        setJokersLeft(player.jokers);
-                        if ((player.username.toLowerCase() === userName.toLowerCase()) && player.hasGuessed) {
-                            setHasGuessed(true);
-                        }
-
-                        if ((player.username.toLowerCase() === userName.toLowerCase()) && player.activeInk === true) {
-                            setActiveInk(true)
-                        }
-                    }
+                // Les jokers affichés sont ceux du joueur courant. La boucle
+                // appelait setJokersLeft pour CHAQUE joueur : c'est le dernier
+                // de la liste qui gagnait, d'où un panneau vide dès qu'un autre
+                // joueur fermait la marche (ou n'avait aucun joker).
+                const localPlayer = data.players?.find(
+                    (p: Player) => p.username.toLowerCase() === userName.toLowerCase()
+                );
+                if (localPlayer) {
+                    setJokersLeft(localPlayer.jokers ?? []);
+                    if (localPlayer.hasGuessed) setHasGuessed(true);
+                    if (localPlayer.activeInk === true) setActiveInk(true);
                 }
                 setTimeLeft(Math.max(0, secondsRemaining));
                 setTimerVisible(true);
@@ -176,7 +182,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
     const handleStartGame = () => {
         if (creator.toLowerCase() === userName.toLowerCase() && players.length > 0) {
-            socket?.emit('start_game', roomId, roomData?.pack, roomData?.timePerRound);
+            socket?.emit('start_game', roomId, roomData?.packs, roomData?.timePerRound);
         } else if (creator.toLowerCase() === userName.toLowerCase() && players.length <= 0) {
             toast.error('Il faut au moins 2 joueurs pour lancer une partie.');
         }
@@ -186,6 +192,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         const endTime = new Date(timerEnd).getTime() / 1000;
         const secondsRemaining = Math.min(endTime - Date.now() / 1000);
 
+        // @ts-ignore
         setGameStartingSoonTimer(secondsRemaining.toFixed(0));
 
         const timer = setInterval(() => {
@@ -231,11 +238,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setQuestionTheme(data.difficulty);
             setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
             if (data.language === "fr") {
-                setQuestion(data.question['fr']);
-                setQuestionStory(data.story['fr']);
+                setQuestion(data.question[0]);
+                setQuestionStory(data.story[0]);
             } else {
-                setQuestion(data.question['en']);
-                setQuestionStory(data.story['en']);
+                setQuestion(data.question[1]);
+                setQuestionStory(data.story[1]);
             }
             setImageUrl(data.imageUrl);
             setResponse('');
@@ -276,6 +283,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('correct_response', (data: { message: string, username: string, points: number, responseTime: number }) => {
+            // @ts-ignore
             setPlayers(prev => {
                 const playerIndex = prev.findIndex(p => p.username.toLowerCase() === data.username.toLowerCase());
                 if (playerIndex !== -1) {
@@ -322,6 +330,11 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setRoomData(room);
             setActivesItems(room.activeItems);
             setScoreToWin(room.scoreToWin);
+            // Sans ça, itemsEnabled restait figé sur la valeur lue au premier
+            // chargement : jokers désactivés pour toute la partie si cet appel
+            // avait échoué. Test de type pour ne pas repasser à false quand le
+            // serveur omet le champ.
+            if (typeof room.itemsEnabled === 'boolean') setItemsEnabled(room.itemsEnabled);
 
             const localPlayer = room.players.find(p => p.username.toLowerCase() === userName.toLowerCase());
             if (room.banPlayers?.some(u => u.toLowerCase() === userName.toLowerCase())) {
@@ -333,6 +346,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setActiveInk(localPlayer.activeInk);
             }
 
+            // @ts-ignore
             setPlayers(prev => {
                 return room.players.map(roomPlayer => {
                     const existingPlayer = prev.find(p => p.username.toLowerCase() === roomPlayer.username.toLowerCase());

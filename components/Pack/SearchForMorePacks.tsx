@@ -1,7 +1,7 @@
 import { Check, PackageSearch, Search, Volume2, X } from "lucide-react";
 import { useState } from "react";
 
-const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, onClose }: { selectedPack: string[]; setSelectedPack: (pack: string) => void; packs: any; language: string; onClose?: () => void }) => {
+const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, onClose }: { selectedPack: string[] | undefined; setSelectedPack: (pack: string) => void; packs: any; language: string; onClose?: () => void }) => {
     const [search, setSearch] = useState('');
 
     const filteredPacks = packs.filter((pack: any) => pack.name[language].toLowerCase().includes(search.toLowerCase()));
@@ -12,7 +12,7 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, on
             <div className="flex items-start justify-between gap-3 p-4 pb-3 md:p-6 md:pb-4 border-b border-white/10">
                 <div className="min-w-0">
                     <h1 className="text-lg md:text-xl font-bold text-white">Choisissez vos packs</h1>
-                    <p className="text-xs md:text-sm text-slate-400 mt-1">{selectedPack.length} pack{selectedPack.length > 1 ? 's' : ''} sélectionné{selectedPack.length > 1 ? 's' : ''} sur {packs.length}</p>
+                    <p className="text-xs md:text-sm text-slate-400 mt-1">{selectedPack?.length} pack{selectedPack && selectedPack?.length > 1 ? 's' : ''} sélectionné{selectedPack && selectedPack?.length > 1 ? 's' : ''} sur {packs.length}</p>
                 </div>
                 {onClose && (
                     <button onClick={onClose} aria-label="Fermer" className="tap-target shrink-0 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 active:bg-white/20 rounded-lg transition-colors cursor-pointer">
@@ -40,7 +40,7 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, on
                 {filteredPacks.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                         {filteredPacks.map((pack: any) => {
-                            const isSelected = selectedPack.includes(pack.id);
+                            const isSelected = selectedPack?.includes(pack.id);
                             return (
                                 <div
                                     key={pack.id}

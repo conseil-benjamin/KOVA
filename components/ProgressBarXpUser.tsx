@@ -4,7 +4,7 @@ import React from 'react';
 interface ProgressBarXpUserProps {
     currentLevel: number;
     currentXp: number;
-    xpToNextLevel: number;
+    xpToNextLevel: number | undefined;
     xpEarned: number;
 }
 
@@ -15,6 +15,7 @@ const ProgressBarXpUser: React.FC<ProgressBarXpUserProps> = ({
                                          xpEarned
                                      }) => {
     // Calcul du pourcentage pour la barre (sécurisé pour ne pas dépasser 100%)
+    // @ts-ignore
     const progressPercentage = Math.min((currentXp / xpToNextLevel) * 100, 100);
 
     return (

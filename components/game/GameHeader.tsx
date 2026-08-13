@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { Player } from '@/types/Room';
 import { User } from "@/types/User";
 import GameActions from "@/components/game/GameActions";
+import {Timeout} from "@radix-ui/primitive";
 
 interface GameHeaderProps {
     timeLeft: number;
@@ -31,29 +32,10 @@ interface GameHeaderProps {
 const GameHeader: React.FC<GameHeaderProps> = ({ timeLeft, currentUser, userObject, creator, handleStartGame, setIsEditingRoom, isEditingRoom, isGameRunning, timerVisible, setIsConsult, isConsult, handleJoinRoom, handleLeaveGame, players, gameStartingSoonTimer, handleCancelStartGame, setStartTimer, setTimeLeft, startTimer, endsAt }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    /*
-    useEffect(() => {
-        if (timeLeft <= 0) return;
-
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1 && startTimer) {
-                    clearInterval(timer);
-
-                    setStartTimer(false);
-                    return 0;
-                }
-                return Math.max(prev - 1);
-            });
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [timeLeft]);
-*/
     useEffect(() => {
         if (!endsAt) return;
 
-        let timer;
+        let timer: Timeout;
         const tick = () => {
             const remaining = Math.max(0, Math.floor(endsAt - Date.now() / 1000));
             console.log(`GameHeader: tick - remaining: ${remaining}`);

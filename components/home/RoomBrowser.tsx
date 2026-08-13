@@ -9,7 +9,7 @@ interface RoomBrowserProps {
     setActiveTab: (tab: string) => void;
     viewMode: string;
     setViewMode: (mode: string) => void;
-    rooms: any;
+    rooms: Room[];
 }
 
 export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setViewMode, rooms }: RoomBrowserProps) {
@@ -24,7 +24,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
     ];
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredRooms, setFilteredRooms] = useState([]);
+    const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
     const [allPacks, setAllPacks] = useState<any[]>([]);
     const [openPacksRoomId, setOpenPacksRoomId] = useState<string | null>(null);
     const packsPopoverRef = useRef<HTMLDivElement | null>(null);

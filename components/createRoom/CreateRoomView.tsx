@@ -31,8 +31,8 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     // --- ÉTAT DU FORMULAIRE ---
     const [language, setLanguage] = useState<'fr' | 'en'>('fr');
-    const [packs, setPacks] = useState<[]>([]);
-    const [selectedPack, setSelectedPack] = useState([]);
+    const [packs, setPacks] = useState<string[]>([]);
+    const [selectedPack, setSelectedPack] = useState<string[] | undefined>([]);
     const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(defaultDifficulties);
     const [isPrivate, setIsPrivate] = useState(false);
     const [guestNameInput, setGuestNameInput] = useState('');
@@ -68,9 +68,11 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [tags, setTags] = useState<string[]>([])
 
     const handleChangesPack = (newPackId: string) => {
+        // @ts-ignore
         if (selectedPack.includes(newPackId)) {
-            setSelectedPack(prev => prev.filter(id => id !== newPackId));
+            setSelectedPack(prev => prev?.filter(id => id !== newPackId));
         } else {
+            // @ts-ignore
             setSelectedPack(prev => [...prev, newPackId]);
         }
     }
@@ -103,7 +105,10 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
         if (isEditing || isConsult) {
             console.log("dataRoom?.activeItems", dataRoom?.activeItems);
 
-            setLanguage(dataRoom?.language || 'fr');
+            // `Room.language` est une string libre côté API : on la ramène aux
+            // deux langues gérées plutôt que de forcer le type.
+            setLanguage(dataRoom?.language === 'en' ? 'en' : 'fr');
+            // @ts-ignore
             setSelectedPack(dataRoom?.packs || "");
             // Rooms créées avant l'ajout de la difficulté : on retombe sur les 3 niveaux
             setSelectedDifficulties(dataRoom?.difficulties?.length ? dataRoom.difficulties : defaultDifficulties);
@@ -144,23 +149,28 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
         setActiveItems(prev => ({ ...prev, [key]: newValue }));
     };
 
-    const currentPack = packs.find(p => p.id === selectedPack);
-
     const handleGuestLogin = async () => {
         setIsLoading(true);
-        const result = await userService.getUserDataByUsername(guestNameInput);
-        if (result.status !== 200) {
-            cookies.set('userName', guestNameInput.trim().toLowerCase(), { path: '/' });
-            setUserName(guestNameInput.trim());
-        } else {
-            toast.error('Username already exists');
-            setUserName("");
+        try {
+            // null = pseudo libre ; un utilisateur = pseudo déjà pris.
+            const existingUser = await userService.getUserDataByUsername(guestNameInput);
+            if (!existingUser) {
+                cookies.set('userName', guestNameInput.trim().toLowerCase(), { path: '/' });
+                setUserName(guestNameInput.trim());
+            } else {
+                toast.error('Username already exists');
+                setUserName("");
+            }
+        } catch (error) {
+            console.error("Erreur connexion API:", error);
+            toast.error('Impossible de vérifier ce pseudo');
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     const launchRoom = async () => {
-        if (selectedPack.length < 1) {
+        if (selectedPack && selectedPack.length < 1) {
             toast.error('Veuillez choisir au moins pack');
             return false;
         }
@@ -207,22 +217,27 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
             roomData.oldPlayers = dataRoom?.oldPlayers || [];
             roomData.activeItems = activeItems;
             console.log("Room data:", roomData);
+
+            // @ts-ignore
             const result = await roomService.editRoom(roomData)
             if (result.status === 200) {
-                const responseData = await result.data;
+                const responseData = result.data;
                 toast.success('Room updated');
-                let updatedRoomData = responseData;
-                if (responseData.roomData) {
-                    updatedRoomData = typeof responseData.roomData === 'string'
-                        ? JSON.parse(responseData.roomData)
-                        : responseData.roomData;
-                }
+
+                // @ts-ignore
+                const updatedRoomData: Room = typeof responseData.roomData === 'string'
+                    // @ts-ignore
+                    ? JSON.parse(responseData.roomData)
+                    // @ts-ignore
+                    : responseData.roomData;
+
                 socket.emit('need_update_room', updatedRoomData.idUrl);
                 setIsEditing(false);
             } else {
                 toast.error('Room not updated');
             }
         } else {
+            // @ts-ignore
             const result = await roomService.launchRoom(roomData)
             console.log("Launch room result:", result);
             if (result.status === 200) {

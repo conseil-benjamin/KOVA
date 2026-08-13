@@ -2,7 +2,7 @@ import React from 'react';
 import { Dices, Check, Search, Volume2 } from 'lucide-react';
 
 interface PacksSectionProps {
-    selectedPack: string[];
+    selectedPack: string[] | undefined;
     setSelectedPack: (id: string) => void;
     isConsult: boolean;
     setShowModalMorePacks: (show: boolean) => void;
@@ -16,13 +16,13 @@ const PacksSection: React.FC<PacksSectionProps> = ({ selectedPack, setSelectedPa
         <section className="space-y-4">
             <div className="flex justify-between items-center">
                 <label className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <Dices className="w-4 h-4" /> {!onlySelectedPacks ? 'Packs de Questions' : 'Packs sélectionnés'} ({selectedPack.length}/{packs.length})
+                    <Dices className="w-4 h-4" /> {!onlySelectedPacks ? 'Packs de Questions' : 'Packs sélectionnés'} ({selectedPack?.length}/{packs.length})
                 </label>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                 {packs.map((pack: any) => {
-                    const isSelected = selectedPack.includes(pack.id);
+                    const isSelected = selectedPack?.includes(pack.id);
                     return isSelected && (
                         <div
                             key={pack.id}

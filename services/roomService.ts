@@ -4,7 +4,7 @@ import { getApiUrl } from "@/utils/utils";
 
 class RoomService {
 
-    getRoom = async (roomId: string): Promise<AxiosResponse<Array<string>>> => {
+    getRoom = async (roomId: string): Promise<AxiosResponse<string>> => {
         const response = await axios.get(`${getApiUrl()}/room/${roomId.toUpperCase()}`);
         console.log("response", response);
         return response;
@@ -28,7 +28,7 @@ class RoomService {
         return response;
     }
 
-    editRoom = async (dataRoom: Room): Promise<AxiosResponse<string>> => {
+    editRoom = async (dataRoom: Room): Promise<AxiosResponse<string | Room>> => {
         const response = await axios.put(`${getApiUrl()}/room/${dataRoom?.idUrl}`, dataRoom);
         console.log("response", response);
         return response;

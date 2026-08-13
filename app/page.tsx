@@ -35,9 +35,8 @@ const Home = () => {
 
       const fetchUser = async () => {
         try {
-          const res = await userService.getUserDataByUsername(username);
-          if (res.status === 200) {
-            const userData = await res.data;
+          const userData = await userService.getUserDataByUsername(username);
+          if (userData) {
             console.log("userData fetch", userData);
             setUser(userData);
             cookies.set('user', JSON.stringify(userData));

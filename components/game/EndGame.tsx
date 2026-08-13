@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy, Medal, Home, RotateCcw, Edit, LogOut, Star } from 'lucide-react';
-import { Player } from "./Leaderboard";
+
 import Lobby from './Lobby';
 import { redirect } from 'next/navigation';
 import {toast} from "sonner";
@@ -10,6 +10,7 @@ import Cookies from "universal-cookie";
 import ProgressBarXpUser from "@/components/ProgressBarXpUser";
 import UserService from "@/services/userService";
 import LoadingPage from "@/components/loadingPage";
+import {Player} from "@/types/Room";
 
 interface EndGameProps {
     players: Player[];
@@ -57,7 +58,7 @@ const EndGame: React.FC<EndGameProps> = ({
                                              handleRestartGame, handleJoinRoom, oldPlayers, handleLeaveGame, xpEarned, setXpEarned, winner
                                          }) => {
     const [revealed, setRevealed] = useState(false);
-    const [user, setUser] = useState<User>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const cookies = new Cookies();
     const userService = new UserService();
@@ -78,9 +79,8 @@ const EndGame: React.FC<EndGameProps> = ({
 
         const fetchUserData = async () => {
             try {
-                const res = await userService.getUserDataByUsername(username);
-                if (res.status === 200) {
-                    const userData = await res.data;
+                const userData = await userService.getUserDataByUsername(username);
+                if (userData) {
                     console.log("userData fetch", userData);
                     setUser(userData);
                     cookies.set('user', JSON.stringify(userData));

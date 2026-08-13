@@ -20,7 +20,7 @@ interface GameAreaProps {
     question: string;
     theme: string;
     gameStartingSoonTimer: number;
-    activesItems: { id: string; maxUses: number }[];
+    activesItems: { [key: string]: number; } | undefined;
     jokersLeft: { name: string; useLeft: number }[];
     handleUseJoker: (item: string) => void;
     hint: string;

@@ -21,7 +21,7 @@ interface ChatProps {
     creator: string;
     socket: Socket | null;
     roomId: string;
-    roomData?: Room;
+    roomData?: Room | undefined;
     setRoomData: (newRoom: Room) => void;
 }
 

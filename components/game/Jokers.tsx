@@ -1,5 +1,5 @@
 import React from "react";
-import {ArrowRightLeft, Eye, Ghost, Music, Subscript, Timer} from "lucide-react";
+import {ArrowRightLeft, Eye, Ghost} from "lucide-react";
 
 interface JokersProps {
     jokers: { name: string; useLeft: number }[];
@@ -18,24 +18,31 @@ const getJokerIcon = (name: string) => {
 };
 
 const Jokers: React.FC<JokersProps> = ({ jokers, handleUseJoker, activesItems, itemsEnabled }) => {
+    // Les jokers désactivés dans la configuration de la salle ne sont pas
+    // proposés, et `hint` s'utilise pendant la question (voir GameArea).
+    const visibleJokers = (jokers ?? []).filter((item) => {
+        if (item.name === "hint") return false;
+
+        return Array.isArray(activesItems)
+            ? (activesItems.find(a => a.id === item.name)?.maxUses ?? 0) > 0
+            : (activesItems?.[item.name] ?? 0) > 0;
+    });
+
+    // Jokers coupés pour la partie : pas de titre orphelin.
+    if (!itemsEnabled) return null;
+
     return (
         <>
             <p className={'flex justify-center items-center text-center px-4 mt-6 md:mt-10 text-sm md:text-base text-slate-300'}>Jokers à utiliser pour la prochaine question :</p>
-            {itemsEnabled && (
+
+            {visibleJokers.length > 0 ? (
                 <div className="flex flex-row flex-wrap justify-center items-center gap-3 z-20 px-3 mt-4 md:mt-8 md:gap-4">
-                    {jokers && jokers.map((item, index) => {
-                        // Vérification si le joker est actif
-                        const isActive = Array.isArray(activesItems)
-                            ? (activesItems.find(a => a.id === item.name)?.maxUses ?? 0) > 0
-                            : (activesItems?.[item.name] ?? 0) > 0;
-
-                        const isHintJoker = item.name === "hint";
-
+                    {visibleJokers.map((item) => {
                         const isDepleted = item.useLeft === 0;
 
-                        return (isActive && !isHintJoker) && (
+                        return (
                             <button
-                                key={index}
+                                key={item.name}
                                 disabled={isDepleted}
                                 onClick={() => handleUseJoker(item.name)}
                                 className={`
@@ -59,7 +66,7 @@ const Jokers: React.FC<JokersProps> = ({ jokers, handleUseJoker, activesItems, i
 
                                 {/* Badge de quantité (Notification style) */}
                                 <div className={`
-                            absolute -top-2 -right-2 flex items-center justify-center 
+                            absolute -top-2 -right-2 flex items-center justify-center
                             min-w-[20px] h-[20px] px-1.5 rounded-full text-[10px] font-black
                             border border-black/50 shadow-md
                             ${!isDepleted
@@ -72,6 +79,10 @@ const Jokers: React.FC<JokersProps> = ({ jokers, handleUseJoker, activesItems, i
                         );
                     })}
                 </div>
+            ) : (
+                <p className="mt-3 px-4 text-center text-xs text-slate-500 italic">
+                    Aucun joker disponible pour cette partie.
+                </p>
             )}
         </>
     );

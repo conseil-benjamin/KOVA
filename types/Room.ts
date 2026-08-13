@@ -40,4 +40,5 @@ export interface Room {
     language: string;
     backgroundImageUrl: string;
     isGameRunning: boolean;
+    winner: string;
 }
