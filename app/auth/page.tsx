@@ -63,7 +63,7 @@ const Auth = () => {
             const res = await authService.register(formDataToSend)
             if (res.status === 200) {
                 toast.success('Inscription reussie');
-                cookies.set('userName', formData.username);
+                cookies.set('userName', formData.username.toLowerCase());
                 cookies.set('user', {});
                 redirect('/');
             } else {
