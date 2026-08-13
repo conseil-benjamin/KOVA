@@ -82,6 +82,11 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                             <button onClick={() => updateItemUses('double', activeItems.double + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
                         </div>
                     )}
+                    {isConsult && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.double}</span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Item: Hint */}
@@ -103,6 +108,11 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                             <button onClick={() => updateItemUses('hint', Math.max(0, activeItems.hint - 1))} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">-</button>
                             <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.hint}</span>
                             <button onClick={() => updateItemUses('hint', activeItems.hint + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
+                        </div>
+                    )}
+                    {isConsult && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.hint}</span>
                         </div>
                     )}
                 </div>
@@ -128,6 +138,11 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                             <button onClick={() => updateItemUses('ink', activeItems.ink + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
                         </div>
                     )}
+                    {isConsult && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.ink}</span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Item: Swap */}
@@ -149,6 +164,11 @@ const JokersSection: React.FC<JokersSectionProps> = ({
                             <button onClick={() => updateItemUses('swap', Math.max(0, activeItems.swap - 1))} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">-</button>
                             <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.swap}</span>
                             <button onClick={() => updateItemUses('swap', activeItems.swap + 1)} className="w-8 h-8 md:w-6 md:h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-800 text-white hover:bg-slate-700 active:bg-slate-600 transition">+</button>
+                        </div>
+                    )}
+                    {isConsult && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold w-5 text-center shrink-0">{activeItems.swap}</span>
                         </div>
                     )}
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, ChevronDown, MessageSquare } from 'lucide-react';
+import { Send, ChevronDown, MessageSquare, Users } from 'lucide-react';
 import { Player } from '@/types/Room';
 
 interface ChatMessage {
@@ -24,15 +24,27 @@ interface GameInputProps {
     timerVisible: boolean;
     guessVal: string;
     setGuessVal: (val: string) => void;
+    /** Onglet « Salon » (visibilité de la partie, exclure / nommer chef) : sur
+     *  desktop il vit dans la colonne du chat, inaccessible sur mobile. */
+    roomPanel?: React.ReactNode;
 }
 
 const GameInput: React.FC<GameInputProps> = ({
-    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username, focusInputResponse, setFocusInputResponse, timerVisible, guessVal, setGuessVal
+    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username, focusInputResponse, setFocusInputResponse, timerVisible, guessVal, setGuessVal, roomPanel
 }) => {
     // Game Answer State
     // Chat Message State
     const [chatVal, setChatVal] = useState('');
+    const [mobileTab, setMobileTab] = useState<'chat' | 'players'>('chat');
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const openMobilePanel = (tab: 'chat' | 'players') => {
+        setMobileTab(tab);
+        setIsMobileChatOpen(true);
+    };
+
+    const tabClass = (tab: 'chat' | 'players') =>
+        `flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${mobileTab === tab ? 'bg-white/10 text-white' : 'text-slate-400 active:bg-white/5'}`;
 
     const handleGuessSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -61,14 +73,22 @@ const GameInput: React.FC<GameInputProps> = ({
 
             {/* Overlay Chat Mobile (Si ouvert) - Hidden on desktop */}
             {isMobileChatOpen && (
-                <div className="md:hidden absolute bottom-full left-0 w-full h-[55dvh] max-h-[26rem] bg-black/90 backdrop-blur-xl border-t border-white/10 flex flex-col animate-in slide-in-from-bottom-10 rounded-t-3xl border-x border-white/10 mx-[-1px] shadow-2xl">
-                    <div className="flex justify-between items-center p-3 border-b border-white/10 bg-black/40">
-                        <span className="text-xs font-bold text-purple-300 flex items-center gap-2">
-                            <MessageSquare className="w-3 h-3" /> Discussion
-                        </span>
-                        <button onClick={() => setIsMobileChatOpen(false)} aria-label="Fermer le chat" className="tap-target flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/20"><ChevronDown className="w-5 h-5 text-slate-400" /></button>
+                <div className={`md:hidden absolute bottom-full left-0 w-full ${mobileTab === 'players' ? 'h-[70dvh] kb:h-[46dvh]' : 'h-[55dvh] kb:h-[40dvh]'} max-h-[30rem] bg-black/90 backdrop-blur-xl border-t border-white/10 flex flex-col animate-in slide-in-from-bottom-10 rounded-t-3xl border-x border-white/10 mx-[-1px] shadow-2xl`}>
+                    <div className="flex items-center gap-2 p-2 border-b border-white/10 bg-black/40">
+                        <button onClick={() => setMobileTab('chat')} className={tabClass('chat')}>
+                            <MessageSquare className="w-3 h-3" /> Chat
+                        </button>
+                        {roomPanel && (
+                            <button onClick={() => setMobileTab('players')} className={tabClass('players')}>
+                                <Users className="w-3 h-3" /> Salon
+                                <span className="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded-full border border-green-500/20">{players.length}</span>
+                            </button>
+                        )}
+                        <button onClick={() => setIsMobileChatOpen(false)} aria-label="Fermer" className="tap-target shrink-0 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/20"><ChevronDown className="w-5 h-5 text-slate-400" /></button>
                     </div>
 
+                    {mobileTab === 'players' ? roomPanel : (
+                    <>
                     <div className="flex-1 overflow-y-auto overscroll-contain space-y-2 p-3 text-sm" ref={(el) => { if (el) el.scrollTop = el.scrollHeight; }}>
                         {messages.slice(-20).map((msg, index) => {
                             const text = msg.text || msg.message || '';
@@ -99,13 +119,15 @@ const GameInput: React.FC<GameInputProps> = ({
                             </button>
                         </form>
                     </div>
+                    </>
+                    )}
                 </div>
             )}
 
             {/* Toggle Chat Mobile Button (Si fermé) - Hidden on desktop */}
             {!isMobileChatOpen && (
-                <div className="md:hidden kb:hidden absolute bottom-full left-3 right-3 mb-2 flex">
-                    <button onClick={() => setIsMobileChatOpen(true)} className="max-w-full bg-black/60 backdrop-blur-md text-white text-xs px-3 py-2 rounded-full border border-white/10 flex items-center gap-2 shadow-lg active:scale-95 transition">
+                <div className="md:hidden kb:hidden absolute bottom-full left-3 right-3 mb-2 flex items-center justify-between gap-2">
+                    <button onClick={() => openMobilePanel('chat')} className="min-w-0 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-2 rounded-full border border-white/10 flex items-center gap-2 shadow-lg active:scale-95 transition">
                         <MessageSquare className="w-3 h-3 text-purple-400 shrink-0" />
                         {messages.length > 0 ? (() => {
                             const lastMsg = messages[messages.length - 1];
@@ -114,6 +136,16 @@ const GameInput: React.FC<GameInputProps> = ({
                             return <span className="max-w-[150px] truncate">{lastUser}: {lastText}</span>;
                         })() : "Chat"}
                     </button>
+
+                    {/* Accès direct au salon : c'était la seule fonctionnalité du
+                        panneau desktop sans équivalent mobile. */}
+                    {roomPanel && (
+                        <button onClick={() => openMobilePanel('players')} className="shrink-0 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-2 rounded-full border border-white/10 flex items-center gap-1.5 shadow-lg active:scale-95 transition">
+                            <Users className="w-3 h-3 text-green-400 shrink-0" />
+                            Salon
+                            <span className="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded-full border border-green-500/20 font-mono">{players.length}</span>
+                        </button>
+                    )}
                 </div>
             )}
 

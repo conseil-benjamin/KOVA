@@ -7,6 +7,13 @@ import InkDisplay from "@/components/InkDisplay";
 
 interface GameAreaProps {
     isMobileMode?: boolean;
+    /** Le joueur courant est le maître de jeu (adapte le texte de l'écran d'attente). */
+    isCreator?: boolean;
+    /** Actions de lobby (Rejoindre / Lancer / Configurer / Règles) rendues au
+     *  centre de l'écran d'attente sur mobile. */
+    lobbyActions?: React.ReactNode;
+    /** Annulation du lancement, rendue sous le compte à rebours sur mobile. */
+    countdownAction?: React.ReactNode;
     hasGuessed: boolean;
     timeLeft: number;
     imageUrl: string;
@@ -20,7 +27,7 @@ interface GameAreaProps {
     activeInk: boolean;
 }
 
-const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft, imageUrl, question, theme, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint, activeInk }) => {
+const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, isCreator, lobbyActions, countdownAction, hasGuessed, timeLeft, imageUrl, question, theme, gameStartingSoonTimer, activesItems, jokersLeft, handleUseJoker, hint, activeInk }) => {
 
     return (
         <section className="flex-1 min-h-0 min-w-0 flex flex-col relative z-10">
@@ -29,9 +36,9 @@ const GameArea: React.FC<GameAreaProps> = ({ isMobileMode, hasGuessed, timeLeft,
 
                 {/* Game Starting Soon */}
                 {!question && !activeInk && (gameStartingSoonTimer === -1) ? (
-                    <WaitingForHost/>
+                    <WaitingForHost isCreator={isCreator} actions={lobbyActions}/>
                 ) : gameStartingSoonTimer >= 0 && !question ? (
-                    <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } />
+                    <CountDown gameStartingSoonTimer={ gameStartingSoonTimer } action={countdownAction} />
                 ) : activeInk ? (
                     <InkDisplay />
                 ) : (

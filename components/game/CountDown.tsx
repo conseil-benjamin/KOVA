@@ -1,12 +1,19 @@
 import React from "react";
 
-const CountDown = ({ gameStartingSoonTimer }: { gameStartingSoonTimer: number }) => {
+interface CountDownProps {
+    gameStartingSoonTimer: number;
+    /** Annulation du lancement, affichée sur mobile uniquement : sur desktop
+     *  le bouton est déjà dans le header. */
+    action?: React.ReactNode;
+}
+
+const CountDown = ({ gameStartingSoonTimer, action }: CountDownProps) => {
     const TOTAL_TIMER = 15;
 
     return (
-    <div className="absolute inset-0 flex items-center justify-center z-20"
+    <div className="absolute inset-0 flex items-center justify-center z-20 overflow-y-auto overscroll-contain px-5 py-6"
          style={{background: 'rgba(10,10,18,0.85)', backdropFilter: 'blur(4px)'}}>
-        <div className="flex flex-col items-center gap-5 text-center">
+        <div className="flex w-full max-w-xs flex-col items-center gap-5 text-center">
             <p style={{
                 fontSize: 13,
                 letterSpacing: '0.12em',
@@ -49,6 +56,8 @@ const CountDown = ({ gameStartingSoonTimer }: { gameStartingSoonTimer: number })
                                     }}>{gameStartingSoonTimer}</span>
                 </div>
             </div>
+
+            {action && <div className="w-full md:hidden">{action}</div>}
         </div>
     </div>
     )

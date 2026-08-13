@@ -26,6 +26,8 @@ import Jokers from "@/components/game/Jokers";
 import ModalAskForPseudo from "@/components/ModalAskForPseudo";
 import {Ghost, ArrowRightLeft} from "lucide-react";
 import PlayerIsBan from "@/components/game/PlayerIsBan";
+import GameActions from "@/components/game/GameActions";
+import RoomPanel from "@/components/game/RoomPanel";
 import {getWsUrl} from "@/utils/utils";
 
 interface GameViewProps {
@@ -161,6 +163,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setTimeLeft(Math.max(0, secondsRemaining));
                 setTimerVisible(true);
                 setQuestionStory(data?.questionStory?.[data.language]);
+                setImageUrl(data?.imageUrl);
+                setQuestionTheme(data?.question?.theme);
+                setQuestionTheme(data?.question?.difficulty);
             }
         } catch (error) {
             console.error('Error fetching room data:', error);
@@ -617,6 +622,34 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                     question={question}
                                     theme={questionTheme}
                                     imageUrl={imageUrl}
+                                    isCreator={!!creator && creator.toLowerCase().trim() === userName?.toLowerCase().trim()}
+                                    lobbyActions={!isGameRunning && (
+                                        <GameActions
+                                            variant="stack"
+                                            currentUser={userName}
+                                            creator={creator}
+                                            players={players}
+                                            isGameRunning={isGameRunning}
+                                            isStartingSoon={gameStartingSoonTimer !== -1}
+                                            onRules={() => setIsConsultRules(true)}
+                                            onEdit={() => setIsEditingRoom(true)}
+                                            onStart={handleStartGame}
+                                            onCancelStart={handleCancelStartGame}
+                                            onJoin={handleJoinRoom}
+                                            onLeave={handleLeaveGame}
+                                        />
+                                    )}
+                                    countdownAction={
+                                        <GameActions
+                                            variant="stack"
+                                            currentUser={userName}
+                                            creator={creator}
+                                            players={players}
+                                            isGameRunning={isGameRunning}
+                                            isStartingSoon={true}
+                                            onCancelStart={handleCancelStartGame}
+                                        />
+                                    }
                                     gameStartingSoonTimer={gameStartingSoonTimer}
                                     activesItems={activesItems}
                                     jokersLeft={jokersLeft}
@@ -633,6 +666,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                                 creator={creator}
                                 socket={socket}
                                 roomId={roomId}
+                                roomData={roomData}
+                                setRoomData={setRoomData}
                             />
                         </div>
 
@@ -650,6 +685,17 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             timerVisible={timerVisible}
                             guessVal={guessVal}
                             setGuessVal={setGuessVal}
+                            roomPanel={
+                                <RoomPanel
+                                    players={players}
+                                    userName={userName}
+                                    creator={creator}
+                                    socket={socket}
+                                    roomId={roomId}
+                                    roomData={roomData}
+                                    setRoomData={setRoomData}
+                                />
+                            }
                         />
 
                     </div>
