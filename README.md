@@ -35,3 +35,11 @@ PACK
 - Possibilité de sélectionner plusieurs packs
 - Un pack généraliste avec des questions de tous les autres packs
 - Ensuite des packs par thèmes (films, séries, musique, sport, histoire, géographie, etc.)
+
+
+
+Commande : 
+
+next dev -H 0.0.0.0 -p 3000
+
+dans le .env : NEXT_PUBLIC_API_URL=http://localhost:3333
