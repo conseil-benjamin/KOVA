@@ -24,6 +24,7 @@ const Home = () => {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [nbUsers, setNbUsers] = useState<number>(0);
 
   useEffect(() => {
     const cookies = new Cookies();
@@ -78,7 +79,30 @@ const Home = () => {
         setLoading(false);
       }
     }
-    fetchPublicRooms();
+
+    const fetchNumberOfActivesPlayers = async () => {
+      try {
+        const res = await roomService.getNumberOfActivesPlayers();
+        if (res.status === 200) {
+          const nbPlayers = await res.data;
+          console.log("Nombre de joueurs actifs:", nbPlayers);
+          if (typeof res.data === "number") {
+            setNbUsers(nbPlayers);
+          } else {
+            setNbUsers(0);
+          }
+        } else {
+          toast.error('Impossible de charger les joueurs actifs');
+        }
+      } catch (error) {
+        console.error("Erreur connexion API:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPublicRooms().then(() => {
+      fetchNumberOfActivesPlayers();
+    })
   }, []);
 
   return (
@@ -90,7 +114,7 @@ const Home = () => {
       ) : (
         <div className="min-h-screen bg-[#0a0a0f] text-gray-100 font-sans selection:bg-purple-500 selection:text-white pb-20 md:pb-0">
 
-          <Navbar isLoggedIn={isLoggedIn} user={user} rooms={rooms} />
+          <Navbar isLoggedIn={isLoggedIn} user={user} rooms={rooms} nbUsers={nbUsers}/>
 
           {/* --- CONTENT LAYOUT --- */}
           <div className="pt-[calc(5.5rem+env(safe-area-inset-top,0px))] md:pt-[calc(6rem+env(safe-area-inset-top,0px))] px-4 md:px-8 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">

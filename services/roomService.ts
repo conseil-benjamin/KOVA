@@ -24,6 +24,16 @@ class RoomService {
         }
     }
 
+    getNumberOfActivesPlayers = async (): Promise<AxiosResponse<any>> => {
+        try {
+            const response = await axios.get(`${getApiUrl()}/rooms/players`);
+            console.log("response", response);
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     getAllPacks = async (): Promise<AxiosResponse<any>> => {
         try {
             const response = await axios.get(`${getApiUrl()}/packs`);

@@ -9,9 +9,10 @@ interface NavbarProps {
     isLoggedIn: boolean;
     user: User | null;
     rooms: Room[];
+    nbUsers: number;
 }
 
-export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
+export default function Navbar({ isLoggedIn, user, rooms, nbUsers }: NavbarProps) {
     const cookies = new Cookies();
 
     const logout = () => {
@@ -44,6 +45,10 @@ export default function Navbar({ isLoggedIn, user, rooms }: NavbarProps) {
                     <div className="flex items-center gap-1.5">
                         <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                         <span className="text-white font-bold">{rooms.length}</span> parties
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full bg-orange-300"></div>
+                        <span className="text-white font-bold">{nbUsers}</span> joueurs
                     </div>
                 </div>
 
