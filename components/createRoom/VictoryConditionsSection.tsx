@@ -33,7 +33,6 @@ const VictoryConditionsSection: React.FC<VictoryConditionsSectionProps> = ({
                     value={scoreToWin} onChange={(e) => setScoreToWin(Number(e.target.value))}
                     className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500"
                 />
-                <p className="text-[10px] text-slate-500">Environ {Math.ceil(scoreToWin / 1000)} minutes de jeu.</p>
             </div>
 
             {/* Temps */}

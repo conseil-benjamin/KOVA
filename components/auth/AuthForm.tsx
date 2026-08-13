@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import {
-    Mail, Lock, User, ArrowRight, Zap, Eye, EyeOff, Check
+    Mail, Lock, User, ArrowLeft, ArrowRight, Zap, Eye, EyeOff, Check
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { goBack } from '@/utils/utils';
 
 interface AuthFormProps {
     isLogin: boolean;
@@ -20,6 +22,7 @@ export default function AuthForm({
     isLogin, setIsLogin, formData, setFormData, selectedAvatar, setSelectedAvatar, avatars, handleSubmit
 }: AuthFormProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,10 +31,24 @@ export default function AuthForm({
     return (
         <div className="flex-1 min-w-0 p-5 sm:p-8 md:p-12 flex flex-col justify-center bg-[#13131f]/50">
 
-            {/* Toggle Mobile (Logo visible only on mobile) */}
-            <div className="md:hidden flex items-center justify-center gap-2 mb-6">
-                <Zap className="w-6 h-6 text-purple-500 fill-purple-500" />
-                <h1 className="text-2xl font-black italic text-white">KOVA</h1>
+            {/* Toggle Mobile (Logo visible only on mobile).
+                Le retour vit dans AuthVisuals, masqué sous md : sans lui on
+                reste coincé sur cet écran au téléphone. */}
+            <div className="md:hidden flex items-center gap-2 mb-6">
+                <button
+                    type="button"
+                    onClick={() => goBack(router)}
+                    aria-label="Revenir en arrière"
+                    className="tap-target -ml-2 shrink-0 flex items-center justify-center rounded-full text-slate-300 hover:text-white active:bg-white/10 transition cursor-pointer"
+                >
+                    <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div className="flex-1 flex items-center justify-center gap-2">
+                    <Zap className="w-6 h-6 text-purple-500 fill-purple-500" />
+                    <h1 className="text-2xl font-black italic text-white">KOVA</h1>
+                </div>
+                {/* Contrepoids : garde le logo optiquement centré. */}
+                <span className="w-11 shrink-0" aria-hidden="true" />
             </div>
 
             {/* Header Form */}

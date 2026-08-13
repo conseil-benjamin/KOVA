@@ -1,5 +1,5 @@
 import { Room } from '@/types/Room';
-import { Search, Globe, Music, Film, Gamepad2, LayoutGrid, List, Lock, Users, ChevronRight, Info } from 'lucide-react';
+import { Search, Globe, Music, Film, Gamepad2, LayoutGrid, List, Lock, Users, ChevronRight, Info, Plus } from 'lucide-react';
 import { act, useEffect, useRef, useState } from 'react';
 import { redirect } from 'next/navigation';
 import RoomService from '@/services/roomService';
@@ -102,6 +102,11 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
     const joinRoom = (room: Room) => {
         redirect(`/${room.idUrl}`);
     }
+
+    /* Le vide n'a pas la même cause selon qu'on cherche, qu'on filtre, ou qu'il
+       n'y a réellement aucune partie : le message et l'action s'y adaptent. */
+    const isSearching = searchQuery.trim() !== '';
+    const isFiltering = activeTab !== 'Tout';
 
     return (
         <div className="lg:col-span-6 flex flex-col gap-4 md:gap-6 min-w-0">
@@ -254,11 +259,40 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                 }
             </div>
 
-            {filteredRooms && filteredRooms.length <= 0 &&
-                <>
-                    <p className={'flex flex-row items-center justify-center w-full'}>Pas de parties publiques pour le moment. Créez-en une !</p>
-                </>
-            }
+            {filteredRooms && filteredRooms.length <= 0 && (
+                <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-white/10 bg-[#13131f]/60 px-6 py-12 text-center">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                        {isSearching || isFiltering
+                            ? <Search className="w-6 h-6 text-slate-500"/>
+                            : <Globe className="w-6 h-6 text-purple-400"/>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <p className="font-bold text-white">
+                            {isSearching ? 'Aucun résultat'
+                                : isFiltering ? `Aucune partie en ${activeTab}`
+                                    : 'Aucune partie publique'}
+                        </p>
+                        <p className="mx-auto max-w-xs text-sm text-slate-500">
+                            {isSearching ? `Rien ne correspond à « ${searchQuery} ». Essaie un autre nom ou un tag.`
+                                : isFiltering ? 'Change de catégorie, ou lance la première partie de ce thème.'
+                                    : "Personne n'a encore lancé de partie. Crée la tienne, les autres te rejoindront."}
+                        </p>
+                    </div>
+
+                    {isSearching ? (
+                        <button onClick={() => setSearchQuery('')}
+                                className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/10 hover:text-white active:scale-95 transition cursor-pointer">
+                            Effacer la recherche
+                        </button>
+                    ) : isFiltering && (
+                        <button onClick={() => setActiveTab('Tout')}
+                                className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/10 hover:text-white active:scale-95 transition cursor-pointer">
+                            Voir toutes les parties
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

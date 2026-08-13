@@ -46,6 +46,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
     const [maxPlayers, setMaxPlayers] = useState(12);
     const [scoreToWin, setScoreToWin] = useState(100);
     const [timePerRound, setTimePerRound] = useState(20);
+    const [estimateTime, setEstimateTime] = useState(0);
 
     // Options de contenu
     const [enableBlindTest, setEnableBlindTest] = useState(false); // Son activé ?
@@ -124,6 +125,19 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
         }
         setIsLoading(false);
     }, [isEditing, dataRoom])
+
+    useEffect(() => {
+        const estimateGameTime = () => {
+            const questionsNeededToWin = scoreToWin / 20
+            const timeLooseToDisplayResponse = questionsNeededToWin * 5
+            const timeToDisplayQuestion = questionsNeededToWin * timePerRound
+            const mergeTime = timeToDisplayQuestion + timeLooseToDisplayResponse
+            const formatTimeToMinutes = (mergeTime / 60) * 2
+
+            setEstimateTime(formatTimeToMinutes)
+        }
+        estimateGameTime()
+    }, [scoreToWin, timePerRound]);
 
     const updateItemUses = (key: string, newValue: number) => {
         if (newValue < 0) return;
@@ -304,7 +318,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
                     </main>
 
                     {/* --- STICKY FOOTER (Action) --- */}
-                    <CreateRoomFooter launchRoom={launchRoom} isEditing={isEditing} setIsEditing={setIsEditing} setIsConsult={setIsConsult} isConsult={isConsult} />
+                    <CreateRoomFooter launchRoom={launchRoom} isEditing={isEditing} setIsEditing={setIsEditing} setIsConsult={setIsConsult} isConsult={isConsult} estimateTime={estimateTime}/>
 
                     <AlertDialog open={showModalMorePacks} onOpenChange={setShowModalMorePacks}>
                         <AlertDialogContent

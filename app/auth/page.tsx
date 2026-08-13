@@ -87,8 +87,10 @@ const Auth = () => {
 
     return (
         <>
+        {/* La page passe sous l'encoche (viewportFit: cover) : le haut est
+            décalé pour que le bouton de retour reste atteignable. */}
         {!alreadyLoggedIn ? (
-            <div className="min-h-[100dvh] bg-[#0a0a0f] flex items-center justify-center p-3 sm:p-4 py-8 relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
+            <div className="min-h-[100dvh] bg-[#0a0a0f] flex items-center justify-center p-3 sm:p-4 pb-8 pt-[calc(2rem+env(safe-area-inset-top,0px))] relative overflow-hidden font-sans selection:bg-purple-500 selection:text-white">
 
                 {/* --- FOND ANIMÉ (Background FX) --- */}
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">

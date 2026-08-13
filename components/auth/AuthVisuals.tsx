@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Gamepad2, ArrowLeft} from 'lucide-react';
 import {InputFile} from "@/components/ui/fileInput";
 import {useRouter, useSearchParams} from 'next/navigation'
+import {goBack} from "@/utils/utils";
 
 interface AuthVisualsProps {
     isLogin: boolean;
@@ -20,15 +21,6 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
     const mode = searchParams.get('mode');
     const [preview, setPreview] = useState<string | null>(null)
 
-    const handleBack = () => {
-        // Si l'historique est vide (longueur 1 ou 2 selon les navigateurs),
-        if (window.history.length <= 1) {
-            router.push('/');
-        } else {
-            window.history.back();
-        }
-    };
-
     useEffect(() => {
         // Si "mode=register" est présent, on affiche le formulaire d'inscription
         if (mode === 'register') {
@@ -42,7 +34,7 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
             {/* Logo */}
             <div className="flex items-center gap-2 z-10">
                 <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-1.5 rounded-lg shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-                    <ArrowLeft className={'cursor-pointer'} onClick={() => handleBack()}/>
+                    <ArrowLeft className={'cursor-pointer'} onClick={() => goBack(router)}/>
                 </div>
                 <h1 className="text-xl font-black tracking-tighter text-white italic">
                     KOVA

@@ -76,7 +76,9 @@ const SearchForMorePacks = ({ selectedPack, setSelectedPack, packs, language, on
                                         <h3 className="font-bold text-white text-sm truncate">{pack.name[language]}</h3>
                                         <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">{pack.description?.[language]}</p>
                                         <div className="mt-2 text-[10px] font-mono text-slate-300 bg-white/10 w-fit px-2 py-0.5 rounded">
-                                            {pack.questionsCount} questions
+                                            <span>{pack.questionsCount} questions</span>
+                                            <span> - {pack.plays} joué</span>
+                                            <span> - {pack.likes} favoris</span>
                                         </div>
                                     </div>
                                 </div>
