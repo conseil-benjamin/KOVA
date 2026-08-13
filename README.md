@@ -43,3 +43,4 @@ Commande :
 next dev -H 0.0.0.0 -p 3000
 
 dans le .env : NEXT_PUBLIC_API_URL=http://localhost:3333
+dans le .evn du backend : HOST=0.0.0.0
