@@ -10,19 +10,27 @@ function Progress({
   value,
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root>) {
+  // Une valeur hors bornes déborderait de la piste.
+  const percent = Math.min(100, Math.max(0, value ?? 0))
+
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
       className={cn(
-        "bg-primary/20 relative h-2 w-full overflow-hidden rounded-full",
+        // Couleurs explicites plutôt que les tokens de thème : l'app est sombre
+        // en dur, sans classe `dark` sur <html>, donc --primary reste la valeur
+        // du thème clair (quasi noire) et le remplissage était invisible.
+        "relative h-2 w-full overflow-hidden rounded-full bg-white/10 shadow-inner",
         className
       )}
       {...props}
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className="bg-primary h-full w-full flex-1 transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        className="h-full rounded-full bg-purple-500 transition-[width] duration-700 ease-out"
+        // Largeur plutôt que translateX : la portion remplie est dessinée là où
+        // elle est, sans décaler un indicateur large de 100 %.
+        style={{ width: `${percent}%` }}
       />
     </ProgressPrimitive.Root>
   )
