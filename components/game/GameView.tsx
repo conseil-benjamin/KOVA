@@ -110,8 +110,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const getRoomData = async () => {
         try {
             const res = await roomService.getRoom(roomId);
-            const data = JSON.parse(res.data);
-            console.log(res.status)
+            const data = (typeof res.data === 'string'
+                ? JSON.parse(res.data)
+                : res.data) as Room & Record<string, any>;
             if (data === null || data === undefined || res.status === 404) {
                 setRoomFound(false);
                 return;
@@ -154,10 +155,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         break;
                 }
 
-                // Les jokers affichés sont ceux du joueur courant. La boucle
-                // appelait setJokersLeft pour CHAQUE joueur : c'est le dernier
-                // de la liste qui gagnait, d'où un panneau vide dès qu'un autre
-                // joueur fermait la marche (ou n'avait aucun joker).
                 const localPlayer = data.players?.find(
                     (p: Player) => sameUser(p.username, userName)
                 );
@@ -173,8 +170,15 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setQuestionTheme(data?.question?.theme);
                 setQuestionTheme(data?.question?.difficulty);
             }
-        } catch (error) {
-            console.error('Error fetching room data:', error);
+        } catch (error: any) {
+            // axios rejette sur un 404 : le test `res.status === 404` plus haut
+            // n'est jamais atteint, c'est ici qu'on conclut que la room n'existe
+            // pas au lieu d'afficher une partie vide.
+            if (error?.response?.status === 404) {
+                setRoomFound(false);
+            } else {
+                console.error('Error fetching room data:', error);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -385,21 +389,21 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             switch (data.jokerType) {
                 case "ink":
                     toast(data.message, {
-                        position: "bottom-left",
+                        position: "top-left",
                         icon: <Ghost className="w-4 h-4 text-blue-400" />,
                         className: "!bg-blue-500/10 !border !border-blue-500/20 !text-blue-200",
                     });
                     break;
                 case "double":
                     toast(data.message, {
-                        position: "bottom-left",
+                        position: "top-left",
                         icon: <span className="font-black text-xs text-green-400">x2</span>,
                         className: "!bg-green-500/10 !border !border-green-500/20 !text-green-200",
                     });
                     break;
                 case "swap":
                     toast(data.message, {
-                        position: "bottom-left",
+                        position: "top-left",
                         icon: <ArrowRightLeft className="w-4 h-4 text-amber-400" />,
                         className: "!bg-amber-500/10 !border !border-amber-500/20 !text-amber-200",
                     });

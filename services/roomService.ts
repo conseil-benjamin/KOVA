@@ -4,7 +4,10 @@ import { getApiUrl } from "@/utils/utils";
 
 class RoomService {
 
-    getRoom = async (roomId: string): Promise<AxiosResponse<string>> => {
+    // L'API renvoie la room en text/plain : axios tente quand même un JSON.parse
+    // et rend donc un objet la plupart du temps. Le type reflète les deux cas,
+    // l'appelant doit normaliser (cf. GameView.getRoomData).
+    getRoom = async (roomId: string): Promise<AxiosResponse<Room | string>> => {
         const response = await axios.get(`${getApiUrl()}/room/${roomId.toUpperCase()}`);
         console.log("response", response);
         return response;

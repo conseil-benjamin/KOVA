@@ -13,6 +13,8 @@ import LoadingPage from '@/components/loadingPage';
 import { Room } from '@/types/Room';
 import RoomService from "@/services/roomService";
 import UserService from "@/services/userService";
+import {io, Socket} from "socket.io-client";
+import {getWsUrl} from "@/utils/utils";
 
 const Home = () => {
   const roomService = new RoomService();
@@ -26,6 +28,32 @@ const Home = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [nbUsers, setNbUsers] = useState<number>(0);
 
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  /*
+  useEffect(() => {
+    const newSocket = io(getWsUrl(), {autoConnect: false});
+    setSocket(newSocket);
+
+    newSocket.on('connection', () => {
+      setIsConnected(true);
+      toast.success('Connected to server');
+      setIsLoading(false)
+    });
+
+    newSocket.on('rooms_updates', (data: {rooms: Room[]}) => {
+      toast.error('Game cancelled');
+    });
+
+    newSocket.connect();
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [rooms]);
+*/
   useEffect(() => {
     const cookies = new Cookies();
     const username = cookies.get('userName');

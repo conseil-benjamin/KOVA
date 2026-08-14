@@ -159,7 +159,8 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
                             {/* Image Header */}
                             <div
-                                className={`h-24 relative overflow-hidden rounded-t-lg`}> {/* Ajout de overflow-hidden pour les bords arrondis */}
+                                onClick={() => joinRoom(room)}
+                                className={`h-24 relative overflow-hidden rounded-t-lg cursor-pointer`}> {/* Ajout de overflow-hidden pour les bords arrondis */}
                                 {/* L'image de fond */}
                                 <img
                                     src={room.packs.length > 1 ? 'https://pub-f804f75e71574b289a0c1d106c20d2cf.r2.dev/packs/multi-packs/3d-question-mark-icons-speech-bubbles-orange-purple-design_84443-56040.avif' : room.backgroundImageUrl}
@@ -189,17 +190,11 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
                             {/* Contenu */}
                             <div className="p-4">
-                                <div className="flex justify-between items-start mb-2 min-w-0">
+                                <div onClick={() => joinRoom(room)} className="flex justify-between items-start mb-2 min-w-0 cursor-pointer">
                                     <div className="min-w-0">
                                         <h3 className="font-bold text-white transition truncate">{room.name}</h3>
                                         <p className="text-xs text-slate-500 truncate">{room.pack}</p>
                                     </div>
-                                </div>
-
-                                <div className="flex gap-2 mt-4">
-                                    {/*room.tags.map(tag => (
-                                    <span key={tag} className="text-[10px] text-slate-400 bg-white/5 px-2 py-1 rounded">#{tag}</span>
-                                ))}*/}
                                 </div>
 
                                 <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center gap-2 flex-wrap min-w-0">
