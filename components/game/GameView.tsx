@@ -149,6 +149,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         setIsGameNotStarted(true);
                         break;
                     case "DISPLAY_RESPONSE":
+                        console.log( "DISPLAY_RESPONSE", data.answers[data.language][0]);
                         setResponse(data.answers[data.language][0]);
                         break;
                     default:
@@ -168,7 +169,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setQuestionStory(data?.questionStory?.[data.language]);
                 setImageUrl(data?.imageUrl);
                 setQuestionTheme(data?.question?.theme);
-                setQuestionTheme(data?.question?.difficulty);
             }
         } catch (error: any) {
             // axios rejette sur un 404 : le test `res.status === 404` plus haut
@@ -247,7 +247,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setQuestion(data.question?.[data.language] ?? data.question?.fr ?? '');
             setQuestionStory(data.story?.[data.language] ?? data.story?.fr ?? '');
             setImageUrl(data.imageUrl);
-            setResponse('');
+            console.log("statussss" + data.status);
+            setResponse('')
+
 
             const endTime = new Date(data.timerEnd).getTime() / 1000;
             setEndsAt(endTime);
@@ -627,7 +629,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-hidden relative">
                             <Leaderboard players={players} scoreToWin={scoreToWin} username={userName}/>
 
-                            {response != '' ?
+                            {response ?
                                 <div className="flex-1 min-h-0 min-w-0 justify-center flex flex-col relative z-10 overflow-y-auto">
                                     <DisplayResponse response={response} question={question} story={questionStory} firstResponsePlayer={firstResponsePlayer}/>
                                     <Jokers jokers={jokersLeft} handleUseJoker={handleUseJoker} activesItems={activesItems} itemsEnabled={itemsEnabled}/>

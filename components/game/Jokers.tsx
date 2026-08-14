@@ -10,7 +10,10 @@ interface JokersProps {
 
 const getJokerIcon = (name: string) => {
     switch (name) {
-        case "double": return <span className={'w-4 h-4 text-green-500 group-hover:text-green-300 transition-colors'}>x2</span>;
+        // `w-4 h-4` ne s'applique pas à un span (inline) : "x2" gardait la taille
+        // du texte hérité et gonflait le bouton par rapport aux icônes lucide.
+        // flex + leading-none le ramène au même carré de 16px qu'elles.
+        case "double": return <span className={'w-4 h-4 flex items-center justify-center text-[11px] font-black leading-none text-green-500 group-hover:text-green-300 transition-colors'}>x2</span>;
         case "ink": return <Ghost className="w-4 h-4 text-blue-400 group-hover:text-blue-300 transition-colors" />;
         case "swap": return <ArrowRightLeft className="w-4 h-4 text-amber-400 group-hover:text-amber-300 transition-colors" />;
         default: return <Eye className="w-4 h-4 text-pink-400" />;
