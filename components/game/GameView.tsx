@@ -247,7 +247,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setQuestion(data.question?.[data.language] ?? data.question?.fr ?? '');
             setQuestionStory(data.story?.[data.language] ?? data.story?.fr ?? '');
             setImageUrl(data.imageUrl);
-            console.log("statussss" + data.status);
             setResponse('')
 
 
