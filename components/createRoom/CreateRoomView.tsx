@@ -44,7 +44,7 @@ const CreateRoomView = ({ socket, setIsEditing, isEditing, dataRoom, setRoomData
 
     // Règles
     const [maxPlayers, setMaxPlayers] = useState(12);
-    const [scoreToWin, setScoreToWin] = useState(100);
+    const [scoreToWin, setScoreToWin] = useState(200);
     const [timePerRound, setTimePerRound] = useState(20);
     const [estimateTime, setEstimateTime] = useState(0);
 

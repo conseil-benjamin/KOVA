@@ -18,7 +18,7 @@ const RoomNotFound: React.FC = () => {
                     Oups ! Salle introuvable
                 </h1>
                 <p className="text-slate-400 mb-8 text-sm md:text-lg leading-relaxed">
-                    Il semblerait que cette room n&apos;existe pas ou qu&apos;elle ait été fermée par son hôte. Vérifiez bien le lien ou le code saisi !
+                    Il semblerait que cette partie n&apos;existe pas ou qu&apos;elle ait été fermée par son hôte. Vérifiez bien le lien ou le code saisi !
                 </p>
 
                 {/* Actions */}

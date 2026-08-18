@@ -24,13 +24,14 @@ interface GameInputProps {
     timerVisible: boolean;
     guessVal: string;
     setGuessVal: (val: string) => void;
+    pointsEarned: number;
     /** Onglet « Salon » (visibilité de la partie, exclure / nommer chef) : sur
      *  desktop il vit dans la colonne du chat, inaccessible sur mobile. */
     roomPanel?: React.ReactNode;
 }
 
 const GameInput: React.FC<GameInputProps> = ({
-    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username, focusInputResponse, setFocusInputResponse, timerVisible, guessVal, setGuessVal, roomPanel
+    isMobileChatOpen, setIsMobileChatOpen, messages, onSendGuess, onSendChat, hasGuessed, players, username, focusInputResponse, setFocusInputResponse, timerVisible, guessVal, setGuessVal, pointsEarned, roomPanel
 }) => {
     // Game Answer State
     // Chat Message State
@@ -157,7 +158,7 @@ const GameInput: React.FC<GameInputProps> = ({
                     onPaste={(e) => e.preventDefault()}
                     onFocus={() => setFocusInputResponse(false)}
                     onChange={(e) => setGuessVal(e.target.value)}
-                    placeholder={hasGuessed ? "Attente des autres..." : !isInGame ? "Rejoindre pour jouer" : "Ta réponse..."}
+                    placeholder={hasGuessed ? `${pointsEarned} points gagnés !` : !isInGame ? "Rejoindre pour jouer" : "Ta réponse..."}
                     disabled={hasGuessed || !isInGame || !timerVisible}
                     className={`
                         flex-1 min-w-0 bg-white/5 border-2 transition-all shadow-inner outline-none

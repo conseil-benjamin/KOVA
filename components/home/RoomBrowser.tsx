@@ -1,6 +1,20 @@
 import { Room } from '@/types/Room';
-import { Search, Globe, Music, Film, Gamepad2, LayoutGrid, List, Lock, Users, ChevronRight, Info, Plus } from 'lucide-react';
-import { act, useEffect, useRef, useState } from 'react';
+import {
+    Search,
+    Globe,
+    Music,
+    Film,
+    Gamepad2,
+    LayoutGrid,
+    List,
+    Lock,
+    Users,
+    ChevronRight,
+    Info,
+    Plus,
+    Loader
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { redirect } from 'next/navigation';
 import RoomService from '@/services/roomService';
 
@@ -13,9 +27,6 @@ interface RoomBrowserProps {
 }
 
 export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setViewMode, rooms }: RoomBrowserProps) {
-
-    const roomService = new RoomService();
-
     const categories = [
         { id: 'ALL', label: 'Tout', icon: Globe },
         { id: 'MUSIC', label: 'Musique', icon: Music },
@@ -28,15 +39,18 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
     const [allPacks, setAllPacks] = useState<any[]>([]);
     const [openPacksRoomId, setOpenPacksRoomId] = useState<string | null>(null);
     const packsPopoverRef = useRef<HTMLDivElement | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const roomService = new RoomService();
+
         const fetchAllPacks = async () => {
             const result = await roomService.getAllPacks();
             if (result?.status === 200) {
                 setAllPacks(result.data);
             }
         };
-        fetchAllPacks();
+        fetchAllPacks().then(() => setLoading(false));
     }, []);
 
     /* Ferme la liste des packs au clic en dehors */
@@ -118,7 +132,7 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"/>
                     <input
                         type="text"
-                        placeholder="Chercher une room, un tag..."
+                        placeholder="Chercher une partie, un tag..."
                         className="w-full bg-[#0a0a0f] border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-purple-500 transition"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -148,7 +162,10 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
 
             {/* Liste des Rooms */}
             <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-                {filteredRooms && filteredRooms.length > 0 &&
+                {loading && (
+                    <Loader/>
+                )}
+                {filteredRooms && !loading && filteredRooms.length > 0 &&
                     filteredRooms.map((room: Room, roomIndex: number) => {
                         const roomKey = getRoomKey(room, roomIndex);
                         const isPacksOpen = openPacksRoomId === roomKey;

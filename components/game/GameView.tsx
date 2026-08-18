@@ -80,7 +80,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
     const [startTimer, setStartTimer] = useState(false);
     const [gameStartingSoonTimer, setGameStartingSoonTimer] = useState(-1);
     const [isGameRunning, setIsGameRunning] = useState(false);
-    const [points, setPoints] = useState(0);
+    const [pointsEarned, setPointsEarned] = useState(0);
     const [response, setResponse] = useState('');
     const [firstResponsePlayer, setFirstResponsePlayer] = useState('');
     const [scoreToWin, setScoreToWin] = useState(0);
@@ -248,7 +248,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setQuestionStory(data.story?.[data.language] ?? data.story?.fr ?? '');
             setImageUrl(data.imageUrl);
             setResponse('')
-
+            setPointsEarned(0)
+            setPlayers(prev => prev.map(p => ({ ...p, hasGuessed: false })));
+            setHasGuessed(false);
 
             const endTime = new Date(data.timerEnd).getTime() / 1000;
             setEndsAt(endTime);
@@ -285,7 +287,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setIsGameNotStarted(false);
         });
 
-        newSocket.on('correct_response', (data: { message: string, username: string, points: number, responseTime: number }) => {
+        newSocket.on('correct_response', (data: { message: string, username: string, points: number, pointsEarned: number, responseTime: number }) => {
+            setPointsEarned(data.pointsEarned);
             // @ts-ignore
             setPlayers(prev => {
                 const playerIndex = prev.findIndex(p => p.username.toLowerCase() === data.username.toLowerCase());
@@ -314,10 +317,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('display_response', (data: { response: string, firstResponsePlayer: string }) => {
-            setPlayers(prev => prev.map(p => ({ ...p, hasGuessed: false })));
             setResponse(data.response);
             setFirstResponsePlayer(data.firstResponsePlayer || '');
-            setHasGuessed(false);
             resetAnswersPlayers();
             setTimerVisible(false);
             setTimeLeft(0);
@@ -425,6 +426,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             const winnerUsername = data.roomData.winner;
             console.log("winnerUsername", winnerUsername);
             setQuestion('');
+            setHasGuessed(false);
 
             data.players.forEach(player => {
                 if (player.username.toLowerCase() === userName.toLowerCase()) {
@@ -612,8 +614,20 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 </div>
             ) : (isGameEnded && !isEditingRoom && oldPlayers && oldPlayers.length > 0) ? (
                 <EndGame players={players} creator={creator} username={userName} setIsEditingRoom={setIsEditingRoom}
-                         isEditingRoom={isEditingRoom} handleRestartGame={handleRestartGame}
-                         handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned} setXpEarned={setXpEarned} winner={winner}/>
+                         isEditingRoom={isEditingRoom} isConsultRules={isConsultRules} setIsConsultRules={setIsConsultRules} handleRestartGame={handleRestartGame}
+                         handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned} setXpEarned={setXpEarned} winner={winner} chat={
+                    <Chat
+                        players={players}
+                        messages={messages}
+                        userName={userName}
+                        onSendMessage={handleChatMessage}
+                        creator={creator}
+                        socket={socket}
+                        roomId={roomId}
+                        roomData={roomData}
+                        setRoomData={setRoomData}
+                    />
+                }/>
             ) : isPlayerBan === false && (
                 <div
                     className="app-shell bg-neutral-900 h-[var(--app-h)] md:h-screen flex flex-col md:flex-row md:items-center md:justify-center relative overflow-hidden text-white font-sans">
@@ -702,6 +716,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             timerVisible={timerVisible}
                             guessVal={guessVal}
                             setGuessVal={setGuessVal}
+                            pointsEarned={pointsEarned}
                             roomPanel={
                                 <RoomPanel
                                     players={players}

@@ -69,7 +69,7 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
             <div className="space-y-3">
                 <button onClick={() => redirect('/createRoom')} className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-[0.98] rounded-xl flex items-center justify-center gap-3 font-bold text-lg shadow-lg shadow-purple-900/20 transition-all group">
                     <div className="bg-white/20 p-1.5 rounded-full group-hover:rotate-90 transition duration-300"><Plus className="w-5 h-5" /></div>
-                    Créer une Room
+                    Créer une partie
                 </button>
             </div>
 

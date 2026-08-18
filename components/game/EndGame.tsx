@@ -11,6 +11,7 @@ import ProgressBarXpUser from "@/components/ProgressBarXpUser";
 import UserService from "@/services/userService";
 import LoadingPage from "@/components/loadingPage";
 import {Player} from "@/types/Room";
+import Chat from "@/components/game/Chat";
 
 interface EndGameProps {
     players: Player[];
@@ -18,6 +19,8 @@ interface EndGameProps {
     username: string;
     setIsEditingRoom: (value: boolean) => void;
     isEditingRoom: boolean;
+    setIsConsultRules: (value: boolean) => void;
+    isConsultRules: (value: boolean) => void;
     handleRestartGame: () => void;
     handleJoinRoom: () => void;
     oldPlayers: Player[];
@@ -25,6 +28,7 @@ interface EndGameProps {
     xpEarned: number;
     setXpEarned: (xp: number) => void;
     winner: string;
+    chat: React.ReactNode;
 }
 
 const MEDAL_COLORS = [
@@ -54,8 +58,8 @@ const Particle = ({ index }: { index: number }) => {
 };
 
 const EndGame: React.FC<EndGameProps> = ({
-                                             players, creator, username, setIsEditingRoom, isEditingRoom,
-                                             handleRestartGame, handleJoinRoom, oldPlayers, handleLeaveGame, xpEarned, setXpEarned, winner
+                                             players, creator, username, setIsEditingRoom, isEditingRoom, setIsConsultRules, isConsultRules,
+                                             handleRestartGame, handleJoinRoom, oldPlayers, handleLeaveGame, xpEarned, setXpEarned, winner, chat
                                          }) => {
     const [revealed, setRevealed] = useState(false);
     const [user, setUser] = useState<User | null>(null);
@@ -342,7 +346,8 @@ const EndGame: React.FC<EndGameProps> = ({
                     <LoadingPage/>
                 </div>
             ) : (
-                <div className="endgame-root relative">
+                <div className={"flex flex-row justify-center items-center min-h-[100dvh] w-full bg-[#0a0a0f]"}>
+                <div className="endgame-root relative flex-2/3">
 
                     {/* Confetti particles */}
                     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -505,7 +510,7 @@ const EndGame: React.FC<EndGameProps> = ({
                             </button>
                         )}
 
-                        {isCreator && (
+                        {isCreator ? (
                             <>
                                 <button
                                     className="btn-ghost"
@@ -520,7 +525,18 @@ const EndGame: React.FC<EndGameProps> = ({
                                     </button>
                                 )}
                             </>
+                        ) : (
+                            <button
+                                className="btn-ghost"
+                                onClick={() => setIsConsultRules(!isConsultRules)}
+                            >
+                                <Edit size={16} /> Consulter règles
+                            </button>
                         )}
+                    </div>
+                </div>
+                    <div className="endgame-root relative flex-1/3">
+                        {chat}
                     </div>
                 </div>
             )
