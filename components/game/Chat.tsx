@@ -85,7 +85,10 @@ const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage,
                     return (
                         <div key={id} className="text-sm animate-in slide-in-from-bottom-2">
                             {type === 'system' ? (
-                                <div className="flex items-center gap-2 my-2 opacity-60">
+                                <div className="flex flex-col gap-2 my-2 opacity-60">
+                                    <div className={"flex gap-2 mb-1"}>
+                                        <span className={`text-xs font-bold text-gray-300`}>{timestamp?.toLocaleString().substring(11, 16)}</span>
+                                    </div>
                                     <div className="h-px bg-white/20 flex-1"></div>
                                     <span className="text-[10px] font-mono text-center">{text}</span>
                                     <div className="h-px bg-white/20 flex-1"></div>

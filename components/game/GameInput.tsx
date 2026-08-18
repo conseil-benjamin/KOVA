@@ -8,6 +8,7 @@ interface ChatMessage {
     user?: string;
     text?: string;
     message?: string;
+    timestamp?: Date;
 }
 
 interface GameInputProps {
@@ -95,11 +96,34 @@ const GameInput: React.FC<GameInputProps> = ({
                             const text = msg.text || msg.message || '';
                             const user = msg.user || '';
                             const type = msg.type || 'chat';
+                            const timestamp = msg.timestamp
 
                             return (
-                                <div key={msg.id || index} className="text-xs text-slate-300">
-                                    {type === 'chat' && <div className="break-words"><strong className="text-purple-400">{user}:</strong> {text}</div>}
-                                    {type === 'success' && <div className="text-green-400 bg-green-500/10 p-1 rounded px-2"><strong className="text-green-300">{user}</strong> a trouvé !</div>}
+                                <div key={msg.id || index} className="text-xs text-slate-300 mb-4">
+                                    {type === 'chat' && (
+                                        <div className="break-words flex flex-col">
+                                            <div className={"flex items-center gap-2 mb-1"}>
+                                                <span className={`text-xs font-bold text-gray-300`}>{timestamp?.toLocaleString().substring(11, 16)}</span>
+                                                <span className={`text-xs font-bold ${user === (username) ? 'text-blue-400' : 'text-purple-400'}`}>{user}</span>
+                                            </div>
+                                            <span className="text-slate-300 leading-tight wrap-anywhere">{text}</span>
+                                        </div>
+                                    )}
+                                    {type === 'success' && (
+                                        <div className="text-green-400 bg-green-500/10 p-1 rounded px-2">
+                                            <strong className="text-green-300">{user}</strong> a trouvé !
+                                        </div>
+                                    )}
+                                    {type === 'system' && (
+                                        <div className="text-slate-400 bg-slate-500/10 p-1 rounded px-2 flex flex-col">
+                                            <div className={"flex items-center gap-2 mb-1"}>
+                                                <span className={`text-xs font-bold text-gray-300`}>{timestamp?.toLocaleString().substring(11, 16)}</span>
+                                            </div>
+                                            <div className="h-px bg-white/20 flex-1"></div>
+                                            <span className="text-[10px] font-mono text-center">{text}</span>
+                                            <div className="h-px bg-white/20 flex-1"></div>
+                                        </div>
+                                    )}
                                 </div>
                             )
                         })}
@@ -138,8 +162,6 @@ const GameInput: React.FC<GameInputProps> = ({
                         })() : "Chat"}
                     </button>
 
-                    {/* Accès direct au salon : c'était la seule fonctionnalité du
-                        panneau desktop sans équivalent mobile. */}
                     {roomPanel && (
                         <button onClick={() => openMobilePanel('players')} className="shrink-0 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-2 rounded-full border border-white/10 flex items-center gap-1.5 shadow-lg active:scale-95 transition">
                             <Users className="w-3 h-3 text-green-400 shrink-0" />
