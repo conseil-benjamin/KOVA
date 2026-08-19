@@ -23,9 +23,14 @@ interface ChatProps {
     roomId: string;
     roomData?: Room | undefined;
     setRoomData: (newRoom: Room) => void;
+    /** `sidebar` : colonne latérale autonome (vue de jeu), masquée sur mobile.
+     *  `panel`   : remplit son conteneur, qui gère lui-même position et habillage
+     *              — utilisé par l'écran de fin de partie (colonne desktop +
+     *              feuille glissante mobile). */
+    variant?: "sidebar" | "panel";
 }
 
-const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage, creator, socket, roomId, roomData, setRoomData }) => {
+const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage, creator, socket, roomId, roomData, setRoomData, variant = "sidebar" }) => {
     const listRef = useRef<HTMLDivElement>(null);
     const [msg, setMsg] = useState("");
     const [activeTab, setActiveTab] = useState<'chat' | 'players'>('chat');
@@ -43,8 +48,12 @@ const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage,
         setMsg("");
     };
 
+    const rootClass = variant === "panel"
+        ? "flex w-full flex-1 min-h-0 flex-col"
+        : "hidden md:flex w-80 bg-[#0a0a12]/50 border-l border-white/5 flex-col backdrop-blur-sm z-20";
+
     return (
-        <aside className="hidden md:flex w-80 bg-[#0a0a12]/50 border-l border-white/5 flex-col backdrop-blur-sm z-20">
+        <aside className={rootClass}>
             <div className="p-2 border-b border-white/5 flex items-center gap-2">
                 <button
                     onClick={() => setActiveTab('chat')}
@@ -73,7 +82,7 @@ const Chat: React.FC<ChatProps> = ({ players, messages, userName, onSendMessage,
                 />
             ) : (
             <>
-            <div ref={listRef} className="flex-1 overflow-y-auto p-4 space-y-3 mask-gradient-top">
+            <div ref={listRef} className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-3 mask-gradient-top">
                 {messages.map((msg, index) => {
                     // Normalize message structure
                     const id = msg.id || index;

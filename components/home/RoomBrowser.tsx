@@ -163,7 +163,9 @@ export default function RoomBrowser({ activeTab, setActiveTab, viewMode, setView
             {/* Liste des Rooms */}
             <div className={`grid gap-4 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
                 {loading && (
-                    <Loader/>
+                    <div className={'col-span-full flex items-center justify-center py-12'}>
+                        <Loader/>
+                    </div>
                 )}
                 {filteredRooms && !loading && filteredRooms.length > 0 &&
                     filteredRooms.map((room: Room, roomIndex: number) => {

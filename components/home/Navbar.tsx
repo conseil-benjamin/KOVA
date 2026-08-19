@@ -112,8 +112,8 @@ export default function Navbar({ isLoggedIn, user, rooms, nbUsers }: NavbarProps
                     </>
                 ) : (
                     <div className="flex gap-2 shrink-0">
-                        <button onClick={() => redirect('/auth')} className="hidden md:block px-4 py-2 text-sm font-bold text-slate-300 hover:text-white transition">Connexion</button>
-                        <button onClick={() => redirect('/auth?mode=register')} className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-bold bg-white text-black rounded-full hover:bg-purple-100 active:scale-95 transition flex items-center gap-2 whitespace-nowrap">
+                        <button onClick={() => redirect('/auth')} className="hidden md:block px-4 py-2 text-sm font-bold text-slate-300 hover:text-white transition cursor-pointer">Connexion</button>
+                        <button onClick={() => redirect('/auth?mode=register')} className="px-3 md:px-4 py-2.5 md:py-2 text-sm font-bold bg-white text-black rounded-full hover:bg-purple-100 active:scale-95 transition flex items-center gap-2 whitespace-nowrap cursor-pointer">
                             <LogIn className="w-4 h-4 shrink-0" />
                             <span>S&apos;inscrire</span>
                         </button>

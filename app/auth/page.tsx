@@ -14,6 +14,9 @@ const Auth = () => {
     const cookies = new Cookies();
     const [selectedAvatar, setSelectedAvatar] = useState('blue');
     const [image, setImage] = useState<File | null>(null);
+    // Le preview vit ici : le panneau desktop et le bloc mobile l'affichent tous
+    // les deux, il ne peut donc pas rester local a l'un des deux composants.
+    const [preview, setPreview] = useState<string | null>(null);
     const authService = new AuthService();
 
     const [formData, setFormData] = useState({
@@ -38,6 +41,11 @@ const Auth = () => {
             setImage(file);
             setFormData({ ...formData, image: file });
         }
+    };
+
+    const handleImageClear = () => {
+        setImage(null);
+        setFormData({ ...formData, image: null });
     };
 
     const handleSubmit = async () => {
@@ -109,6 +117,9 @@ const Auth = () => {
                         selectedAvatar={selectedAvatar}
                         avatars={avatars}
                         handleImageUpload={handleImageUpload}
+                        preview={preview}
+                        setPreview={setPreview}
+                        handleImageClear={handleImageClear}
                     />
                     <AuthForm
                         handleSubmit={handleSubmit}
@@ -119,6 +130,10 @@ const Auth = () => {
                         selectedAvatar={selectedAvatar}
                         setSelectedAvatar={setSelectedAvatar}
                         avatars={avatars}
+                        handleImageUpload={handleImageUpload}
+                        preview={preview}
+                        setPreview={setPreview}
+                        handleImageClear={handleImageClear}
                     />
                 </div>
             </div>

@@ -4,7 +4,19 @@ import { useState, useRef } from "react"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Upload, Image as ImageIcon, X } from "lucide-react"
 
-export function InputFile({ handleImageUpload, preview, setPreview }: {handleImageUpload?: (e: React.ChangeEvent<HTMLInputElement>) => void, preview: string | null, setPreview: (preview: string | null) => void}) {
+type InputFileProps = {
+    handleImageUpload?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    preview: string | null
+    setPreview: (preview: string | null) => void
+    /** Vide aussi le fichier côté formulaire : effacer le seul preview laissait l'image partir à l'inscription. */
+    onClear?: () => void
+    /** "dropzone" : grande zone de glisser-déposer (desktop). "compact" : ligne avatar + bouton (mobile). */
+    variant?: "dropzone" | "compact"
+    /** Les deux variantes cohabitent dans la page d'auth : l'id du champ doit rester unique. */
+    id?: string
+}
+
+export function InputFile({ handleImageUpload, preview, setPreview, onClear, variant = "dropzone", id = "picture" }: InputFileProps) {
     const [dragActive, setDragActive] = useState(false)
     const [fileName, setFileName] = useState<string>("")
     const inputRef = useRef<HTMLInputElement>(null)
@@ -73,6 +85,70 @@ export function InputFile({ handleImageUpload, preview, setPreview }: {handleIma
         if (inputRef.current) {
             inputRef.current.value = ""
         }
+        onClear?.()
+    }
+
+    const hiddenInput = (
+        <input
+            ref={inputRef}
+            id={id}
+            type="file"
+            onChange={handleInputChange}
+            accept="image/*"
+            className="hidden"
+        />
+    )
+
+    // Variante mobile : une simple ligne (vignette ronde + action), assez basse
+    // pour tenir dans le formulaire sans le rallonger.
+    if (variant === "compact") {
+        return (
+            <div className="flex items-center gap-3">
+                <button
+                    type="button"
+                    onClick={handleClick}
+                    aria-label={preview ? "Changer la photo de profil" : "Ajouter une photo de profil"}
+                    className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-full transition-all active:scale-95 ${
+                        preview
+                            ? "border border-white/10"
+                            : "border-2 border-dashed border-white/20 bg-[#0a0a0f] text-slate-500"
+                    }`}
+                >
+                    {preview ? (
+                        <img src={preview} alt="Preview" className="h-full w-full object-cover" />
+                    ) : (
+                        <ImageIcon size={20} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                    )}
+                </button>
+
+                <div className="min-w-0 flex-1">
+                    <button
+                        type="button"
+                        onClick={handleClick}
+                        className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#0a0a0f] px-3 py-2 text-sm font-bold text-white transition active:scale-95"
+                    >
+                        <Upload size={14} className="text-purple-400" />
+                        {preview ? "Changer la photo" : "Ajouter une photo"}
+                    </button>
+                    <p className="mt-1.5 truncate text-[11px] text-slate-500">
+                        {preview ? fileName || "Image sélectionnée" : "PNG, JPG, GIF jusqu'à 10MB"}
+                    </p>
+                </div>
+
+                {preview && (
+                    <button
+                        type="button"
+                        onClick={clearFile}
+                        aria-label="Retirer la photo"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-400 transition active:bg-white/10"
+                    >
+                        <X size={16} />
+                    </button>
+                )}
+
+                {hiddenInput}
+            </div>
+        )
     }
 
     return (
@@ -137,14 +213,7 @@ export function InputFile({ handleImageUpload, preview, setPreview }: {handleIma
                 )}
 
                 {/* Hidden Input */}
-                <input
-                    ref={inputRef}
-                    id="picture"
-                    type="file"
-                    onChange={handleInputChange}
-                    accept="image/*"
-                    className="hidden"
-                />
+                {hiddenInput}
             </div>
         </Field>
     )

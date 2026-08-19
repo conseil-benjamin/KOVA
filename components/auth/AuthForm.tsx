@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import {redirect, useRouter} from 'next/navigation';
 import { goBack } from '@/utils/utils';
+import { InputFile } from '@/components/ui/fileInput';
 
 interface AuthFormProps {
     isLogin: boolean;
@@ -16,10 +17,15 @@ interface AuthFormProps {
     setSelectedAvatar: (avatar: string) => void;
     avatars: { id: string, gradient: string }[];
     handleSubmit: () => void;
+    handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    preview: string | null;
+    setPreview: (preview: string | null) => void;
+    handleImageClear: () => void;
 }
 
 export default function AuthForm({
-    isLogin, setIsLogin, formData, setFormData, selectedAvatar, setSelectedAvatar, avatars, handleSubmit
+    isLogin, setIsLogin, formData, setFormData, selectedAvatar, setSelectedAvatar, avatars, handleSubmit,
+    handleImageUpload, preview, setPreview, handleImageClear
 }: AuthFormProps) {
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
@@ -84,6 +90,23 @@ export default function AuthForm({
                         ))}
                     </div>
                 </div>
+
+                {/* Photo de profil (inscription, mobile uniquement).
+                    L'upload vit normalement dans AuthVisuals, masqué sous md :
+                    sans ce bloc, aucun moyen d'ajouter une image au téléphone. */}
+                {!isLogin && (
+                    <div className="md:hidden space-y-2 pt-1">
+                        <label className="text-xs font-bold text-slate-300 uppercase ml-1">Photo de profil <span className="text-slate-500 normal-case font-medium">(optionnel)</span></label>
+                        <InputFile
+                            variant="compact"
+                            id="picture-mobile"
+                            handleImageUpload={handleImageUpload}
+                            preview={preview}
+                            setPreview={setPreview}
+                            onClear={handleImageClear}
+                        />
+                    </div>
+                )}
 
                 {/* Username (Register Only) */}
                 <div className={`space-y-1 transition-all duration-300 overflow-hidden`}>

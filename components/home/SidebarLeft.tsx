@@ -1,5 +1,5 @@
 import { User } from '@/types/User';
-import { Users, Plus, Play, Flame } from 'lucide-react';
+import { Users, Plus, Play, Flame, KeyRound, ArrowRight } from 'lucide-react';
 import { Progress } from "@/components/ui/progress"
 import { redirect } from 'next/navigation';
 import React from "react";
@@ -15,6 +15,7 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
     const xp = user?.stats?.xp || 0;
     const level = user?.stats?.level || 1;
     const xpPercentage = (xp / xpToNextLevel) * 100;
+    const [privateCode, setPrivateCode] = React.useState<string | null>(null);
 
     return (
         <div className="lg:col-span-3 space-y-4 md:space-y-6">
@@ -58,7 +59,7 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
                             <h3 className="text-lg font-bold text-white">Mode Invité</h3>
                             <p className="text-xs text-slate-400 mt-1">Crée un compte pour sauvegarder tes stats et personnaliser ton avatar.</p>
                         </div>
-                        <button onClick={() => redirect('/auth')} className="w-full py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-sm font-bold transition">
+                        <button onClick={() => redirect('/auth')} className="w-full py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-sm font-bold transition cursor-pointer">
                             Se connecter
                         </button>
                     </div>
@@ -67,10 +68,42 @@ export default function SidebarLeft({ isLoggedIn, setIsLoggedIn, user }: Sidebar
 
             {/* Boutons d'Action Rapide */}
             <div className="space-y-3">
-                <button onClick={() => redirect('/createRoom')} className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-[0.98] rounded-xl flex items-center justify-center gap-3 font-bold text-lg shadow-lg shadow-purple-900/20 transition-all group">
+                <button onClick={() => redirect('/createRoom')} className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-[0.98] rounded-xl flex items-center justify-center gap-3 font-bold text-lg shadow-lg shadow-purple-900/20 transition-all group cursor-pointer">
                     <div className="bg-white/20 p-1.5 rounded-full group-hover:rotate-90 transition duration-300"><Plus className="w-5 h-5" /></div>
                     Créer une partie
                 </button>
+
+                {/* Séparateur */}
+                <div className="flex items-center gap-3 py-0.5">
+                    <div className="h-px flex-1 bg-white/10" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">ou</span>
+                    <div className="h-px flex-1 bg-white/10" />
+                </div>
+
+                {/* Rejoindre avec un code — design uniquement, logique à brancher */}
+                <div className="group flex h-14 items-center gap-2 rounded-xl border border-white/10 bg-[#13131f] pl-4 pr-2 transition-all focus-within:border-purple-500/60 focus-within:bg-[#171727] focus-within:shadow-lg focus-within:shadow-purple-900/20">
+                    <KeyRound className="h-4 w-4 shrink-0 text-slate-500 transition group-focus-within:text-purple-400" />
+                    <input
+                        value={privateCode || ''}
+                        onChange={(e) => setPrivateCode(e.target.value)}
+                        type="text"
+                        inputMode="text"
+                        autoComplete="off"
+                        spellCheck={false}
+                        maxLength={4}
+                        placeholder="Code de la partie"
+                        aria-label="Code de la partie"
+                        className="min-w-0 flex-1 bg-transparent font-mono text-base font-bold uppercase tracking-[0.25em] text-white outline-none placeholder:font-sans placeholder:text-sm placeholder:font-medium placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-600"
+                    />
+                    <button
+                        onClick={() => redirect(`/${privateCode}`)}
+                        type="button"
+                        aria-label="Rejoindre la partie"
+                        className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/5 bg-white/5 text-slate-400 transition-all hover:border-transparent hover:bg-purple-600 hover:text-white active:scale-95"
+                    >
+                        <ArrowRight className="h-4 w-4" />
+                    </button>
+                </div>
             </div>
 
             {/* Challenge Quotidien — masqué sur mobile pour ne pas repousser la liste des parties */}

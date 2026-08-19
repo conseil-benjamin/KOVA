@@ -13,13 +13,15 @@ interface AuthVisualsProps {
     selectedAvatar: string;
     avatars: { id: string, gradient: string }[];
     handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    preview: string | null;
+    setPreview: (preview: string | null) => void;
+    handleImageClear: () => void;
 }
 
-export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAvatar, avatars, handleImageUpload }: AuthVisualsProps) {
+export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAvatar, avatars, handleImageUpload, preview, setPreview, handleImageClear }: AuthVisualsProps) {
     const router = useRouter()
     const searchParams = useSearchParams();
     const mode = searchParams.get('mode');
-    const [preview, setPreview] = useState<string | null>(null)
 
     useEffect(() => {
         // Si "mode=register" est présent, on affiche le formulaire d'inscription
@@ -79,7 +81,7 @@ export default function AuthVisuals({ isLogin, setIsLogin, username, selectedAva
                             <p className="text-sm text-slate-400">Crée ton profil, personnalise ton avatar et commence ton ascension.</p>
                         </div>
 
-                    <InputFile handleImageUpload={handleImageUpload} preview={preview} setPreview={setPreview}/>
+                    <InputFile handleImageUpload={handleImageUpload} preview={preview} setPreview={setPreview} onClear={handleImageClear}/>
                     </>
                 )}
             </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Trophy, Medal, Home, RotateCcw, Edit, LogOut, Star } from 'lucide-react';
+import { Trophy, Medal, Home, RotateCcw, Edit, LogOut, Star, MessageSquare, ChevronDown } from 'lucide-react';
 
 import Lobby from './Lobby';
 import { redirect } from 'next/navigation';
@@ -20,7 +20,7 @@ interface EndGameProps {
     setIsEditingRoom: (value: boolean) => void;
     isEditingRoom: boolean;
     setIsConsultRules: (value: boolean) => void;
-    isConsultRules: (value: boolean) => void;
+    isConsultRules: boolean;
     handleRestartGame: () => void;
     handleJoinRoom: () => void;
     oldPlayers: Player[];
@@ -62,6 +62,7 @@ const EndGame: React.FC<EndGameProps> = ({
                                              handleRestartGame, handleJoinRoom, oldPlayers, handleLeaveGame, xpEarned, setXpEarned, winner, chat
                                          }) => {
     const [revealed, setRevealed] = useState(false);
+    const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const cookies = new Cookies();
@@ -339,6 +340,101 @@ const EndGame: React.FC<EndGameProps> = ({
                 .vignette {
                     background: radial-gradient(ellipse at center, transparent 40%, rgba(8,11,20,0.95) 100%);
                 }
+
+                /* =========================================================
+                   CHAT DE FIN DE PARTIE
+                   Une seule instance de <Chat> est montée : seul ce conteneur
+                   change de nature selon la largeur d'écran.
+                     - mobile  : feuille glissante ancrée en bas
+                     - desktop : colonne latérale collée à droite
+                   ========================================================= */
+                .endgame-root, .endgame-chat { --endgame-chat-w: 20rem; }
+
+                .endgame-chat {
+                    position: fixed;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 60;
+                    height: 68dvh;
+                    max-height: 34rem;
+                    flex-direction: column;
+                    overflow: hidden;
+                    font-family: 'DM Sans', sans-serif;
+                    background: rgba(8,11,20,0.96);
+                    backdrop-filter: blur(16px);
+                    border-top: 1px solid rgba(255,255,255,0.10);
+                    border-radius: 1.5rem 1.5rem 0 0;
+                    box-shadow: 0 -12px 40px rgba(0,0,0,0.6);
+                    padding-bottom: env(safe-area-inset-bottom, 0px);
+                }
+
+                .endgame-chat-open { animation: sheet-up 0.28s ease-out both; }
+
+                @keyframes sheet-up {
+                    from { transform: translateY(100%); }
+                    to { transform: translateY(0); }
+                }
+
+                /* Clavier virtuel ouvert : on rend de la place à la saisie */
+                html[data-kb="open"] .endgame-chat {
+                    height: 52dvh;
+                    max-height: none;
+                }
+
+                /* Ouverture du chat : ancré juste au-dessus de la barre d'actions */
+                .endgame-chat-fab {
+                    position: absolute;
+                    bottom: 100%;
+                    right: 0.75rem;
+                    margin-bottom: 0.5rem;
+                    min-height: 2.5rem;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.5rem 0.875rem;
+                    border-radius: 9999px;
+                    border: 1px solid rgba(255,255,255,0.12);
+                    background: rgba(0,0,0,0.6);
+                    backdrop-filter: blur(12px);
+                    color: white;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+                    transition: transform 0.15s ease;
+                }
+                .endgame-chat-fab:active { transform: scale(0.95); }
+
+                @media (min-width: 768px) {
+                    /* La barre d'actions ne doit pas passer sous la colonne du chat */
+                    .action-bar { right: var(--endgame-chat-w); }
+
+                    /* Le bouton d'ouverture du chat est purement mobile.
+                       La regle est repetee ici car ce <style> est injecte apres
+                       Tailwind : a specificite egale, md:hidden perdait face au
+                       display: inline-flex ci-dessus. */
+                    .endgame-chat-fab { display: none; }
+
+                    .endgame-chat {
+                        position: sticky;
+                        top: 0;
+                        left: auto;
+                        right: auto;
+                        bottom: auto;
+                        z-index: 20;
+                        flex: 0 0 var(--endgame-chat-w);
+                        width: var(--endgame-chat-w);
+                        height: 100dvh;
+                        max-height: none;
+                        padding-bottom: 0;
+                        border-top: 0;
+                        border-radius: 0;
+                        background: transparent;
+                        backdrop-filter: none;
+                        box-shadow: none;
+                        animation: none;
+                    }
+                }
             `}</style>
 
             {loading ? (
@@ -346,8 +442,8 @@ const EndGame: React.FC<EndGameProps> = ({
                     <LoadingPage/>
                 </div>
             ) : (
-                <div className={"flex flex-row justify-center items-center min-h-[100dvh] w-full bg-[#0a0a0f]"}>
-                <div className="endgame-root relative flex-2/3">
+                <div className="flex flex-row w-full min-h-[100dvh] bg-[#0a0a0f]">
+                <div className="endgame-root relative flex-1 min-w-0">
 
                     {/* Confetti particles */}
                     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -365,7 +461,7 @@ const EndGame: React.FC<EndGameProps> = ({
                              style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 70%)' }} />
                     </div>
 
-                    <div className="relative z-10 min-h-[100dvh] flex flex-col items-center px-4 py-8 sm:py-12 pb-40 sm:pb-28">
+                    <div className="relative z-10 min-h-[100dvh] flex flex-col items-center px-4 py-8 sm:py-12 pb-48 sm:pb-28">
 
                         {/* Header */}
                         <div className="rise-delay-1 text-center mb-8 sm:mb-12">
@@ -533,9 +629,45 @@ const EndGame: React.FC<EndGameProps> = ({
                                 <Edit size={16} /> Consulter règles
                             </button>
                         )}
+
+                        {/* Mobile : ouvre la feuille du chat. Absolu dans la barre
+                            d'actions, il reste donc toujours juste au-dessus d'elle. */}
+                        {!isMobileChatOpen && (
+                            <button
+                                type="button"
+                                onClick={() => setIsMobileChatOpen(true)}
+                                aria-label="Ouvrir le chat"
+                                className="endgame-chat-fab md:hidden"
+                            >
+                                <MessageSquare size={14} className="text-purple-400" />
+                                Chat
+                            </button>
+                        )}
                     </div>
                 </div>
-                    <div className="endgame-root relative flex-1/3">
+
+                    {/* Voile derrière la feuille mobile : un tap referme le chat */}
+                    {isMobileChatOpen && (
+                        <div
+                            className="md:hidden fixed inset-0 z-[55] bg-black/60"
+                            onClick={() => setIsMobileChatOpen(false)}
+                        />
+                    )}
+
+                    {/* Colonne du chat sur desktop, feuille glissante sur mobile */}
+                    <div className={`endgame-chat ${isMobileChatOpen ? 'flex endgame-chat-open' : 'hidden md:flex'}`}>
+                        {/* Poignée + fermeture : mobile uniquement */}
+                        <div className="md:hidden relative flex items-center justify-center px-3 pt-3 pb-1">
+                            <span className="h-1 w-10 rounded-full bg-white/20" />
+                            <button
+                                type="button"
+                                onClick={() => setIsMobileChatOpen(false)}
+                                aria-label="Fermer le chat"
+                                className="tap-target absolute right-1 top-0 flex items-center justify-center rounded-full text-slate-400 active:bg-white/10"
+                            >
+                                <ChevronDown className="w-5 h-5" />
+                            </button>
+                        </div>
                         {chat}
                     </div>
                 </div>

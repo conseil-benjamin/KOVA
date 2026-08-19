@@ -119,9 +119,9 @@ const GameInput: React.FC<GameInputProps> = ({
                                             <div className={"flex items-center gap-2 mb-1"}>
                                                 <span className={`text-xs font-bold text-gray-300`}>{timestamp?.toLocaleString().substring(11, 16)}</span>
                                             </div>
-                                            <div className="h-px bg-white/20 flex-1"></div>
+                                            <div className="h-px bg-white flex-1"></div>
                                             <span className="text-[10px] font-mono text-center">{text}</span>
-                                            <div className="h-px bg-white/20 flex-1"></div>
+                                            <div className="h-px bg-white flex-1"></div>
                                         </div>
                                     )}
                                 </div>

@@ -9,6 +9,7 @@ export interface Player {
     avatar?: string;
     jokers: { name: string; useLeft: number }[];
     activeInk: boolean;
+    pointsEarned: number;
 }
 
 export interface Room {

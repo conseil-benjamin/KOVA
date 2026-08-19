@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, SearchX } from 'lucide-react'; // Installe lucide-react si besoin
+import { Home, SearchX } from 'lucide-react';
 
 const RoomNotFound: React.FC = () => {
     return (
@@ -25,7 +25,7 @@ const RoomNotFound: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button
                         onClick={() => window.location.href = '/'}
-                        className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold py-3.5 px-6 rounded-xl transition-all shadow-lg shadow-indigo-900/40"
+                        className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold py-3.5 px-6 rounded-xl transition-all shadow-lg shadow-indigo-900/40 cursor-pointer"
                     >
                         <Home size={20} />
                         Retour à l&apos;accueil

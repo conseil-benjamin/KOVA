@@ -159,10 +159,13 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 const localPlayer = data.players?.find(
                     (p: Player) => sameUser(p.username, userName)
                 );
+                console.log("localPlayer", localPlayer);
+                console.log("localPlayer", localPlayer?.pointsEarned)
                 if (localPlayer) {
                     setJokersLeft(localPlayer.jokers ?? []);
                     if (localPlayer.hasGuessed) setHasGuessed(true);
                     if (localPlayer.activeInk === true) setActiveInk(true);
+                    if (localPlayer.pointsEarned > 0) setPointsEarned(localPlayer.pointsEarned);
                 }
                 setTimeLeft(Math.max(0, secondsRemaining));
                 setTimerVisible(true);
@@ -201,7 +204,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
 
         const timer = setInterval(() => {
             setGameStartingSoonTimer((prev) => {
-                if (prev <= 1) {
+                if (prev === 0) {
                     clearInterval(timer);
                     return -1;
                 }
@@ -236,21 +239,16 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             toast.error('Game cancelled');
         });
 
-        newSocket.on('new_question', (data: { question: Record<string, string>, imageUrl: string, theme: string, difficulty: string, story: Record<string, string>, timerEnd: Date, isGameRunning: boolean, language: string }) => {
+        newSocket.on('new_question', (data: { notAnewQuestion: boolean, question: Record<string, string>, imageUrl: string, theme: string, difficulty: string, story: Record<string, string>, timerEnd: Date, isGameRunning: boolean, language: string }) => {
             console.log(data);
             setHint('');
             setQuestionTheme(data.difficulty);
             setPlayers(prev => prev.map(p => ({ ...p, responseTime: undefined })));
-            // `question` et `story` sont indexés par LANGUE côté serveur
-            // ({ fr, en }), pas par position : un index numérique renvoie
-            // undefined, et l'écran d'attente reste affiché en boucle.
             setQuestion(data.question?.[data.language] ?? data.question?.fr ?? '');
             setQuestionStory(data.story?.[data.language] ?? data.story?.fr ?? '');
             setImageUrl(data.imageUrl);
             setResponse('')
-            setPointsEarned(0)
-            setPlayers(prev => prev.map(p => ({ ...p, hasGuessed: false })));
-            setHasGuessed(false);
+            // todo : a chaque refresh cette methode est appelé depuis le back et excute tout ici
 
             const endTime = new Date(data.timerEnd).getTime() / 1000;
             setEndsAt(endTime);
@@ -262,6 +260,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setStartTimer(true);
             setIsGameRunning(data.isGameRunning);
             setFocusInputResponse(true);
+
+            if (!data.notAnewQuestion) {
+                console.log("notAnewQuestion, resetting hasGuessed and pointsEarned");
+                setPlayers(prev => prev.map(p => ({ ...p, hasGuessed: false })));
+                setPointsEarned(0)
+            }
         });
 
         newSocket.on('wrong_response', (data: { message: string, username: string, answer: string }) => {
@@ -288,7 +292,9 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
         });
 
         newSocket.on('correct_response', (data: { message: string, username: string, points: number, pointsEarned: number, responseTime: number }) => {
-            setPointsEarned(data.pointsEarned);
+            if (userName.toLowerCase() === data.username.toLowerCase()) {
+                setPointsEarned(data.pointsEarned);
+            }
             // @ts-ignore
             setPlayers(prev => {
                 const playerIndex = prev.findIndex(p => p.username.toLowerCase() === data.username.toLowerCase());
@@ -334,10 +340,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             setRoomData(room);
             setActivesItems(room.activeItems);
             setScoreToWin(room.scoreToWin);
-            // Sans ça, itemsEnabled restait figé sur la valeur lue au premier
-            // chargement : jokers désactivés pour toute la partie si cet appel
-            // avait échoué. Test de type pour ne pas repasser à false quand le
-            // serveur omet le champ.
             if (typeof room.itemsEnabled === 'boolean') setItemsEnabled(room.itemsEnabled);
 
             const localPlayer = room.players.find(p => sameUser(p.username, userName));
@@ -348,6 +350,8 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             if (localPlayer) {
                 setJokersLeft(localPlayer.jokers);
                 setActiveInk(localPlayer.activeInk);
+                // todo: mieux gérer ca.
+                setHasGuessed(localPlayer.hasGuessed);
             }
 
             // @ts-ignore
@@ -617,6 +621,7 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                          isEditingRoom={isEditingRoom} isConsultRules={isConsultRules} setIsConsultRules={setIsConsultRules} handleRestartGame={handleRestartGame}
                          handleJoinRoom={handleJoinRoom} oldPlayers={oldPlayers} handleLeaveGame={handleLeaveGame} xpEarned={xpEarned} setXpEarned={setXpEarned} winner={winner} chat={
                     <Chat
+                        variant="panel"
                         players={players}
                         messages={messages}
                         userName={userName}
