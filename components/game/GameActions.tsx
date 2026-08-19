@@ -104,8 +104,6 @@ const GameActions: React.FC<GameActionsProps> = ({
                     className={`inline-flex shrink-0 items-center justify-center font-semibold tracking-wide whitespace-nowrap cursor-pointer transition-all duration-200 ease-out active:scale-95 ${SHAPE[variant]} ${TONE[tone]}`}
                 >
                     <Icon className={`shrink-0 ${variant === 'bar' ? 'w-4 h-4' : 'w-5 h-5'} ${key === 'start' ? 'fill-current' : ''}`} />
-                    {/* Barre : les libellés secondaires ne réapparaissent qu'à partir de lg,
-                        pour que la rangée ne pousse jamais le timer ni l'avatar. */}
                     <span className={variant === 'bar' && tone === 'neutral' ? 'max-lg:hidden' : ''}>
                         {variant === 'bar' ? short : long}
                     </span>

@@ -28,9 +28,9 @@ export default function SidebarRight() {
             {/* News / Update */}
             <div className="bg-gradient-to-b from-purple-900/20 to-transparent border border-purple-500/20 rounded-2xl p-5">
                 <div className="bg-purple-500 text-white text-[10px] font-bold px-2 py-0.5 rounded w-fit mb-2">NOUVEAU</div>
-                <h3 className="font-bold text-white mb-2">Mise à jour v2.1</h3>
+                <h3 className="font-bold text-white mb-2">Mise à jour v0.1.2</h3>
                 <p className="text-xs text-slate-400 leading-relaxed mb-3">
-                    Ajout du mode "Blind Test", corrections de bugs sur mobile et nouveaux packs communautaires.
+                    Ajout du pack "Marques et logo", corrections de bugs et ajout création d'un avatar sur mobile.
                 </p>
                 <button className="text-xs text-purple-400 hover:text-purple-300 underline">Lire le patch note</button>
             </div>

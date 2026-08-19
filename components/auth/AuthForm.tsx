@@ -116,7 +116,7 @@ export default function AuthForm({
                         <input
                             type="text"
                             name="username"
-                            placeholder="Ton nom de guerrier"
+                            placeholder="Ton pseudo"
                             value={formData.username}
                             onChange={handleInputChange}
                             className="w-full bg-[#0a0a0f] border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500 transition-all"
