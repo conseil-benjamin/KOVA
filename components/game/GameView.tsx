@@ -348,10 +348,6 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
             }
             setCreator(room.creator)
 
-            // todo :j'ai voulu régler le problème du hasguess et nombre de points qui se reset quand on utilise un joker
-            // todo : mais du coup ca a créer un autre problème avec les jokers on ne les voit plus quand on lance la partie il faut refresh
-            // todo : et également j'ai appliquer vision obscurci sur un autre mec et il ne s'enlève plus le setactiveInk ne doit jamais être appeler.
-
             if (localPlayer && room.status !== "DISPLAY_RESPONSE") {
                 console.log("localPlayer", localPlayer);
                 setHasGuessed(localPlayer.hasGuessed);
