@@ -347,11 +347,20 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                 setIsPlayerBan(true)
             }
             setCreator(room.creator)
+
+            // todo :j'ai voulu régler le problème du hasguess et nombre de points qui se reset quand on utilise un joker
+            // todo : mais du coup ca a créer un autre problème avec les jokers on ne les voit plus quand on lance la partie il faut refresh
+            // todo : et également j'ai appliquer vision obscurci sur un autre mec et il ne s'enlève plus le setactiveInk ne doit jamais être appeler.
+
+            if (localPlayer && room.status !== "DISPLAY_RESPONSE") {
+                console.log("localPlayer", localPlayer);
+                setHasGuessed(localPlayer.hasGuessed);
+                setPointsEarned(localPlayer.pointsEarned)
+            }
+
             if (localPlayer) {
                 setJokersLeft(localPlayer.jokers);
                 setActiveInk(localPlayer.activeInk);
-                // todo: mieux gérer ca.
-                setHasGuessed(localPlayer.hasGuessed);
             }
 
             // @ts-ignore
@@ -363,11 +372,12 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                         return {
                             ...existingPlayer,
                             score: roomPlayer.score,
-                            hasGuessed: roomPlayer.hasGuessed,
+                            hasGuessed: room.status !== "DISPLAY_RESPONSE" ? roomPlayer.hasGuessed : existingPlayer.hasGuessed,
                             avatar: roomPlayer.avatar || existingPlayer.avatar,
                             jokers: roomPlayer.jokers,
                             imageUrl: roomPlayer.imageUrl || existingPlayer.imageUrl,
-                            inkActive: roomPlayer.activeInk || existingPlayer.activeInk
+                            inkActive: roomPlayer.activeInk || existingPlayer.activeInk,
+                            pointsEarned: roomPlayer.pointsEarned
                         };
                     } else {
                         return {
@@ -379,11 +389,14 @@ const GameView: React.FC<GameViewProps> = ({ roomId }) => {
                             avatar: roomPlayer.avatar,
                             jokers: roomPlayer.jokers,
                             imageUrl: roomPlayer.imageUrl,
-                            inkActive: roomPlayer.activeInk
+                            inkActive: roomPlayer.activeInk,
+                            pointsEarned: roomPlayer.pointsEarned
                         };
                     }
                 });
             });
+
+
         });
 
         newSocket.on("joker_type_already_use", (data: { message: string }) => {
